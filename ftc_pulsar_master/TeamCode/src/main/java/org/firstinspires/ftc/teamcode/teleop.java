@@ -17,4 +17,6 @@ abstract class teleop extends OpMode {
         hardware.front_right_motor.setPower(front_right_power);
         hardware.back_right_motor.setPower(back_right_power);
     }
+
+    asdfasdf
 }

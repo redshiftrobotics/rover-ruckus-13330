@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+
 @Autonomous(name = "Auto")
 public class auto {
 
 
-    public void drive(float time, float power){
+    public void drive(float time, float power){ // basic drive command
         hardware.front_left_motor.setPower(power);
         hardware.back_left_motor.setPower(power);
         hardware.front_right_motor.setPower(power);
@@ -29,6 +30,8 @@ public class auto {
 
         }
     }
+
+
 
 
 

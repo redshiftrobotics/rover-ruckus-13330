@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class auto {
 
 
+
     public void drive(float time, float power){ // basic drive command
         hardware.front_left_motor.setPower(power);
         hardware.back_left_motor.setPower(power);
@@ -15,6 +16,7 @@ public class auto {
         hardware.back_right_motor.setPower(power);
 
     }
+
 
     public void turn(int direction, float time, float power){
 

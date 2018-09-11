@@ -4,8 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "teleop")
-abstract class teleop extends OpMode {
+class teleop extends OpMode {
 
+    public void init() {
+
+    }
 
     public void loop() {
         drive(gamepad1.left_stick_y, gamepad1.right_stick_y, gamepad1.left_stick_y, gamepad1.right_stick_y);

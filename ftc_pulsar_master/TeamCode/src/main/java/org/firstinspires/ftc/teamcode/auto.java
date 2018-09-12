@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous(name = "Auto")
-public class auto extends LinearOpMode{
+public class auto extends LinearOpMode{ // comments written by Mr. Luca Sandoval
 
     // dont even need to refrence motors lol
 
@@ -25,7 +25,4 @@ public class auto extends LinearOpMode{
         }
 
     }
-
-
-
-}
+} 

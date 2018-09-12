@@ -8,19 +8,20 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "Auto")
 public class auto extends LinearOpMode{ // comments written by Mr. Luca Sandoval
 
-    // dont even need to refrence motors lol
+    // Don't even need to reference the motors lol.
 
 
     @Override
     public void runOpMode(){
 
-        // dont need anything here either lol
+        // We don't need anything here.
 
         waitForStart();
-        while (opModeIsActive()){
+        while (opModeIsActive()){ // the auto instructions list from Robot.java
 
-            // the auto instructions list from Robot.java
+            Robot.Drive.drive(1, 1, 1000); // forward for 1 second.
 
+            Robot.Drive.drive(1, 0.5, 1000); // right for 1 second.
 
         }
 

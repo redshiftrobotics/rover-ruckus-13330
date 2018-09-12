@@ -1,18 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 
-public class Robot { // parent class
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+abstract public class Robot extends LinearOpMode { // parent class
     public static class Drive { // parent method.
 
         public static void drive(double lPower, double rPower, long time) { // the sub method that handles driving.
-
             LeftDrive.setPower(lPower);
             RightDrive.setPower(rPower);
 
-            try{
+            try {
                 Thread.sleep(time);
-            } catch(InterruptedException e){ // "sleep" method that allows the robot to move for only a specified time.
+            } catch (InterruptedException e) { // "sleep" method that allows the robot to move for only a specified time.
                 System.out.println(e);
             }
+
 
             LeftDrive.setPower(0);
             RightDrive.setPower(0);
@@ -23,7 +28,8 @@ public class Robot { // parent class
                 hardware.back_left_motor.setPower(power);
                 hardware.front_left_motor.setPower(power);
             }
-            public static double[] getCurrentPosition(){ // gets the current position of the motors.
+
+            public static double[] getCurrentPosition() { // gets the current position of the motors.
                 double[] currentPos = new double[2];
                 currentPos[0] = hardware.front_left_motor.getCurrentPosition();
                 currentPos[1] = hardware.back_left_motor.getCurrentPosition();
@@ -37,7 +43,8 @@ public class Robot { // parent class
                 hardware.back_right_motor.setPower(input);
                 hardware.front_right_motor.setPower(input);
             }
-            public static double[] getCurrentPosition(){
+
+            public static double[] getCurrentPosition() {
                 double[] currentPos = new double[2];
                 currentPos[0] = hardware.front_right_motor.getCurrentPosition();
                 currentPos[1] = hardware.back_right_motor.getCurrentPosition();

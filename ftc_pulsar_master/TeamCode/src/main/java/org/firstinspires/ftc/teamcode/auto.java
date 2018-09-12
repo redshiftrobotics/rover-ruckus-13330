@@ -25,4 +25,5 @@ public class auto extends LinearOpMode{ // comments written by Mr. Luca Sandoval
         }
 
     }
-} 
+
+}

@@ -25,8 +25,9 @@ abstract public class Robot extends LinearOpMode { // parent class
 
         public static class LeftDrive { // this calls reference to the left motors in the hardware class.
             public static void setPower(double power) {
-                hardware.back_left_motor.setPower(power);
-                hardware.front_left_motor.setPower(power);
+                //hardware.back_left_motor.setPower(power);
+                //hardware.front_left_motor.setPower(power);
+                hardware.left_motor.setPower(power);
             }
 
             public static double[] getCurrentPosition() { // gets the current position of the motors.
@@ -39,9 +40,11 @@ abstract public class Robot extends LinearOpMode { // parent class
         }
 
         public static class RightDrive { // this calls reference to the right motors in the hardware class.
-            public static void setPower(double input) {
-                hardware.back_right_motor.setPower(input);
-                hardware.front_right_motor.setPower(input);
+            public static void setPower(double power) {
+                //hardware.back_right_motor.setPower(power);
+                //hardware.front_right_motor.setPower(power);
+
+                hardware.right_motor.setPower(power);
             }
 
             public static double[] getCurrentPosition() {

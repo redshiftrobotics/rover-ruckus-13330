@@ -1,18 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
-
 public class Robot {
-    class LeftDrive {
-        void setPower(double input){
-            hardware.back_left_motor.setPower(input);
-            hardware.front_left_motor.setPower(input);
+    public static class Drive {
+        public static class LeftDrive {
+            public static void setPower(double power) {
+                hardware.back_left_motor.setPower(power);
+                hardware.front_left_motor.setPower(power);
+            }
         }
-    }
 
-    class RightDrive {
-        void setPower(double input) {
-            hardware.back_right_motor.setPower(input);
-            hardware.front_right_motor.setPower(input);
+        public static class RightDrive {
+            public static void setPower(double input) {
+                hardware.back_right_motor.setPower(input);
+                hardware.front_right_motor.setPower(input);
+            }
         }
     }
 }

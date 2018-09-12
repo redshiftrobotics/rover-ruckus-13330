@@ -2,6 +2,22 @@ package org.firstinspires.ftc.teamcode;
 
 public class Robot {
     public static class Drive {
+
+        public static void drive(double lPower, double rPower, long time) {
+
+            LeftDrive.setPower(lPower);
+            RightDrive.setPower(rPower);
+
+            try{
+                Thread.sleep(time);
+            } catch(InterruptedException e){
+                System.out.println(e);
+            }
+
+            LeftDrive.setPower(0);
+            RightDrive.setPower(0);
+        }
+
         public static class LeftDrive {
             public static void setPower(double power) {
                 hardware.back_left_motor.setPower(power);

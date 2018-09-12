@@ -19,7 +19,7 @@ public class auto extends LinearOpMode{ // comments written by Mr. Luca Sandoval
         waitForStart();
         while (opModeIsActive()){
 
-            // the auto instructions list from robot.java
+            // the auto instructions list from Robot.java
 
 
         }

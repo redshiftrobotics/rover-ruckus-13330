@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-public class Robot {
-    public static class Drive {
+public class Robot { // parent class
+    public static class Drive { // parent method.
 
-        public static void drive(double lPower, double rPower, long time) {
+        public static void drive(double lPower, double rPower, long time) { // the sub method that handles driving.
 
             LeftDrive.setPower(lPower);
             RightDrive.setPower(rPower);
 
             try{
                 Thread.sleep(time);
-            } catch(InterruptedException e){
+            } catch(InterruptedException e){ // "sleep" method that allows the robot to move for only a specified time.
                 System.out.println(e);
             }
 
@@ -18,12 +18,12 @@ public class Robot {
             RightDrive.setPower(0);
         }
 
-        public static class LeftDrive {
+        public static class LeftDrive { // this calls reference to the left motors in the hardware class.
             public static void setPower(double power) {
                 hardware.back_left_motor.setPower(power);
                 hardware.front_left_motor.setPower(power);
             }
-            public static double[] getCurrentPosition(){
+            public static double[] getCurrentPosition(){ // gets the current position of the motors.
                 double[] currentPos = new double[2];
                 currentPos[0] = hardware.front_left_motor.getCurrentPosition();
                 currentPos[1] = hardware.back_left_motor.getCurrentPosition();
@@ -32,7 +32,7 @@ public class Robot {
             }
         }
 
-        public static class RightDrive {
+        public static class RightDrive { // this calls reference to the right motors in the hardware class.
             public static void setPower(double input) {
                 hardware.back_right_motor.setPower(input);
                 hardware.front_right_motor.setPower(input);

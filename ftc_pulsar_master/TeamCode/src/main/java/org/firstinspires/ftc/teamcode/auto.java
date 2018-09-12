@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "Auto")
 public class auto extends LinearOpMode{ // comments written by Mr. Luca Sandoval
 
-    // Don't even need to reference the motors lol.
+    // We don't need anything here either.
 
 
     @Override

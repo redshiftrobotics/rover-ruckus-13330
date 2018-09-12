@@ -11,9 +11,11 @@ class teleop extends OpMode {
 
     public void loop() {
         //Control the left drive with gamepad 1 left stick y
+
         Robot.Drive.LeftDrive.setPower(gamepad1.left_stick_y);
 
         //Control the left drive with gamepad 1 right stick y
+
         Robot.Drive.RightDrive.setPower(gamepad1.right_stick_y);
     }
 }

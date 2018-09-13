@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public class Robot { // parent class
 
-
     public class Drive { // parent method.
 
         public class LeftDrive { // this calls reference to the left motors in the hardware class.

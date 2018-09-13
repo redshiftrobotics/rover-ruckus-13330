@@ -13,7 +13,10 @@ public class teleop extends OpMode {
     public  DcMotor back_right_motor;
     public  DcMotor back_left_motor;
 
+
+
     public void init(){
+        hardware.Init();
         front_left_motor = hardwareMap.dcMotor.get("front_left_motor");
         front_right_motor = hardwareMap.dcMotor.get("front_right_motor");
         back_left_motor = hardwareMap.dcMotor.get("back_left_motor");
@@ -21,12 +24,10 @@ public class teleop extends OpMode {
     }
 
     public void loop() {
-        back_right_motor.setPower(gamepad1.right_stick_y);
+        hardware.front_right_motor.setPower(gamepad1.right_stick_y);
         front_right_motor.setPower(gamepad1.right_stick_y);
 
         back_left_motor.setPower(gamepad1.left_stick_y);
         front_left_motor.setPower(gamepad1.left_stick_y);
-
-
     }
 }

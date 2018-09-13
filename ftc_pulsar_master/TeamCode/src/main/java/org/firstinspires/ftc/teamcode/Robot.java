@@ -30,7 +30,7 @@ abstract public class Robot extends LinearOpMode { // parent class
                 hardware.left_motor.setPower(power);
             }
 
-            public static double[] getCurrentPosition() { // gets the current position of the motors.
+            public static double[] getCurrentPosition() { // gets the current position of the left motors.
                 double[] currentPos = new double[2];
                 currentPos[0] = hardware.front_left_motor.getCurrentPosition();
                 currentPos[1] = hardware.back_left_motor.getCurrentPosition();
@@ -47,7 +47,7 @@ abstract public class Robot extends LinearOpMode { // parent class
                 hardware.right_motor.setPower(power);
             }
 
-            public static double[] getCurrentPosition() {
+            public static double[] getCurrentPosition() { // gets the current position of the right motors.
                 double[] currentPos = new double[2];
                 currentPos[0] = hardware.front_right_motor.getCurrentPosition();
                 currentPos[1] = hardware.back_right_motor.getCurrentPosition();

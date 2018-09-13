@@ -20,7 +20,6 @@ public class auto extends OpMode { // comments written by Mr. Luca Sandoval
 
     @Override
     public void loop() {
-
         telemetry.addData("Auto Completed.", "");
         telemetry.update();
 

@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-abstract public class Robot extends LinearOpMode { // parent class
+abstract public class Robot extends OpMode { // parent class
+
+
     public static class Drive { // parent method.
+
 
         public static void drive(double lPower, double rPower, long time) { // the sub method that handles driving.
             LeftDrive.setPower(lPower);
             RightDrive.setPower(rPower);
+
 
             try {
                 Thread.sleep(time);
@@ -20,13 +24,14 @@ abstract public class Robot extends LinearOpMode { // parent class
             RightDrive.setPower(0);
         }
 
-        public static class LeftDrive { // this calls reference to the left motors in the hardware class.
+
+        static class LeftDrive { // this calls reference to the left motors in the hardware class.
             public static void setPower(double power) {
                 hardware.back_left_motor.setPower(power);
                 hardware.front_left_motor.setPower(power);
             }
 
-            public static double[] getCurrentPosition() { // gets the current position of the motors.
+            double[] getCurrentPosition() { // gets the current position of the motors.
                 double[] currentPos = new double[2];
                 currentPos[0] = hardware.front_left_motor.getCurrentPosition();
                 currentPos[1] = hardware.back_left_motor.getCurrentPosition();
@@ -35,13 +40,13 @@ abstract public class Robot extends LinearOpMode { // parent class
             }
         }
 
-        public static class RightDrive { // this calls reference to the right motors in the hardware class.
+        static class RightDrive { // this calls reference to the right motors in the hardware class.
             public static void setPower(double power) {
                 hardware.back_right_motor.setPower(power);
                 hardware.front_right_motor.setPower(power);
             }
 
-            public static double[] getCurrentPosition() {
+            double[] getCurrentPosition() {
                 double[] currentPos = new double[2];
                 currentPos[0] = hardware.front_right_motor.getCurrentPosition();
                 currentPos[1] = hardware.back_right_motor.getCurrentPosition();

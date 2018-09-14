@@ -21,14 +21,15 @@ public class auto extends LinearOpMode { // comments written by Mr. Luca Sandova
         telemetry.addData("Initialized Auto Version: ", versionName);
 
         waitForStart();
+        while(opModeIsActive()) {
 
-
-        robot.setPowerLeft(1); // goes forward for one second.
-        robot.setPowerRight(1);
-        sleep(1000);
-        robot.setPowerLeft(1); //goes right for one second.
-        robot.setPowerRight(0.5);
-        sleep(1000);
+            robot.setPowerLeft(1); // goes forward for one second.
+            robot.setPowerRight(1);
+            sleep(1000);
+            robot.setPowerLeft(1); //goes right for one second.
+            robot.setPowerRight(0.5);
+            sleep(1000);
+        }
 
 
         telemetry.addData("Auto Completed.", "");

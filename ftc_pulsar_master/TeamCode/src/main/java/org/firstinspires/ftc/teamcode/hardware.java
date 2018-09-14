@@ -11,14 +11,13 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
 
-    public Hardware(OpMode ctx){
+    public int[] motorInverse = {-1, -1, 1, 1};
+
+    public Hardware(OpMode ctx) {
 
         front_left_motor = ctx.hardwareMap.dcMotor.get("front_left_motor");
         front_right_motor = ctx.hardwareMap.dcMotor.get("front_right_motor");
         back_left_motor = ctx.hardwareMap.dcMotor.get("back_left_motor");
         back_right_motor = ctx.hardwareMap.dcMotor.get("back_right_motor");
-
     }
-
-
 }

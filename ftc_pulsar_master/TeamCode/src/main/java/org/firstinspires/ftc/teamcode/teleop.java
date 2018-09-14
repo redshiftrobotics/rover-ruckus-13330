@@ -17,10 +17,8 @@ public class teleop extends OpMode {
 
     @Override
     public void loop() {
-        hardware.front_right_motor.setPower(gamepad1.right_stick_y * hardware.motorInverse[0]);
-        hardware.back_right_motor.setPower(gamepad1.right_stick_y * hardware.motorInverse[1]);
+        robot.setPowerLeft(gamepad1.left_stick_y);
 
-        hardware.back_left_motor.setPower(gamepad1.left_stick_y * hardware.motorInverse[2]);
-        hardware.front_left_motor.setPower(gamepad1.left_stick_y * hardware.motorInverse[3]);
+        robot.setPowerRight(gamepad1.right_stick_y);
     }
 }

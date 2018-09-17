@@ -131,6 +131,42 @@ public class Robot { //parent class
         } catch (Exception e) {
         }
     }
+
+    //clamps a value
+    public static double clamp(double val, double min, double max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
+
+//PID
+
+    /*
+    pCoeff = .8f;
+    iCoeff = .0002f;
+    dCoeff = .2f;
+    minimum = -1;
+    maximum = 1;
+    */
+
+    public double PIDSeek(double seekValue, double currentValue, double pCoeff, double iCoeff, double dCoeff, double minimum, double maximum)
+    {
+        double integral = 0;
+        double lastProportional = 0;
+
+
+        double proportional = seekValue - currentValue;
+
+        double derivative = (proportional - lastProportional);
+        integral += proportional;
+        lastProportional = proportional;
+
+        //This is the actual PID formula. This gives us the value that is returned
+        double value = pCoeff * proportional + iCoeff * integral + dCoeff * derivative;
+        value = clamp(value, minimum, maximum);
+
+        return value;
+    }
+
 }
 
 

@@ -1,4 +1,4 @@
-# rover-ruckus-13330
+# 13330
 
 This github repository is on the cloud to allow the 13330 pulsar software engineers to share our code between each other, and make sure
 we each have the proper version of the code.

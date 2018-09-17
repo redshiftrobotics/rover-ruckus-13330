@@ -85,42 +85,40 @@ public class Robot { //parent class
     public void rotate(int degrees, double power) {
         double leftPower, rightPower;
 
-        //restart imu movement tracking.
+        //makes the degrees between -359 and 359, zero is 360
+        degrees = degrees % 360;
+
+        //finds most efficient way to turn
+        if (degrees < -180)
+            degrees += 360;
+        else if (degrees > 180)
+            degrees -= 360;
+
+        //restart imu movement tracking
         resetAngle();
 
-        //getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        //clockwise (right).
-
-        if (degrees < 0) {   //turn right.
+        //turn right
+        if (degrees < 0) {
             leftPower = -power;
             rightPower = power;
-        } else if (degrees > 0) {   //turn left.
+
+        } //turn left
+        else if (degrees > 0) {
             leftPower = power;
             rightPower = -power;
-        } else return;
+
+        }else return;
 
         //set power to rotate.
         setPowerLeft(leftPower);
         setPowerRight(rightPower);
 
         //rotate until turn is completed.
-        if (degrees < 0) {
-            //On right turn we have to get off zero first.
-            while (getAngle() == 0) {
-            }
-
-            while (getAngle() > degrees) {
-            }
-        } else    //left turn.
-            while (getAngle() < degrees) {
-            }
+        while (getAngle() != degrees) {}
 
         //turn the motors off.
         setPowerLeft(0);
         setPowerRight(0);
-
-        //wait for finish
-        waitFor(1000);
 
         //reset angle
         resetAngle();

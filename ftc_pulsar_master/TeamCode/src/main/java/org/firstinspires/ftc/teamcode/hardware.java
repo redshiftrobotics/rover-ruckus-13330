@@ -21,6 +21,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor front_left_motor;
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
+
     public BNO055IMU imu;
     public Orientation oldAngle = new Orientation();
     public Orientation angles = new Orientation();

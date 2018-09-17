@@ -27,7 +27,6 @@ public class teleop extends LinearOpMode {
 
         //wait for the IMU to be inited
         while (!hardware.imu.isGyroCalibrated()) {
-            sleep(10);
             idle();
         }
 

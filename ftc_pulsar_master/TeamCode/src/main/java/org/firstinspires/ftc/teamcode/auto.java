@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -30,7 +29,6 @@ public class auto extends LinearOpMode {
 
         //wait for the IMU to be inited
         while (!hardware.imu.isGyroCalibrated()) {
-            sleep(10);
             idle();
         }
 
@@ -39,7 +37,6 @@ public class auto extends LinearOpMode {
         telemetry.addData("IMU Status: ", hardware.imu.getCalibrationStatus().toString());
         telemetry.addData("Autonomous Version: ", versionName);
         telemetry.update();
-
 
         waitForStart();
 
@@ -54,11 +51,11 @@ public class auto extends LinearOpMode {
             telemetry.update();
 
 
-            //rotate -90 degrees
+            //rotate 90 deg right
             robot.rotate(-90, 1);
 
-            //rotate 180 degrees
-            robot.rotate(180, 1);
+            //rotate 30 deg left
+            robot.rotate(390, 1);
 
             //go forward
             robot.drive(0.3, 1000);
@@ -68,6 +65,9 @@ public class auto extends LinearOpMode {
 
             //go back to starting position
             robot.drive(0.3, 1000);
+
+            //turn all the way around
+            robot.rotate(180-30, 1);
 
         }
 

@@ -114,11 +114,16 @@ public class Robot { //parent class
         setPowerRight(rightPower);
 
         //rotate until turn is completed.
-        while (getAngle() != degrees) {}
+        if(degrees > 0)
+            while (getAngle() < degrees) {}
+        else
+            while (getAngle() > degrees) {}
 
         //turn the motors off.
         setPowerLeft(0);
         setPowerRight(0);
+
+        waitFor(1000);
 
         //reset angle
         resetAngle();

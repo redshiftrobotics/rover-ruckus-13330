@@ -51,6 +51,7 @@ public class auto extends LinearOpMode {
             telemetry.update();
 
 
+
             //rotate 90 deg right
             robot.rotate(-90, 1);
 

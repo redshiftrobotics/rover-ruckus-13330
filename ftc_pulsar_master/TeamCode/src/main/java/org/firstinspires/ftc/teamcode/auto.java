@@ -11,6 +11,7 @@ public class auto extends LinearOpMode {
 
     public static String versionName = "v0.04"; // version name for organization.
 
+    //this.instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
     private Text text;

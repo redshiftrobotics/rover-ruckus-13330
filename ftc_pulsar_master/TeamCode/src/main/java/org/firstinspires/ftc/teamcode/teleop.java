@@ -9,7 +9,7 @@ public class teleop extends LinearOpMode {
     // version name for organization.
     public String versionName = "v0.06";
 
-    //this.instances of hardware and robot
+    //this.instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
     private Text text;

@@ -25,7 +25,7 @@ public class auto extends LinearOpMode {
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware /\ as context
         this.robot = new Robot(this.hardware);
-        //
+        //makes an instance of Text with Hardware and Robot as its context
         this.text = new Text(this.hardware, this.robot);
 
 
@@ -50,9 +50,6 @@ public class auto extends LinearOpMode {
 
             text.displayAngles(this);
             telemetry.update();
-
-
-
 
 
             //rotate 90 deg right

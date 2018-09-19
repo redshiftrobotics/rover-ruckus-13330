@@ -12,6 +12,7 @@ public class teleop extends LinearOpMode {
     //this.instances of hardware and robot
     private Hardware hardware;
     private Robot robot;
+    private Text text;
 
     @Override
     public void runOpMode() {
@@ -20,6 +21,9 @@ public class teleop extends LinearOpMode {
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware /\ as context
         this.robot = new Robot(this.hardware);
+        //makes an instance of Text with Hardware and Robot as its context
+        this.text = new Text(this.hardware, this.robot);
+
 
         telemetry.addData("Action:", "waiting for IMU initialization");
         telemetry.update();
@@ -31,9 +35,7 @@ public class teleop extends LinearOpMode {
         }
 
         //prints out various statistics to help debugging
-        telemetry.addData("Action:", "waiting for start");
-        telemetry.addData("IMU Status: ", hardware.imu.getCalibrationStatus().toString());
-        telemetry.addData("TeleOp Version: ", versionName);
+        text.displayStatistics(this);
         telemetry.update();
 
         waitForStart();

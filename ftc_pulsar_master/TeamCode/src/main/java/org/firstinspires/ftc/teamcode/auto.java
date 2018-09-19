@@ -3,14 +3,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 @Autonomous(name = "Autonomous", group = "13330 Pulsar")
 public class auto extends LinearOpMode {
 
-    public String versionName = "v0.04"; // version name for organization.
+    public static String versionName = "v0.04"; // version name for organization.
 
     private Hardware hardware;
     private Robot robot;
+    private Text text;
 
     private String position = "BLUE_RIGHT";
 
@@ -22,6 +25,9 @@ public class auto extends LinearOpMode {
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware /\ as context
         this.robot = new Robot(this.hardware);
+        //
+        this.text = new Text(this.hardware, this.robot);
+
 
         telemetry.addData("Action:", "waiting for IMU initialization");
         telemetry.update();
@@ -33,9 +39,7 @@ public class auto extends LinearOpMode {
         }
 
         //prints out various statistics to help debugging
-        telemetry.addData("Action:", "waiting for start");
-        telemetry.addData("IMU Status: ", hardware.imu.getCalibrationStatus().toString());
-        telemetry.addData("Autonomous Version: ", versionName);
+        text.displayStatistics(this);
         telemetry.update();
 
         waitForStart();
@@ -44,11 +48,10 @@ public class auto extends LinearOpMode {
 
             hardware.correction = robot.checkDirection();
 
-            telemetry.addData("Current Angle:", robot.getAngle());
-            telemetry.addData("Forward Angle:", hardware.oldAngle.firstAngle);
-            telemetry.addData("Correction Angle:", hardware.correction);
-            telemetry.addData("Current Global Angle:", hardware.globalAngle);
+            text.displayAngles(this);
             telemetry.update();
+
+
 
 
 

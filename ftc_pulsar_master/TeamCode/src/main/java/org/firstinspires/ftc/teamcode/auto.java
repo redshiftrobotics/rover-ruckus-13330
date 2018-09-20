@@ -49,14 +49,7 @@ public class auto extends LinearOpMode {
             telemetry.addData("Correction Angle:", hardware.correction);
             telemetry.addData("Current Global Angle:", hardware.globalAngle);
             telemetry.update();
-
-
-
-            //rotate 90 deg right
-            robot.rotate(-90, 1);
-
-            //rotate 30 deg left
-            robot.rotate(390, 1);
+            
 
             //go forward
             robot.drive(0.3, 1000);
@@ -68,7 +61,7 @@ public class auto extends LinearOpMode {
             robot.drive(0.3, 1000);
 
             //turn all the way around
-            robot.rotate(180-30, 1);
+            robot.rotate(180, 1);
 
         }
 

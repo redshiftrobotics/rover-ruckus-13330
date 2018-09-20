@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -83,6 +85,7 @@ public class Robot { //parent class
 
     //rotates the robot x degrees
     public void rotate(int degrees, double power) {
+        power /= 2;
         double leftPower, rightPower;
 
         //makes the degrees between -359 and 359, zero is 360
@@ -107,23 +110,21 @@ public class Robot { //parent class
             leftPower = power;
             rightPower = -power;
 
-        }else return;
+        } else return;
 
         //set power to rotate.
         setPowerLeft(leftPower);
         setPowerRight(rightPower);
 
         //rotate until turn is completed.
-        if(degrees > 0)
-            while (getAngle() < degrees) {}
-        else
-            while (getAngle() > degrees) {}
+        while(getAngle() != degrees){}
 
         //turn the motors off.
-        setPowerLeft(0);
         setPowerRight(0);
+        setPowerLeft(0);
 
         waitFor(1000);
+        //ctx.sleep(1000);
 
         //reset angle
         resetAngle();

@@ -20,7 +20,7 @@ public class teleop extends LinearOpMode {
         //makes an instance of hardware with this LinearOpMode as its context
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware /\ as context
-        this.robot = new Robot(this.hardware);
+        this.robot = new Robot(this.hardware, this);
         //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot);
 

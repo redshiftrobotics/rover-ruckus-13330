@@ -25,7 +25,7 @@ public class auto extends LinearOpMode {
         //makes an instance of hardware with this LinearOpMode as its context
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware /\ as context
-        this.robot = new Robot(this.hardware);
+        this.robot = new Robot(this.hardware, this);
         //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot);
 
@@ -50,22 +50,18 @@ public class auto extends LinearOpMode {
 
             console.displayAngles(this);
 
-            //rotate 90 deg right
-            robot.rotate(-90, 1);
 
-            //rotate 30 deg left
-            robot.rotate(390, 1);
             //go forward
             robot.drive(0.3, 1000);
 
             //turn all the way around
-            robot.rotate(180, 1);
+            robot.rotate(180, 0.3);
 
             //go back to starting position
             robot.drive(0.3, 1000);
 
             //turn all the way around
-            robot.rotate(180, 1);
+            robot.rotate(180, 0.3);
 
         }
 

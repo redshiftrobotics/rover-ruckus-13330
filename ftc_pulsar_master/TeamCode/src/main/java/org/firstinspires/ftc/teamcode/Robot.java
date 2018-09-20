@@ -10,9 +10,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class Robot { //parent class
 
     private Hardware hardware;
+    private LinearOpMode context;
 
-    public Robot(Hardware hardware) {
+    public Robot(Hardware hardware, LinearOpMode context) {
         this.hardware = hardware;
+        this.context = context;
     }
 
 //DRIVE FUNCTIONS
@@ -117,14 +119,16 @@ public class Robot { //parent class
         setPowerRight(rightPower);
 
         //rotate until turn is completed.
-        while(getAngle() != degrees){}
+        if(degrees > 0)
+            while (getAngle() <= degrees){}
+        else
+            while (getAngle() >= degrees){}
 
         //turn the motors off.
         setPowerRight(0);
         setPowerLeft(0);
 
-        waitFor(1000);
-        //ctx.sleep(1000);
+        context.sleep(1000);
 
         //reset angle
         resetAngle();

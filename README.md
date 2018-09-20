@@ -4,7 +4,7 @@ This github repository is on the cloud to allow the 13330 pulsar software engine
 we each have the proper version of the code.
 
 The actual code that you will want to looks at is under: 
-https://github.com/redshiftrobotics/13330/tree/master/ftc_pulsar_master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode
+[13330/TeamCode/src/main/java](https://github.com/redshiftrobotics/13330/tree/master/ftc_pulsar_master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode)
 This contains our teleOp, auto, and various other files that we need for the robot.
 
 You may notice that there are a ton of other files in the repository, you should just ignore those because they are a part of the FTC

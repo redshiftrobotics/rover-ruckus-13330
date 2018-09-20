@@ -7,11 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class teleop extends LinearOpMode {
 
     // version name for organization.
-    public String versionName = "v0.06";
+    public double version = 0.06;
 
-    //this.instances of hardware and robot
+    //this.instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
+    private Console console;
 
     @Override
     public void runOpMode() {
@@ -20,6 +21,9 @@ public class teleop extends LinearOpMode {
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware /\ as context
         this.robot = new Robot(this.hardware);
+        //makes an instance of Text with Hardware and Robot as its context
+        this.console = new Console(this.hardware, this.robot);
+
 
         telemetry.addData("Action:", "waiting for IMU initialization");
         telemetry.update();
@@ -31,14 +35,13 @@ public class teleop extends LinearOpMode {
         }
 
         //prints out various statistics to help debugging
-        telemetry.addData("Action:", "waiting for start");
-        telemetry.addData("IMU Status: ", hardware.imu.getCalibrationStatus().toString());
-        telemetry.addData("TeleOp Version: ", versionName);
-        telemetry.update();
+        console.displayStatistics(this, version, "TeleOp");
 
         waitForStart();
 
         while (opModeIsActive()) {
+            console.displayAngles(this);
+
             robot.setPowerLeft(gamepad1.left_stick_y);
             robot.setPowerRight(gamepad1.right_stick_y);
         }

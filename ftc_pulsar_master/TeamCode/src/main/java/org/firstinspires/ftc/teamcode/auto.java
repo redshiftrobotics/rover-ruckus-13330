@@ -3,14 +3,18 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 @Autonomous(name = "Autonomous", group = "13330 Pulsar")
 public class auto extends LinearOpMode {
 
-    public String versionName = "v0.04"; // version name for organization.
+    public double version = 0.05; // version name for organization.
 
+    //this.instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
+    private Console console;
 
     private String position = "BLUE_RIGHT";
 
@@ -22,6 +26,9 @@ public class auto extends LinearOpMode {
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware /\ as context
         this.robot = new Robot(this.hardware);
+        //makes an instance of Text with Hardware and Robot as its context
+        this.console = new Console(this.hardware, this.robot);
+
 
         telemetry.addData("Action:", "waiting for IMU initialization");
         telemetry.update();
@@ -33,10 +40,7 @@ public class auto extends LinearOpMode {
         }
 
         //prints out various statistics to help debugging
-        telemetry.addData("Action:", "waiting for start");
-        telemetry.addData("IMU Status: ", hardware.imu.getCalibrationStatus().toString());
-        telemetry.addData("Autonomous Version: ", versionName);
-        telemetry.update();
+        console.displayStatistics(this, version, "Autonomous");
 
         waitForStart();
 
@@ -44,13 +48,13 @@ public class auto extends LinearOpMode {
 
             hardware.correction = robot.checkDirection();
 
-            telemetry.addData("Current Angle:", robot.getAngle());
-            telemetry.addData("Forward Angle:", hardware.oldAngle.firstAngle);
-            telemetry.addData("Correction Angle:", hardware.correction);
-            telemetry.addData("Current Global Angle:", hardware.globalAngle);
-            telemetry.update();
-            
+            console.displayAngles(this);
 
+            //rotate 90 deg right
+            robot.rotate(-90, 1);
+
+            //rotate 30 deg left
+            robot.rotate(390, 1);
             //go forward
             robot.drive(0.3, 1000);
 

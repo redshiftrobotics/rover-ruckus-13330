@@ -30,6 +30,8 @@ public class Console { // parent class
         ctx.telemetry.addData("IMU Status: ", hardware.imu.getCalibrationStatus().toString());
         ctx.telemetry.addData(type + " Version: ", "v" + versionName);
 
+        ctx.telemetry.addData("Color Sensor Staus: ", hardware.color_sensor_1.toString()); //TODO: IDK what this will retun so test it!
+
         ctx.telemetry.update();
 
     }

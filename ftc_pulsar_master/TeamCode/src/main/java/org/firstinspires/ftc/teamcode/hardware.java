@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import org.firstinspires.ftc.robotcore.external.navigation.*;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -21,6 +22,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor front_left_motor;
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
+    public ColorSensor color_sensor_1;
 
     public BNO055IMU imu;
     public Orientation oldAngle = new Orientation();
@@ -55,5 +57,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         front_left_motor.setDirection(DcMotor.Direction.FORWARD);
         back_left_motor.setDirection(DcMotor.Direction.FORWARD);
+
+        color_sensor_1 = ctx.hardwareMap.colorSensor.get("color_sensor_1");
     }
 }

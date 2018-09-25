@@ -39,8 +39,11 @@ public class auto extends LinearOpMode {
             idle();
         }
 
+        hardware.color_sensor_1.enableLed(true); // makes sure the color sensor is enabled.
         //prints out various statistics to help debugging
         console.displayStatistics(this, version, "Autonomous");
+
+
 
         waitForStart();
 

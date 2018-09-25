@@ -50,10 +50,10 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         back_right_motor = ctx.hardwareMap.dcMotor.get("back_right_motor");
 
 
-        front_right_motor.setDirection(DcMotor.Direction.REVERSE);
-        back_right_motor.setDirection(DcMotor.Direction.REVERSE);
+        front_right_motor.setDirection(DcMotor.Direction.FORWARD);
+        back_right_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        front_left_motor.setDirection(DcMotor.Direction.FORWARD);
-        back_left_motor.setDirection(DcMotor.Direction.FORWARD);
+        front_left_motor.setDirection(DcMotor.Direction.REVERSE);
+        back_left_motor.setDirection(DcMotor.Direction.REVERSE);
     }
 }

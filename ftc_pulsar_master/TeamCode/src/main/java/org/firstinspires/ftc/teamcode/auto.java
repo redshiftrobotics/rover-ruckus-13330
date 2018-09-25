@@ -44,27 +44,22 @@ public class auto extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
 
-            hardware.correction = robot.checkDirection();
+        hardware.correction = robot.checkDirection();
 
-            console.displayAngles(this);
+        console.displayAngles(this);
 
+        //go forward
+        robot.drive(0.3, 1000);
 
-            //go forward
-            robot.drive(0.3, 1000);
+        //turn all the way around
+        robot.rotate(180, 0.3);
 
-            //turn all the way around
-            robot.rotate(180, 0.3);
+        //go back to starting position
+        robot.drive(0.3, 1000);
 
-            //go back to starting position
-            robot.drive(0.3, 1000);
-
-            //turn all the way around
-            robot.rotate(180, 0.3);
-
-        }
-
+        //turn all the way around
+        robot.rotate(180, 0.3);
 
         telemetry.addData("Auto Completed.", "");
         telemetry.update();

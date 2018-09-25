@@ -35,7 +35,7 @@ public class Robot { //parent class
     public void drive(double power, long time){
         setPowerLeft(-power + hardware.correction);
         setPowerRight(-power);
-        waitFor(time);
+        context.sleep(time);
         setPowerLeft(0);
         setPowerRight(0);
     }
@@ -88,7 +88,9 @@ public class Robot { //parent class
     //rotates the robot x degrees
     public void rotate(int degrees, double power) {
         power /= 2;
-        double leftPower, rightPower;
+        double leftPower, rightPower, integral;
+
+        integral = 0;
 
         //makes the degrees between -359 and 359, zero is 360
         degrees = degrees % 360;
@@ -103,32 +105,12 @@ public class Robot { //parent class
         resetAngle();
 
         //turn right
-        if (degrees < 0) {
-            leftPower = -power;
-            rightPower = power;
-
-        } //turn left
-        else if (degrees > 0) {
-            leftPower = power;
-            rightPower = -power;
-
-        } else return;
-
-        //set power to rotate.
-        setPowerLeft(leftPower);
-        setPowerRight(rightPower);
-
-        //rotate until turn is completed.
-        if(degrees > 0)
-            while (getAngle() <= degrees){}
-        else
-            while (getAngle() >= degrees){}
-
-        //turn the motors off.
-        setPowerRight(0);
-        setPowerLeft(0);
-
-        context.sleep(1000);
+        while (context.opModeIsActive() && getAngle() < degrees + 5 && getAngle() > degrees - 5) {
+            leftPower = -PIDSeek(degrees, getAngle(), 0.1,0.1,0.1, integral);
+            rightPower = PIDSeek(degrees, getAngle(), 0.1,0.1,0.1, integral);
+            setPowerLeft(leftPower);
+            setPowerRight(rightPower);
+        }
 
         //reset angle
         resetAngle();
@@ -150,19 +132,9 @@ public class Robot { //parent class
 
 //PID
 
-    /*
-    pCoeff = .8f;
-    iCoeff = .0002f;
-    dCoeff = .2f;
-    minimum = -1;
-    maximum = 1;
-    */
-
-    public double PIDSeek(double seekValue, double currentValue, double pCoeff, double iCoeff, double dCoeff, double minimum, double maximum)
+    public double PIDSeek(double seekValue, double currentValue, double pCoeff, double iCoeff, double dCoeff, double integral)
     {
-        double integral = 0;
         double lastProportional = 0;
-
 
         double proportional = seekValue - currentValue;
 
@@ -172,9 +144,10 @@ public class Robot { //parent class
 
         //This is the actual PID formula. This gives us the value that is returned
         double value = pCoeff * proportional + iCoeff * integral + dCoeff * derivative;
-        value = clamp(value, minimum, maximum);
+
 
         return value;
+
     }
 
 }

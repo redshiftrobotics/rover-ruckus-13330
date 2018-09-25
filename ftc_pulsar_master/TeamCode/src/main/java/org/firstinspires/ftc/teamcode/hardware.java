@@ -27,9 +27,9 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public double globalAngle;
     public double correction;
 
-    public Hardware(OpMode ctx) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
+    public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
-        imu = ctx.hardwareMap.get(BNO055IMU.class, "imu");
+        imu = context.hardwareMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
 
@@ -40,11 +40,11 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         imu.initialize(imuParameters);
 
-        front_left_motor = ctx.hardwareMap.dcMotor.get("front_left_motor");
-        back_left_motor = ctx.hardwareMap.dcMotor.get("back_left_motor");
+        front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
+        back_left_motor = context.hardwareMap.dcMotor.get("back_left_motor");
 
-        front_right_motor = ctx.hardwareMap.dcMotor.get("front_right_motor");
-        back_right_motor = ctx.hardwareMap.dcMotor.get("back_right_motor");
+        front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
+        back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
 
 
         front_right_motor.setDirection(DcMotor.Direction.REVERSE);
@@ -53,6 +53,6 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         front_left_motor.setDirection(DcMotor.Direction.FORWARD);
         back_left_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        color_sensor_1 = ctx.hardwareMap.colorSensor.get("color_sensor_1");
+        color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
     }
 }

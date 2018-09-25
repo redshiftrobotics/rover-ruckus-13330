@@ -45,6 +45,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         front_right_motor = ctx.hardwareMap.dcMotor.get("front_right_motor");
         back_right_motor = ctx.hardwareMap.dcMotor.get("back_right_motor");
+        color_sensor_1 = ctx.hardwareMap.colorSensor.get("color_sensor_1");
 
 
         front_right_motor.setDirection(DcMotor.Direction.REVERSE);
@@ -53,6 +54,5 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         front_left_motor.setDirection(DcMotor.Direction.FORWARD);
         back_left_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        color_sensor_1 = ctx.hardwareMap.colorSensor.get("color_sensor_1");
     }
 }

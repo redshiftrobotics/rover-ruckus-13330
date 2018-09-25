@@ -12,13 +12,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Hardware { // Here we get the DcMotors from the REV hub and assign their names.
 
-    public DcMotor front_right_motor;
+    public DcMotor front_right_motor; // motor initialization
     public DcMotor front_left_motor;
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
-    public ColorSensor color_sensor_1;
 
-    public BNO055IMU imu;
+    public ColorSensor color_sensor_1; // sensor initialization.
+
+    public BNO055IMU imu; // imu initialization.
     public Orientation oldAngle = new Orientation();
     public Orientation angles = new Orientation();
 
@@ -26,7 +27,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public double globalAngle;
     public double correction;
 
-    public Hardware(OpMode ctx) {
+    public Hardware(OpMode ctx) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
         imu = ctx.hardwareMap.get(BNO055IMU.class, "imu");
 

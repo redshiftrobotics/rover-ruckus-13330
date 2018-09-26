@@ -52,8 +52,14 @@ public class auto extends LinearOpMode {
 
         console.displayAngles(this);
 
+        robot.setPowerLeft(-0.1);
+        robot.setPowerRight(-0.1);
         //go forward
-        robot.drive(0.3, 1000);
+        while(opModeIsActive() && (hardware.color_sensor_1.red() + hardware.color_sensor_1.green())/2 - hardware.color_sensor_1.blue() <= 5) {}
+
+        robot.setPowerLeft(0);
+        robot.setPowerRight(0);
+        /*
 
         //turn all the way around
         robot.rotate(180, 0.3);
@@ -63,6 +69,7 @@ public class auto extends LinearOpMode {
 
         //turn all the way around
         robot.rotate(180, 0.3);
+        */
 
         telemetry.addData("Auto Completed.", "");
         telemetry.update();

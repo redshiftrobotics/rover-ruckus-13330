@@ -88,9 +88,7 @@ public class Robot { //parent class
     //rotates the robot x degrees
     public void rotate(int degrees, double power) {
         power /= 2;
-        double leftPower, rightPower, integral;
-
-        integral = 0;
+        double leftPower, rightPower;
 
         //makes the degrees between -359 and 359, zero is 360
         degrees = degrees % 360;
@@ -105,15 +103,21 @@ public class Robot { //parent class
         resetAngle();
 
         //turn right
-        while (context.opModeIsActive() && getAngle() < degrees + 5 && getAngle() > degrees - 5) {
-            leftPower = -PIDSeek(degrees, getAngle(), 0.1,0.1,0.1, integral);
-            rightPower = PIDSeek(degrees, getAngle(), 0.1,0.1,0.1, integral);
+        while (context.opModeIsActive()) {
+            leftPower = PIDSeek(degrees, getAngle(), 0.007,0.000001,0.001);
+            rightPower = -PIDSeek(degrees, getAngle(), 0.007,0.000001,0.001);
             setPowerLeft(leftPower);
             setPowerRight(rightPower);
+            context.telemetry.addData("Angle", getAngle());
+            context.telemetry.addData("Left Power", hardware.back_left_motor.getPower());
+            context.telemetry.addData("Right Power", hardware.back_right_motor.getPower());
+            context.telemetry.update();
         }
 
         //reset angle
         resetAngle();
+        context.telemetry.addData("DID THE BIG TURN","");
+        context.telemetry.update();
     }
 
     //makes the robot nap
@@ -131,10 +135,12 @@ public class Robot { //parent class
 
 
 //PID
+    double integral;
+    double lastProportional = 0;
 
-    public double PIDSeek(double seekValue, double currentValue, double pCoeff, double iCoeff, double dCoeff, double integral)
+
+    public double PIDSeek(double seekValue, double currentValue, double pCoeff, double iCoeff, double dCoeff)
     {
-        double lastProportional = 0;
 
         double proportional = seekValue - currentValue;
 
@@ -145,6 +151,9 @@ public class Robot { //parent class
         //This is the actual PID formula. This gives us the value that is returned
         double value = pCoeff * proportional + iCoeff * integral + dCoeff * derivative;
 
+        context.telemetry.addData("PID Value", value);
+        context.telemetry.addData("porportional", proportional);
+        context.telemetry.addData("intergral", integral);
 
         return value;
 

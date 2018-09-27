@@ -52,6 +52,8 @@ public class auto extends LinearOpMode {
 
         console.displayAngles(this);
 
+        /*
+
         robot.setPowerLeft(-0.1);
         robot.setPowerRight(-0.1);
         //go forward
@@ -59,17 +61,11 @@ public class auto extends LinearOpMode {
 
         robot.setPowerLeft(0);
         robot.setPowerRight(0);
-        /*
-
-        //turn all the way around
-        robot.rotate(180, 0.3);
-
-        //go back to starting position
-        robot.drive(0.3, 1000);
-
-        //turn all the way around
-        robot.rotate(180, 0.3);
         */
+
+
+        robot.rotate(180, 0.3);
+
 
         telemetry.addData("Auto Completed.", "");
         telemetry.update();

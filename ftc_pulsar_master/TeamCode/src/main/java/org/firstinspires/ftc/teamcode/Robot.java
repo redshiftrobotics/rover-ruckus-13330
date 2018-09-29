@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -38,6 +40,48 @@ public class Robot { //parent class
         context.sleep(time);
         setPowerLeft(0);
         setPowerRight(0);
+    }
+
+    public void encoderDrive(double power, int distance){
+        hardware.back_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.front_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        hardware.back_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.front_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        hardware.back_left_motor.setTargetPosition(distance);
+        hardware.front_left_motor.setTargetPosition(distance);
+
+        hardware.back_right_motor.setTargetPosition(distance);
+        hardware.front_right_motor.setTargetPosition(distance);
+
+
+        hardware.back_left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.front_left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        hardware.back_right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.front_right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        setPowerLeft(power);
+        setPowerRight(power);
+
+        while(hardware.back_left_motor.isBusy() && hardware.back_right_motor.isBusy() && context.opModeIsActive()){
+            //wait for finish
+        }
+
+        //stop moving
+        setPowerLeft(0);
+        setPowerRight(0);
+
+
+        hardware.back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        hardware.back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
     }
 
 //SUPER FUNCTIONS

@@ -14,6 +14,7 @@ public class Robot { //parent class
     private Hardware hardware;
     private LinearOpMode context;
 
+    //constructor that allows to use opModes and hardware
     public Robot(Hardware hardware, LinearOpMode context) {
         this.hardware = hardware;
         this.context = context;
@@ -33,8 +34,8 @@ public class Robot { //parent class
         hardware.front_left_motor.setPower(power);
     }
 
-    //to drive forward
-    public void drive(double power, long time){
+    //to drive forward with time
+    public void drive(double power, long time) {
         setPowerLeft(-power + hardware.correction);
         setPowerRight(-power);
         context.sleep(time);
@@ -42,46 +43,76 @@ public class Robot { //parent class
         setPowerRight(0);
     }
 
-    public void encoderDrive(double power, int distance){
-        hardware.back_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.front_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    //to drive forward with distance in inches
+    public void encoderDrive(double power, int distance) {
 
-        hardware.back_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.front_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double circumference = Math.PI * hardware.WHEEL_DIAMETER;
+        double encoderDistance = ((360 / circumference) * distance) * hardware.GEAR_RATIO;
 
+        resetEncoders();
+        setTargetPosition((int) encoderDistance);
 
-        hardware.back_left_motor.setTargetPosition(distance);
-        hardware.front_left_motor.setTargetPosition(distance);
-
-        hardware.back_right_motor.setTargetPosition(distance);
-        hardware.front_right_motor.setTargetPosition(distance);
-
-
-        hardware.back_left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.front_left_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        hardware.back_right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.front_right_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         setPowerLeft(power);
         setPowerRight(power);
 
-        while(hardware.back_left_motor.isBusy() && hardware.back_right_motor.isBusy() && context.opModeIsActive()){
-            //wait for finish
+        //wait for finish
+        while (context.opModeIsActive() && isBusyLeft() && isBusyRight()) {
         }
 
         //stop moving
         setPowerLeft(0);
         setPowerRight(0);
 
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
-        hardware.back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hardware.front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//ENCODERS
 
-        hardware.back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hardware.front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    //returns if the right drive is moving
+    public boolean isBusyRight() {
+    if (hardware.back_right_motor.isBusy() && hardware.front_right_motor.isBusy())
+        return true;
+    else
+        return false;
 
+}
 
+    //returns if the left drive is moving
+    public boolean isBusyLeft() {
+        if (hardware.back_left_motor.isBusy() && hardware.front_left_motor.isBusy())
+            return true;
+        else
+            return false;
+
+    }
+
+    //resets encoders
+    public void resetEncoders() {
+        hardware.back_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.front_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        hardware.back_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.front_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    //sets the target position of each motor
+    public void setTargetPosition(int position) {
+        hardware.back_left_motor.setTargetPosition(position);
+        hardware.front_left_motor.setTargetPosition(position);
+
+        hardware.back_right_motor.setTargetPosition(position);
+        hardware.front_right_motor.setTargetPosition(position);
+    }
+
+    //sets a main runmode for each motor
+    public void setRunMode(DcMotor.RunMode runMode) {
+        hardware.back_left_motor.setMode(runMode);
+        hardware.front_left_motor.setMode(runMode);
+
+        hardware.back_right_motor.setMode(runMode);
+        hardware.front_right_motor.setMode(runMode);
     }
 
 //SUPER FUNCTIONS
@@ -131,7 +162,6 @@ public class Robot { //parent class
 
     //rotates the robot x degrees
     public void rotate(int degrees, double power) {
-        power /= 2;
         double leftPower, rightPower;
 
         //makes the degrees between -359 and 359, zero is 360
@@ -147,9 +177,14 @@ public class Robot { //parent class
         resetAngle();
 
         //turn right
-        while (context.opModeIsActive()) {
-            leftPower = PIDSeek(degrees, getAngle(), 0.007,0.000001,0.001);
-            rightPower = -PIDSeek(degrees, getAngle(), 0.007,0.000001,0.001);
+        while (context.opModeIsActive() && getAngle() != degrees) {
+            if (degrees > 0) {
+                leftPower = PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
+                rightPower = -PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
+            } else {
+                leftPower = -PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
+                rightPower = PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
+            }
             setPowerLeft(leftPower);
             setPowerRight(rightPower);
             context.telemetry.addData("Angle", getAngle());
@@ -160,11 +195,9 @@ public class Robot { //parent class
 
         //reset angle
         resetAngle();
-        context.telemetry.addData("DID THE BIG TURN","");
-        context.telemetry.update();
     }
 
-    //makes the robot nap
+    //makes the robot take a fat nap
     public void waitFor(long milis) {
         try {
             Thread.sleep(milis);
@@ -179,12 +212,12 @@ public class Robot { //parent class
 
 
 //PID
+
     double integral;
     double lastProportional = 0;
 
-
-    public double PIDSeek(double seekValue, double currentValue, double pCoeff, double iCoeff, double dCoeff)
-    {
+    //given a current value and a seek value it can return incremental values in between given a p, i, d coefficient
+    public double PIDSeek(double seekValue, double currentValue, double pCoeff, double iCoeff, double dCoeff) {
 
         double proportional = seekValue - currentValue;
 

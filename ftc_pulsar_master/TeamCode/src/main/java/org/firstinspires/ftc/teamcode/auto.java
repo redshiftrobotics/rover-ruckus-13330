@@ -39,33 +39,23 @@ public class auto extends LinearOpMode {
             idle();
         }
 
-        hardware.color_sensor_1.enableLed(true); // makes sure the color sensor is enabled.
-        //prints out various statistics to help debugging
+        //makes sure the color sensor is enabled
+        hardware.color_sensor_1.enableLed(true);
+
+        //prints out various statistics to debug
         console.displayStatistics(this, version, "Autonomous");
 
-
-
+        //waits until we press play
         waitForStart();
 
+        //loops movement
+        while(opModeIsActive()) {
+            //drives 1 foot forward at full speed
+            robot.encoderDrive(1, 12);
 
-        hardware.correction = robot.checkDirection();
-
-        console.displayAngles(this);
-
-        /*
-
-        robot.setPowerLeft(-0.1);
-        robot.setPowerRight(-0.1);
-        //go forward
-        while(opModeIsActive() && (hardware.color_sensor_1.red() + hardware.color_sensor_1.green())/2 - hardware.color_sensor_1.blue() <= 5) {}
-
-        robot.setPowerLeft(0);
-        robot.setPowerRight(0);
-        */
-
-
-        robot.rotate(180, 0.3);
-
+            //rotates 180 degrees
+            robot.rotate(180, 1);
+        }
 
         telemetry.addData("Auto Completed.", "");
         telemetry.update();

@@ -31,7 +31,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public int ENCODER_TICKS = 1400;
     public double GEAR_RATIO = 1;
-    public double WHEEL_RADIUS = 10;
+    public double WHEEL_DIAMETER = 10;
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
@@ -59,5 +59,11 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         front_left_motor.setDirection(DcMotor.Direction.FORWARD);
         back_left_motor.setDirection(DcMotor.Direction.FORWARD);
+
+        back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

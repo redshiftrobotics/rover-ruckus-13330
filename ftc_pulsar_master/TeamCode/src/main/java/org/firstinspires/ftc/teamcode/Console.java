@@ -7,13 +7,15 @@ public class Console { // parent class
 
     private Hardware hardware; // get the context of other classes to use
     private Robot robot;
+    private LinearOpMode context;
 
-    public Console(Hardware hardware, Robot robot) { // creates the context in this class
+    public Console(Hardware hardware, Robot robot, LinearOpMode context) { // creates the context in this class
         this.hardware = hardware;
         this.robot = robot;
+        this.context = context;
     }
 
-    public void displayAngles(LinearOpMode context){ // used to display the current angles.
+    public void displayAngles(){ // used to display the current angles.
 
         context.telemetry.addData("Current Angle:", robot.getAngle());
         context.telemetry.addData("Forward Angle:", hardware.oldAngle.firstAngle);
@@ -33,7 +35,7 @@ public class Console { // parent class
 
     }
 
-    public void displayStatistics(LinearOpMode context, double versionName, String type){ // used to display the statistics.
+    public void displayStatistics(double versionName, String type){ // used to display the statistics.
 
         context.telemetry.addData("Action:", "waiting for start");
         context.telemetry.addData("IMU Status: ", hardware.imu.getCalibrationStatus().toString());
@@ -43,6 +45,11 @@ public class Console { // parent class
         context.telemetry.addData("     RGB:", hardware.color_sensor_1.argb());
         context.telemetry.update();
 
+    }
+
+    public void Log(String caption, String text){
+        context.telemetry.addData(caption, text);
+        context.telemetry.update();
     }
 
 }

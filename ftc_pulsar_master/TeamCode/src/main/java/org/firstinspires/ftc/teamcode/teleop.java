@@ -22,7 +22,7 @@ public class teleop extends LinearOpMode {
         //makes in instance or robot with this hardware /\ as context
         this.robot = new Robot(this.hardware, this);
         //makes an instance of Text with Hardware and Robot as its context
-        this.console = new Console(this.hardware, this.robot);
+        this.console = new Console(this.hardware, this.robot, this);
 
 
         telemetry.addData("Action:", "waiting for IMU initialization");
@@ -35,12 +35,12 @@ public class teleop extends LinearOpMode {
         }
 
         //prints out various statistics to help debugging
-        console.displayStatistics(this, version, "TeleOp");
+        console.displayStatistics(version, "TeleOp");
 
         waitForStart();
 
         while (opModeIsActive()) {
-            console.displayAngles(this);
+            console.displayAngles();
 
             robot.setPowerLeft(gamepad1.left_stick_y);
             robot.setPowerRight(gamepad1.right_stick_y);

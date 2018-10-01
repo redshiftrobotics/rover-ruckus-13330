@@ -27,7 +27,7 @@ public class auto extends LinearOpMode {
         //makes in instance or robot with this hardware /\ as context
         this.robot = new Robot(this.hardware, this);
         //makes an instance of Text with Hardware and Robot as its context
-        this.console = new Console(this.hardware, this.robot);
+        this.console = new Console(this.hardware, this.robot, this);
 
 
         telemetry.addData("Action:", "waiting for IMU initialization");
@@ -43,7 +43,7 @@ public class auto extends LinearOpMode {
         hardware.color_sensor_1.enableLed(true);
 
         //prints out various statistics to debug
-        console.displayStatistics(this, version, "Autonomous");
+        console.displayStatistics(version, "Autonomous");
 
         //waits until we press play
         waitForStart();
@@ -52,9 +52,17 @@ public class auto extends LinearOpMode {
         while(opModeIsActive()) {
             //drives 1 foot forward at full speed
             robot.encoderDrive(1, 12);
+            console.Log("Action", "Drove forward one foot");
 
             //rotates 180 degrees
-            robot.rotate(180, 1);
+            robot.rotate(180, 1, 0.2);
+            console.Log("Action", "Rotated 180 degrees");
+
+            //drives using encoders with PID
+            robot.encoderDrivePID(1, 12, 0.25);
+
+            //rotates back to normal
+            robot.rotate(180, 1, 0.2);
         }
 
         telemetry.addData("Auto Completed.", "");
@@ -62,19 +70,6 @@ public class auto extends LinearOpMode {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*

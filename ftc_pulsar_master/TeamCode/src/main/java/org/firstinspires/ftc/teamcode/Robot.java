@@ -68,6 +68,32 @@ public class Robot { //parent class
         setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void encoderDrivePID(double power, int distance, double stopThreashold) {
+
+        double powerLeft = 1, powerRight = 1;
+
+        double circumference = Math.PI * hardware.WHEEL_DIAMETER;
+        double encoderDistance = ((360 / circumference) * distance) * hardware.GEAR_RATIO;
+
+        resetEncoders();
+
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //wait for finish
+        while (context.opModeIsActive() && powerLeft >= stopThreashold && powerRight >= stopThreashold) {
+            hardware.correction = checkDirection();
+            powerLeft = PIDSeek(hardware.back_left_motor.getCurrentPosition(), (int) encoderDistance, 0.0007, 0.000000001, 0.00009);
+            powerRight = PIDSeek(hardware.back_right_motor.getCurrentPosition(), (int) encoderDistance, 0.0007, 0.000000001, 0.00009);
+
+            setPowerLeft(powerLeft);
+            setPowerRight(powerRight + hardware.correction);
+        }
+
+        //stop moving
+        setPowerLeft(0);
+        setPowerRight(0);
+    }
+
 //ENCODERS
 
     //returns if the right drive is moving
@@ -161,8 +187,8 @@ public class Robot { //parent class
     }
 
     //rotates the robot x degrees
-    public void rotate(int degrees, double power) {
-        double leftPower, rightPower;
+    public void rotate(int degrees, double power, double stopThreashold) {
+        double leftPower = 1, rightPower = 1;
 
         //makes the degrees between -359 and 359, zero is 360
         degrees = degrees % 360;
@@ -177,7 +203,7 @@ public class Robot { //parent class
         resetAngle();
 
         //turn right
-        while (context.opModeIsActive() && getAngle() != degrees) {
+        while (context.opModeIsActive() && leftPower >= stopThreashold && rightPower >= stopThreashold) {
             if (degrees > 0) {
                 leftPower = PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
                 rightPower = -PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
@@ -192,6 +218,8 @@ public class Robot { //parent class
             context.telemetry.addData("Right Power", hardware.back_right_motor.getPower());
             context.telemetry.update();
         }
+        setPowerLeft(0);
+        setPowerRight(0);
 
         //reset angle
         resetAngle();

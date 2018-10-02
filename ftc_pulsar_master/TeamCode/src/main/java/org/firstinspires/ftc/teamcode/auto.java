@@ -26,6 +26,7 @@
 * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -80,7 +81,9 @@ public class auto extends LinearOpMode {
         while(opModeIsActive()) {
             //drives 1 foot forward at full speed
             robot.encoderDrive(1, 12);
-            console.Log("Action", "Drove forward one foot");
+            robot.getDistanceTraveled();
+
+            console.Log("Action", "Drove " + robot.getDistanceTraveled() + " feet");
 
             //rotates 180 degrees
             robot.rotate(180, 1, 0.2);

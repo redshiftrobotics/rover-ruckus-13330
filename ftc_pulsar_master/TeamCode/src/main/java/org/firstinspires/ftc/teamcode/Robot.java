@@ -26,6 +26,7 @@
 * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -74,8 +75,9 @@ public class Robot { //parent class
     //to drive forward with distance in inches
     public void encoderDrive(double power, int distance) {
 
-        double circumference = Math.PI * hardware.WHEEL_DIAMETER;
-        double encoderDistance = ((360 / circumference) * distance) * hardware.GEAR_RATIO;
+
+        double encoderDistance = ((360 / hardware.CIRCUMFERENCE) * distance) * hardware.GEAR_RATIO;
+
 
         resetEncoders();
         setTargetPosition((int) encoderDistance);
@@ -126,12 +128,12 @@ public class Robot { //parent class
 
     //returns if the right drive is moving
     public boolean isBusyRight() {
-    if (hardware.back_right_motor.isBusy() && hardware.front_right_motor.isBusy())
-        return true;
-    else
-        return false;
+        if (hardware.back_right_motor.isBusy() && hardware.front_right_motor.isBusy())
+            return true;
+        else
+            return false;
 
-}
+    }
 
     //returns if the left drive is moving
     public boolean isBusyLeft() {
@@ -167,6 +169,18 @@ public class Robot { //parent class
 
         hardware.back_right_motor.setMode(runMode);
         hardware.front_right_motor.setMode(runMode);
+    }
+
+    //averages the distance traveled to feet
+    public double getDistanceTraveled() {
+        int average = hardware.back_left_motor.getCurrentPosition() +
+                hardware.front_left_motor.getCurrentPosition() +
+                hardware.back_right_motor.getCurrentPosition() +
+                hardware.front_right_motor.getCurrentPosition();
+
+        average /= 4;
+
+        return (average/hardware.GEAR_RATIO)/(360/hardware.CIRCUMFERENCE);
     }
 
 //SUPER FUNCTIONS

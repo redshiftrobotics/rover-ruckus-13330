@@ -61,6 +61,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public int ENCODER_TICKS = 1400;
     public double GEAR_RATIO = 1;
     public double WHEEL_DIAMETER = 10;
+    double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 

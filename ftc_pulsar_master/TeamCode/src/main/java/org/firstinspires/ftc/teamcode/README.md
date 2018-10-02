@@ -1,6 +1,6 @@
 # Teamcode
 
-This is where we keep all our code for the robot. Currently we have four classes:
+This is where we keep all our code for the robot. Currently we have five classes:
 
 ### Robot
 * We keep the main functions of the robot
@@ -32,3 +32,11 @@ This is where we keep all our code for the robot. Currently we have four classes
 	* Update
 	* Display information quickly
 	* Keep our classes orginized
+
+### TeleOp
+* Controls motors and servos
+	* Input by the drivers
+
+### Autonomous
+* Controls motors and servos
+	* Input by AI / sensors

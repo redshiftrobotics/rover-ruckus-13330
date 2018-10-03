@@ -31,8 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
-
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -40,6 +41,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 public class Hardware { // Here we get the DcMotors from the REV hub and assign their names.
+
 
     public DcMotor front_right_motor; // motor initialization
     public DcMotor front_left_motor;
@@ -65,6 +67,8 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
+
+
         imu = context.hardwareMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
@@ -75,6 +79,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         imuParameters.loggingEnabled      = false;
 
         imu.initialize(imuParameters);
+
 
         front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
         back_left_motor = context.hardwareMap.dcMotor.get("back_left_motor");

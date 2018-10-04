@@ -56,6 +56,12 @@ public class Console { // parent class
         context.telemetry.addData(" > GREEN", hardware.color_sensor_1.green());
         context.telemetry.addData(" > BLUE", hardware.color_sensor_1.blue());
 
+        context.telemetry.update();
+
+    }
+
+    public void displayColorData(){ // used to get the color sensor's color average and difference.
+
         context.telemetry.addLine();
         context.telemetry.addData("Color Difference:", (hardware.color_sensor_1.red() + hardware.color_sensor_1.green())/2 - hardware.color_sensor_1.blue());
         context.telemetry.addData("Color Average:", (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3));

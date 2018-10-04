@@ -70,6 +70,7 @@ public class teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             console.displayAngles();
+            console.displayColorData();
 
             robot.setPowerLeft(gamepad1.left_stick_y);
             robot.setPowerRight(gamepad1.right_stick_y);

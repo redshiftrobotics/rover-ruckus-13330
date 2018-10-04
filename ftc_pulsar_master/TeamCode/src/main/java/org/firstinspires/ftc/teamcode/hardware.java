@@ -101,4 +101,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+// this blank space was added to allow its github commit count to reach 100. Cheers.
+
 }

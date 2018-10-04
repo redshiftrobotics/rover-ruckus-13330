@@ -82,7 +82,7 @@ public class Console { // parent class
 
     }
 
-    public void Log(String caption, String text){
+    public void Log(String caption, String text){ // a very important essential method that is necessary to the structural integrity of our code.
         context.telemetry.addData(caption, text);
         context.telemetry.update();
     }

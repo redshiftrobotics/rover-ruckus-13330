@@ -51,7 +51,7 @@ public class Console { // parent class
         context.telemetry.addData("Correction Angle:", hardware.correction);
         context.telemetry.addData("Current Global Angle:", hardware.globalAngle);
 
-        context.telemetry.addData("Color Sensor Staus: ", "");
+        context.telemetry.addData("Color Sensor Status: ", "");
         context.telemetry.addData(" > RED", hardware.color_sensor_1.red());
         context.telemetry.addData(" > GREEN", hardware.color_sensor_1.green());
         context.telemetry.addData(" > BLUE", hardware.color_sensor_1.blue());

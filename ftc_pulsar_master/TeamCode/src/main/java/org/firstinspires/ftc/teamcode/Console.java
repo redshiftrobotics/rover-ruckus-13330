@@ -67,6 +67,16 @@ public class Console { // parent class
         context.telemetry.addData("Color Difference:", (hardware.color_sensor_1.red() + hardware.color_sensor_1.green())/2 - hardware.color_sensor_1.blue());
         context.telemetry.addData("Color Average:", (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3));
 
+        context.telemetry.addLine();
+        if (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 70){
+            context.telemetry.addData("Mineral is Silver.", "");
+
+        } else if(hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 < 70 && hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 20) {
+            context.telemetry.addData("Mineral is Gold.", "");
+        } else {
+            context.telemetry.addData("No Mineral seen.","");
+        }
+
         context.telemetry.update();
 
     }

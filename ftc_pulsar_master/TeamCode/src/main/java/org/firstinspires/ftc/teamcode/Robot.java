@@ -43,7 +43,7 @@ public class Robot { //parent class
     private Hardware hardware;
     private LinearOpMode context;
 
-    //constructor that allows to use opModes and hardware
+    //constructor that allows the Robot class to use opModes and hardware
     public Robot(Hardware hardware, LinearOpMode context) {
         this.hardware = hardware;
         this.context = context;
@@ -51,25 +51,39 @@ public class Robot { //parent class
 
 //DRIVE FUNCTIONS
 
-    //sets the power of the right drivew ith a double, power
+    //sets power of the right drive with a double that determines motor power
     public void setPowerRight(double power) {
         hardware.back_right_motor.setPower(power);
         hardware.front_right_motor.setPower(power);
     }
 
-    //sets power of left drive with a double, power
+    //sets power of the left drive with a double that determines motor power
     public void setPowerLeft(double power) {
         hardware.back_left_motor.setPower(power);
         hardware.front_left_motor.setPower(power);
     }
 
-    //to drive forward with time
+    //Drives forward (This is here in case encoder drive breaks)
     public void drive(double power, long time) {
         setPowerLeft(-power + hardware.correction);
         setPowerRight(-power);
         context.sleep(time);
         setPowerLeft(0);
         setPowerRight(0);
+    }
+
+    //method that moves forward for the specified time and detects the gold block.
+    public void senseColor(double power){
+
+        while(hardware.color_sensor_1.blue() + hardware.color_sensor_1.red() > hardware.color_sensor_1.green()){ //TODO: Change this to an actual formula.
+
+            setPowerLeft(power);
+            setPowerRight(power);
+        }
+
+        setPowerLeft(0);
+        setPowerRight(0);
+
     }
 
     //to drive forward with distance in inches

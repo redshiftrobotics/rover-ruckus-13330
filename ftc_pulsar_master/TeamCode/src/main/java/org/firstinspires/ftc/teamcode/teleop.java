@@ -38,7 +38,7 @@ public class teleop extends LinearOpMode {
     // version name for organization.
     public double version = 0.06;
 
-    //this.instances of hardware, robot, and text
+    //instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
     private Console console;
@@ -58,7 +58,7 @@ public class teleop extends LinearOpMode {
         telemetry.update();
 
 
-        //wait for the IMU to be inited
+        //wait for the IMU to be initiated
         while (!hardware.imu.isGyroCalibrated()) {
             idle();
         }
@@ -71,7 +71,7 @@ public class teleop extends LinearOpMode {
         while (opModeIsActive()) {
             console.displayAngles();
             console.displayColorData();
-
+            //Allows the driver to maneuver the robot
             robot.setPowerLeft(gamepad1.left_stick_y);
             robot.setPowerRight(gamepad1.right_stick_y);
         }

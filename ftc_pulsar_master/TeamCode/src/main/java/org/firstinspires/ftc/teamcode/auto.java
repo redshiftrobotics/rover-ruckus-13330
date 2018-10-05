@@ -53,7 +53,7 @@ public class auto extends LinearOpMode {
 
         //makes an instance of hardware with this LinearOpMode as its context
         this.hardware = new Hardware(this);
-        //makes in instance or robot with this hardware /\ as context
+        //makes in instance or robot with this hardware as context
         this.robot = new Robot(this.hardware, this);
         //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot, this);
@@ -63,7 +63,7 @@ public class auto extends LinearOpMode {
         telemetry.update();
 
 
-        //wait for the IMU to be inited
+        //wait for the IMU to be initiated
         while (!hardware.imu.isGyroCalibrated()) {
             idle();
         }
@@ -71,13 +71,13 @@ public class auto extends LinearOpMode {
         //makes sure the color sensor is enabled
         hardware.color_sensor_1.enableLed(true);
 
-        //prints out various statistics to debug
+        //prints out various statistics for debugging purposes
         console.displayStatistics(version, "Autonomous");
 
-        //waits until we press play
+        //waits until the program is started
         waitForStart();
 
-        //loops movement
+        //loops movement of the robot
         while(opModeIsActive()) {
             //drives 1 foot forward at full speed
             robot.encoderDrive(1, 12);
@@ -94,6 +94,10 @@ public class auto extends LinearOpMode {
 
             //rotates back to normal
             robot.rotate(180, 1, 0.2);
+
+            //moves forward until it detects the gold block.
+            robot.senseColor(0.2);
+
         }
 
         telemetry.addData("Auto Completed.", "");
@@ -104,6 +108,7 @@ public class auto extends LinearOpMode {
 
 
 /*
+//Not being used currently!!
 switch (position) {
     case "BLUE_RIGHT":
 

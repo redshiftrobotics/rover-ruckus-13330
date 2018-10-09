@@ -49,6 +49,8 @@ public class Robot { //parent class
         this.context = context;
     }
 
+
+
 //DRIVE FUNCTIONS
 
     //sets the power of the right drivew ith a double, power
@@ -74,12 +76,10 @@ public class Robot { //parent class
 
     //to drive forward with distance in inches
     public void encoderDrive(double power, int distance) {
-
-
         double encoderDistance = ((360 / hardware.CIRCUMFERENCE) * distance) * hardware.GEAR_RATIO;
 
-
         resetEncoders();
+
         setTargetPosition((int) encoderDistance);
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -89,6 +89,10 @@ public class Robot { //parent class
 
         //wait for finish
         while (context.opModeIsActive() && isBusyLeft() && isBusyRight()) {
+            context.telemetry.addData("Percentage of path", hardware.back_left_motor.getCurrentPosition()/encoderDistance);
+            context.telemetry.addData("Drive Distance", encoderDistance);
+            context.telemetry.update();
+
         }
 
         //stop moving
@@ -110,13 +114,15 @@ public class Robot { //parent class
         setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //wait for finish
-        while (context.opModeIsActive() && powerLeft >= stopThreashold && powerRight >= stopThreashold) {
-            hardware.correction = checkDirection();
-            powerLeft = PIDSeek(hardware.back_left_motor.getCurrentPosition(), (int) encoderDistance, 0.0007, 0.000000001, 0.00009);
-            powerRight = PIDSeek(hardware.back_right_motor.getCurrentPosition(), (int) encoderDistance, 0.0007, 0.000000001, 0.00009);
+        while (context.opModeIsActive()) {
+            powerLeft = PIDSeek(hardware.back_left_motor.getCurrentPosition(), encoderDistance, 0.0007, 0.000000001, 0.00009);
+            powerRight = PIDSeek(hardware.back_right_motor.getCurrentPosition(), encoderDistance, 0.0007, 0.000000001, 0.00009);
 
             setPowerLeft(powerLeft);
-            setPowerRight(powerRight + hardware.correction);
+            setPowerRight(powerRight);
+
+
+
         }
 
         //stop moving
@@ -301,6 +307,8 @@ public class Robot { //parent class
         context.telemetry.addData("PID Value", value);
         context.telemetry.addData("porportional", proportional);
         context.telemetry.addData("intergral", integral);
+        context.telemetry.addData("Current Position", hardware.back_left_motor.getCurrentPosition());
+        context.telemetry.update();
 
         return value;
 

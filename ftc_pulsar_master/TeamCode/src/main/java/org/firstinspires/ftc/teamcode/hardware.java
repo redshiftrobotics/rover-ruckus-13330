@@ -46,8 +46,6 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
 
-    public ColorSensor color_sensor_1; // sensor initialization.
-
     public BNO055IMU imu; // imu initialization.
     public Orientation oldAngle = new Orientation();
     public Orientation angles = new Orientation();
@@ -58,9 +56,8 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     //encoders!
 
-    public int ENCODER_TICKS = 1400;
     public double GEAR_RATIO = 1;
-    public double WHEEL_DIAMETER = 10;
+    public double WHEEL_DIAMETER = 4;
     double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
@@ -82,13 +79,11 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
         back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
 
-        color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
-
-        front_right_motor.setDirection(DcMotor.Direction.REVERSE);
+        front_right_motor.setDirection(DcMotor.Direction.FORWARD);
         back_right_motor.setDirection(DcMotor.Direction.REVERSE);
 
         front_left_motor.setDirection(DcMotor.Direction.FORWARD);
-        back_left_motor.setDirection(DcMotor.Direction.FORWARD);
+        back_left_motor.setDirection(DcMotor.Direction.REVERSE);
 
         back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

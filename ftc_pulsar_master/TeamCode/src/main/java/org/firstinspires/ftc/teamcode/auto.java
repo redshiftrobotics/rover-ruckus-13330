@@ -45,7 +45,6 @@ public class auto extends LinearOpMode {
     private Robot robot;
     private Console console;
 
-    private String position = "BLUE_RIGHT";
 
 
     @Override
@@ -69,7 +68,6 @@ public class auto extends LinearOpMode {
         }
 
         //makes sure the color sensor is enabled
-        hardware.color_sensor_1.enableLed(true);
 
         //prints out various statistics to debug
         console.displayStatistics(version, "Autonomous");
@@ -77,23 +75,11 @@ public class auto extends LinearOpMode {
         //waits until we press play
         waitForStart();
 
-        //loops movement
         while(opModeIsActive()) {
             //drives 1 foot forward at full speed
-            robot.encoderDrive(1, 12);
-            robot.getDistanceTraveled();
+            robot.encoderDrivePID(-0.3, 12, 0.1);
 
             console.Log("Action", "Drove " + robot.getDistanceTraveled() + " feet");
-
-            //rotates 180 degrees
-            robot.rotate(180, 1, 0.2);
-            console.Log("Action", "Rotated 180 degrees");
-
-            //drives using encoders with PID
-            robot.encoderDrivePID(1, 12, 0.25);
-
-            //rotates back to normal
-            robot.rotate(180, 1, 0.2);
         }
 
         telemetry.addData("Auto Completed.", "");
@@ -101,24 +87,3 @@ public class auto extends LinearOpMode {
 
     }
 }
-
-
-/*
-switch (position) {
-    case "BLUE_RIGHT":
-
-        break;
-    case "BLUE_LEFT":
-
-        break;
-    case "RED_RIGHT":
-
-        break;
-    case "RED_LEFT":
-
-        break;
-    default:
-
-        break;
-}
-*/

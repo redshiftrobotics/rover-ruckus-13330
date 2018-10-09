@@ -43,7 +43,7 @@ public class Robot { //parent class
     private Hardware hardware;
     private LinearOpMode context;
 
-    //constructor that allows to use opModes and hardware
+    //constructor that allows the Robot class to use opModes and hardware
     public Robot(Hardware hardware, LinearOpMode context) {
         this.hardware = hardware;
         this.context = context;
@@ -53,19 +53,19 @@ public class Robot { //parent class
 
 //DRIVE FUNCTIONS
 
-    //sets the power of the right drivew ith a double, power
+    //sets power of the right drive with a double that determines motor power
     public void setPowerRight(double power) {
         hardware.back_right_motor.setPower(power);
         hardware.front_right_motor.setPower(power);
     }
 
-    //sets power of left drive with a double, power
+    //sets power of the left drive with a double that determines motor power
     public void setPowerLeft(double power) {
         hardware.back_left_motor.setPower(power);
         hardware.front_left_motor.setPower(power);
     }
 
-    //to drive forward with time
+    //Drives forward (This is here in case encoder drive breaks)
     public void drive(double power, long time) {
         setPowerLeft(-power + hardware.correction);
         setPowerRight(-power);
@@ -74,60 +74,18 @@ public class Robot { //parent class
         setPowerRight(0);
     }
 
-    //to drive forward with distance in inches
-    public void encoderDrive(double power, int distance) {
-        double encoderDistance = ((360 / hardware.CIRCUMFERENCE) * distance) * hardware.GEAR_RATIO;
+    //method that moves forward for the specified time and detects the gold block.
+    public void senseColor(double power){
 
-        resetEncoders();
+        while(hardware.color_sensor_1.blue() + hardware.color_sensor_1.red() > hardware.color_sensor_1.green()){ //TODO: Change this to an actual formula.
 
-        setTargetPosition((int) encoderDistance);
-
-        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        setPowerLeft(power);
-        setPowerRight(power);
-
-        //wait for finish
-        while (context.opModeIsActive() && isBusyLeft() && isBusyRight()) {
-            context.telemetry.addData("Percentage of path", hardware.back_left_motor.getCurrentPosition()/encoderDistance);
-            context.telemetry.addData("Drive Distance", encoderDistance);
-            context.telemetry.update();
-
+            setPowerLeft(power);
+            setPowerRight(power);
         }
 
-        //stop moving
         setPowerLeft(0);
         setPowerRight(0);
 
-        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void encoderDrivePID(double power, int distance, double stopThreashold) {
-
-        double powerLeft = 1, powerRight = 1;
-
-        double circumference = Math.PI * hardware.WHEEL_DIAMETER;
-        double encoderDistance = ((360 / circumference) * distance) * hardware.GEAR_RATIO;
-
-        resetEncoders();
-
-        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        //wait for finish
-        while (context.opModeIsActive()) {
-            powerLeft = PIDSeek(hardware.back_left_motor.getCurrentPosition(), encoderDistance, 0.0007, 0.000000001, 0.00009);
-            powerRight = PIDSeek(hardware.back_right_motor.getCurrentPosition(), encoderDistance, 0.0007, 0.000000001, 0.00009);
-
-            setPowerLeft(powerLeft);
-            setPowerRight(powerRight);
-
-
-
-        }
-
-        //stop moving
-        setPowerLeft(0);
-        setPowerRight(0);
     }
 
 //ENCODERS

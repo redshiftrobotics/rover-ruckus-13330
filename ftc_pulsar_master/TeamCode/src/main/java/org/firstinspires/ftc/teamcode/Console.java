@@ -51,7 +51,29 @@ public class Console { // parent class
         context.telemetry.addData("Correction Angle:", hardware.correction);
         context.telemetry.addData("Current Global Angle:", hardware.globalAngle);
 
+        context.telemetry.update();
+
+    }
+
+    public void displayColorData(){ // used to get the color sensor's color average and difference.
+
         context.telemetry.addLine();
+        context.telemetry.addData("Color Sensor Status: ", "");
+        context.telemetry.addData(" > RED", hardware.color_sensor_1.red());
+        context.telemetry.addData(" > GREEN", hardware.color_sensor_1.green());
+        context.telemetry.addData(" > BLUE", hardware.color_sensor_1.blue());
+
+        context.telemetry.addLine();
+
+        context.telemetry.addLine();
+        if (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 70){
+            context.telemetry.addData("Mineral is Silver.", "");
+
+        } else if(hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 < 70 && hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 20) {
+            context.telemetry.addData("Mineral is Gold.", "");
+        } else {
+            context.telemetry.addData("No Mineral seen.","");
+        }
 
         context.telemetry.update();
 
@@ -67,7 +89,7 @@ public class Console { // parent class
 
     }
 
-    public void Log(String caption, String text){
+    public void Log(String caption, String text){ // a very important essential method that is necessary to the structural integrity of our code.
         context.telemetry.addData(caption, text);
         context.telemetry.update();
     }

@@ -52,7 +52,7 @@ public class auto extends LinearOpMode {
 
         //makes an instance of hardware with this LinearOpMode as its context
         this.hardware = new Hardware(this);
-        //makes in instance or robot with this hardware /\ as context
+        //makes in instance or robot with this hardware as context
         this.robot = new Robot(this.hardware, this);
         //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot, this);
@@ -62,25 +62,22 @@ public class auto extends LinearOpMode {
         telemetry.update();
 
 
-        //wait for the IMU to be inited
+        //wait for the IMU to be initiated
         while (!hardware.imu.isGyroCalibrated()) {
             idle();
         }
 
         //makes sure the color sensor is enabled
 
-        //prints out various statistics to debug
+        //prints out various statistics for debugging purposes
         console.displayStatistics(version, "Autonomous");
 
-        //waits until we press play
+        //waits until the program is started
         waitForStart();
 
-        while(opModeIsActive()) {
-            //drives 1 foot forward at full speed
-            robot.encoderDrivePID(-0.3, 12, 0.1);
+        //loops movement of the robot
+        robot.rotate(90, 1, 0.2);
 
-            console.Log("Action", "Drove " + robot.getDistanceTraveled() + " feet");
-        }
 
         telemetry.addData("Auto Completed.", "");
         telemetry.update();

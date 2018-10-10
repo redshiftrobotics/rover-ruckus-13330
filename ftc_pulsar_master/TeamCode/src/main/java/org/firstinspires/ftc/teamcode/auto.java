@@ -76,7 +76,12 @@ public class auto extends LinearOpMode {
         waitForStart();
 
         //loops movement of the robot
-        robot.rotate(90, 1, 0.2);
+        robot.drive(1, 2000);
+        robot.rotate(30, 1, 0.1);
+        sleep(100);
+
+        robot.drive(0.3, 2000);
+        robot.rotate(-30, 1, 0);
 
 
         telemetry.addData("Auto Completed.", "");

@@ -194,7 +194,7 @@ public class Robot { //parent class
 
     //rotates the robot x degrees
     public void rotate(int degrees, double power, double stopThreashold) {
-        double leftPower = 1, rightPower = 1;
+        double turnPower = 1;
 
         //makes the degrees between -359 and 359, zero is 360
         degrees = degrees % 360;
@@ -209,20 +209,12 @@ public class Robot { //parent class
         resetAngle();
 
         //turn right
-        while (context.opModeIsActive() && leftPower >= stopThreashold && rightPower >= stopThreashold) {
-            if (degrees > 0) {
-                leftPower = PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
-                rightPower = -PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
-            } else {
-                leftPower = -PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
-                rightPower = PIDSeek(degrees, getAngle(), 0.0007, 0.000000001, 0.00009);
-            }
-            setPowerLeft(leftPower);
-            setPowerRight(rightPower);
-            context.telemetry.addData("Angle", getAngle());
-            context.telemetry.addData("Left Power", hardware.back_left_motor.getPower());
-            context.telemetry.addData("Right Power", hardware.back_right_motor.getPower());
-            context.telemetry.update();
+        while (context.opModeIsActive() && Math.abs(turnPower) >= stopThreashold) {
+
+            turnPower = PIDSeek(degrees, getAngle(), 0.01, 0.00000001, 0.0009);
+
+            setPowerLeft(turnPower);
+            setPowerRight(-turnPower);
         }
         setPowerLeft(0);
         setPowerRight(0);
@@ -265,7 +257,9 @@ public class Robot { //parent class
         context.telemetry.addData("PID Value", value);
         context.telemetry.addData("porportional", proportional);
         context.telemetry.addData("intergral", integral);
-        context.telemetry.addData("Current Position", hardware.back_left_motor.getCurrentPosition());
+        context.telemetry.addData("Angle", getAngle());
+        context.telemetry.addData("Left Power", hardware.back_left_motor.getPower());
+        context.telemetry.addData("Right Power", hardware.back_right_motor.getPower());
         context.telemetry.update();
 
         return value;

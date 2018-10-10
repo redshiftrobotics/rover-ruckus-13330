@@ -47,6 +47,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor front_left_motor;
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
+    public DcMotor lifter;
 
     public ColorSensor color_sensor_1;
 
@@ -85,6 +86,8 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
         back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
+
+        lifter = context.hardwareMap.dcMotor.get("lifter");
 
         color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
 

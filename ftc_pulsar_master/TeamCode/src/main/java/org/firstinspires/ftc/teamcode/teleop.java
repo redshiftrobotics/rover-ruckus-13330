@@ -38,10 +38,13 @@ public class teleop extends LinearOpMode {
     // version name for organization.
     public double version = 0.06;
 
+
     //instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
     private Console console;
+
+    private double lifterPower;
 
     @Override
     public void runOpMode() {
@@ -69,11 +72,17 @@ public class teleop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
+            lifterPower += gamepad1.right_trigger;
+            lifterPower -= gamepad1.left_trigger;
+
             console.displayAngles();
             console.displayColorData();
             //Allows the driver to maneuver the robot
             robot.setPowerLeft(gamepad1.left_stick_y);
             robot.setPowerRight(gamepad1.right_stick_y);
+            //Allows the driver to control mechanisms.
+            robot.lift(lifterPower);
         }
     }
 }

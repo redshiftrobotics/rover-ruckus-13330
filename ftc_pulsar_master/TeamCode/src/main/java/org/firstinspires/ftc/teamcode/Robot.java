@@ -74,6 +74,11 @@ public class Robot { //parent class
         setPowerRight(0);
     }
 
+    //Lift the... lifter.
+    public void lift(double power){
+        hardware.lifter.setPower(power);
+    }
+
     //method that moves forward for the specified time and detects the gold block.
     public void senseColor(double power){
 

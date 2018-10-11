@@ -42,11 +42,13 @@ public class Robot { //parent class
 
     private Hardware hardware;
     private LinearOpMode context;
+    private ASAMController asam;
 
     //constructor that allows the Robot class to use opModes and hardware
     public Robot(Hardware hardware, LinearOpMode context) {
         this.hardware = hardware;
         this.context = context;
+
     }
 
 
@@ -72,6 +74,13 @@ public class Robot { //parent class
         context.sleep(time);
         setPowerLeft(0);
         setPowerRight(0);
+    }
+
+    //test drive with ASAM implemented.
+    public void asamDrive(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime){
+
+        setPowerLeft(-asam.computeMotorPower(totalRunTime, elapsedTime, startSpeed, endSpeed, accelTime) + hardware.correction);
+        setPowerRight(-asam.computeMotorPower(totalRunTime, elapsedTime, startSpeed, endSpeed, accelTime));
     }
 
     //Lift the... lifter.

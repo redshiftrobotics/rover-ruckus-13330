@@ -12,7 +12,7 @@ public class ASAMController {
      * @param accelTime amount of time to accelerate/decelerate
      * @return
      */
-    public static double computeMotorPower(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
+    public double computeMotorPower(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
         if (elapsedTime <= accelTime) {
             return computeAcceleration(totalRunTime, elapsedTime, startSpeed, endSpeed, accelTime);
         } else if (elapsedTime < (totalRunTime - accelTime)) {
@@ -33,7 +33,7 @@ public class ASAMController {
      * @param accelTime amount of time to accelerate
      * @return current motor power
      */
-    private static double computeAcceleration(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
+    private double computeAcceleration(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
 
         return (
                 ((startSpeed - endSpeed) / 2)
@@ -53,7 +53,7 @@ public class ASAMController {
      * @param accelTime amount of time to deceleration
      * @return current motor power
      */
-    private static double computeDeceleration(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
+    private double computeDeceleration(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
 
         return (
                 ((endSpeed - startSpeed) / 2)

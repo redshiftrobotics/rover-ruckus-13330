@@ -40,6 +40,10 @@ public class auto extends LinearOpMode {
 
     public double version = 0.05; // version name for organization.
 
+    public long startTime;
+    public long totalTime;
+    public long elapsedTime;
+
     //this.instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
@@ -76,12 +80,24 @@ public class auto extends LinearOpMode {
         waitForStart();
 
         //loops movement of the robot
-        robot.drive(1, 2000);
-        robot.rotate(30, 1, 0.1);
-        sleep(100);
+        //robot.drive(1, 2000);
+        //robot.rotate(30, 1, 0.1);
+        //sleep(100);
 
-        robot.drive(0.3, 2000);
-        robot.rotate(-30, 1, 0);
+        //robot.drive(0.3, 2000);
+        //robot.rotate(-30, 1, 0);
+
+
+        startTime = System.currentTimeMillis();
+        totalTime = 5000;
+        elapsedTime = totalTime;
+        while (elapsedTime > 0){
+            long elapsed = System.currentTimeMillis() - startTime;
+            elapsedTime -= elapsedTime;
+
+            robot.asamDrive(totalTime, elapsed, 0,1, 1000);
+        }
+
 
 
         telemetry.addData("Auto Completed.", "");

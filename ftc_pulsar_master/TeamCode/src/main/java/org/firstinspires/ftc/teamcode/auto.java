@@ -88,8 +88,18 @@ public class auto extends LinearOpMode {
         //robot.rotate(-30, 1, 0);
 
 
+        newDrive(5000);
+
+
+        telemetry.addData("Auto Completed.", "");
+        telemetry.update();
+
+    }
+
+    //allows for asam in a Drive function.
+    public void newDrive(long time){
         startTime = System.currentTimeMillis();
-        totalTime = 5000;
+        totalTime = time;
         elapsedTime = totalTime;
         while (elapsedTime > 0){
             long elapsed = System.currentTimeMillis() - startTime;
@@ -97,11 +107,5 @@ public class auto extends LinearOpMode {
 
             robot.asamDrive(totalTime, elapsed, 0,1, 1000);
         }
-
-
-
-        telemetry.addData("Auto Completed.", "");
-        telemetry.update();
-
     }
 }

@@ -45,9 +45,10 @@ public class Robot { //parent class
     private ASAMController asam;
 
     //constructor that allows the Robot class to use opModes and hardware
-    public Robot(Hardware hardware, LinearOpMode context) {
+    public Robot(Hardware hardware, LinearOpMode context, ASAMController asam) {
         this.hardware = hardware;
         this.context = context;
+        this.asam = asam;
 
     }
 

@@ -47,6 +47,7 @@ public class auto extends LinearOpMode {
     //this.instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
+    private ASAMController asam;
     private Console console;
 
 
@@ -57,7 +58,7 @@ public class auto extends LinearOpMode {
         //makes an instance of hardware with this LinearOpMode as its context
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware as context
-        this.robot = new Robot(this.hardware, this);
+        this.robot = new Robot(this.hardware, this, this.asam);
         //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot, this);
 

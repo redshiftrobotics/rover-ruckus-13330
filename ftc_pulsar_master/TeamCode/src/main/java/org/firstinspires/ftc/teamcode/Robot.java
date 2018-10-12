@@ -42,14 +42,11 @@ public class Robot { //parent class
 
     private Hardware hardware;
     private LinearOpMode context;
-    private ASAMController asam;
 
     //constructor that allows the Robot class to use opModes and hardware
-    public Robot(Hardware hardware, LinearOpMode context, ASAMController asam) {
+    public Robot(Hardware hardware, LinearOpMode context) {
         this.hardware = hardware;
         this.context = context;
-        this.asam = asam;
-
     }
 
 
@@ -75,13 +72,6 @@ public class Robot { //parent class
         context.sleep(time);
         setPowerLeft(0);
         setPowerRight(0);
-    }
-
-    //test drive with ASAM implemented.
-    public void asamDrive(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime){
-
-        setPowerLeft(-asam.computeMotorPower(totalRunTime, elapsedTime, startSpeed, endSpeed, accelTime) + hardware.correction);
-        setPowerRight(-asam.computeMotorPower(totalRunTime, elapsedTime, startSpeed, endSpeed, accelTime));
     }
 
     //Lift the... lifter.
@@ -279,6 +269,86 @@ public class Robot { //parent class
 
         return value;
 
+    }
+
+//ASAM
+
+    public long startTime;
+    public long totalTime;
+    public long elapsedTime;
+
+    //test drive with ASAM implemented.
+    public void asamDrive(long time, long accelTime) {
+        startTime = System.currentTimeMillis();
+        totalTime = time;
+        elapsedTime = 0;
+        while (elapsedTime < totalTime) {
+            elapsedTime = System.currentTimeMillis() - startTime;
+
+            setPowerLeft(-computeMotorPower(totalTime, (long) elapsedTime, 0, 1, accelTime));
+            setPowerRight(-computeMotorPower(totalTime, (long) elapsedTime, 0, 1, accelTime));
+        }
+        setPowerRight(0);
+        setPowerLeft(0);
+    }
+
+    /**
+     * Compute the motor power for a given timestamp along an ASAM curve
+     * @param totalRunTime total time allocated to the movement
+     * @param elapsedTime time elapsed since the movement began
+     * @param startSpeed starting speed of the movement
+     * @param endSpeed ending speed of the movement
+     * @param accelTime amount of time to accelerate/decelerate
+     * @return
+     */
+    public double computeMotorPower(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
+        if (elapsedTime <= accelTime) {
+            return computeAcceleration(totalRunTime, elapsedTime, startSpeed, endSpeed, accelTime);
+        } else if (elapsedTime < (totalRunTime - accelTime)) {
+            return endSpeed;
+        } else {
+            return computeDeceleration(totalRunTime, elapsedTime, startSpeed, endSpeed, accelTime);
+        }
+    }
+
+    /**
+     * Compute the acceleration section of the curve
+     *
+     * @param totalRunTime total move time
+     * @param elapsedTime total elapsed time
+     * @param startSpeed starting speed
+     * @param endSpeed ending speed
+     * @param accelTime amount of time to accelerate
+     * @return current motor power
+     */
+    private double computeAcceleration(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
+
+        return (
+                ((startSpeed - endSpeed) / 2)
+                        * Math.cos((elapsedTime * Math.PI) / accelTime)
+                        + ((startSpeed + endSpeed) / 2)
+        );
+    }
+
+    /**
+     * Compute the deceleration section of the curve
+     *
+     * @param totalRunTime total move time
+     * @param elapsedTime total elapsed time
+     * @param startSpeed starting speed
+     * @param endSpeed ending speed
+     * @param accelTime amount of time to deceleration
+     * @return current motor power
+     */
+    private double computeDeceleration(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
+
+        return (
+                ((endSpeed - startSpeed) / 2)
+                        * Math.cos(
+                        (Math.PI * (totalRunTime - accelTime - elapsedTime)) / accelTime
+                )
+                        + ((startSpeed + endSpeed) / 2)
+        );
     }
 
 }

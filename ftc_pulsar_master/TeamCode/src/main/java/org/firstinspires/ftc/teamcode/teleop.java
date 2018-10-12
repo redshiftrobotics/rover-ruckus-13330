@@ -43,7 +43,6 @@ public class teleop extends LinearOpMode {
     private Hardware hardware;
     private Robot robot;
     private Console console;
-    private ASAMController asam;
 
     @Override
     public void runOpMode() {
@@ -51,7 +50,7 @@ public class teleop extends LinearOpMode {
         //makes an instance of hardware with this LinearOpMode as its context
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware /\ as context
-        this.robot = new Robot(this.hardware, this, this.asam);
+        this.robot = new Robot(this.hardware, this);
         //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot, this);
 

@@ -40,14 +40,11 @@ public class auto extends LinearOpMode {
 
     public double version = 0.05; // version name for organization.
 
-    public long startTime;
-    public long totalTime;
-    public long elapsedTime;
+
 
     //this.instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
-    private ASAMController asam;
     private Console console;
 
 
@@ -58,7 +55,7 @@ public class auto extends LinearOpMode {
         //makes an instance of hardware with this LinearOpMode as its context
         this.hardware = new Hardware(this);
         //makes in instance or robot with this hardware as context
-        this.robot = new Robot(this.hardware, this, this.asam);
+        this.robot = new Robot(this.hardware, this);
         //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot, this);
 
@@ -80,33 +77,16 @@ public class auto extends LinearOpMode {
         //waits until the program is started
         waitForStart();
 
-        //loops movement of the robot
-        //robot.drive(1, 2000);
-        //robot.rotate(30, 1, 0.1);
-        //sleep(100);
+        robot.rotate(30, 1,0.1);
+        sleep(100);
+        robot.asamDrive(1000, 1000);
 
-        //robot.drive(0.3, 2000);
-        //robot.rotate(-30, 1, 0);
+        robot.rotate(-120, 1,0.1);
 
-
-        newDrive(5000);
 
 
         telemetry.addData("Auto Completed.", "");
         telemetry.update();
 
-    }
-
-    //allows for asam in a Drive function.
-    public void newDrive(long time){
-        startTime = System.currentTimeMillis();
-        totalTime = time;
-        elapsedTime = totalTime;
-        while (elapsedTime > 0){
-            long elapsed = System.currentTimeMillis() - startTime;
-            elapsedTime -= elapsedTime;
-
-            robot.asamDrive(totalTime, elapsed, 0,1, 1000);
-        }
     }
 }

@@ -79,7 +79,7 @@ public class auto extends LinearOpMode {
 
         robot.rotate(30, 1,0.1);
         sleep(100);
-        robot.asamDrive(1000, 1000);
+        robot.asamDrive(1500, 1000);
 
         robot.rotate(-120, 1,0.1);
 

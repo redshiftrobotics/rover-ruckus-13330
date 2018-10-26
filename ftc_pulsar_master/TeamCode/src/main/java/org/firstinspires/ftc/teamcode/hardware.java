@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class Hardware { // Here we get the DcMotors from the REV hub and assign their names.
@@ -47,7 +48,11 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor front_left_motor;
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
+
     public DcMotor lifter;
+    public Servo mineralKicker;
+
+    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
 
     public ColorSensor color_sensor_1;
 
@@ -88,13 +93,14 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
 
         lifter = context.hardwareMap.dcMotor.get("lifter");
+        mineralKicker = context.hardwareMap.servo.get("mineralKicker");
 
         color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
 
         front_right_motor.setDirection(DcMotor.Direction.FORWARD);
-        back_right_motor.setDirection(DcMotor.Direction.REVERSE);
+        back_right_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        front_left_motor.setDirection(DcMotor.Direction.FORWARD);
+        front_left_motor.setDirection(DcMotor.Direction.REVERSE);
         back_left_motor.setDirection(DcMotor.Direction.REVERSE);
 
         back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -103,11 +109,11 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        front_left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        back_left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        front_left_motor.setZeroPowerBehavior(zeroPowerBehavior);
+        back_left_motor.setZeroPowerBehavior(zeroPowerBehavior);
 
-        front_right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        back_right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        front_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
+        back_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
 // this blank space was added to allow its github commit count to reach 100. Cheers.

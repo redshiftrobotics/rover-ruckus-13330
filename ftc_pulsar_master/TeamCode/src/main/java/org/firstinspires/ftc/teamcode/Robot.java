@@ -65,7 +65,16 @@ public class Robot { //parent class
         hardware.front_left_motor.setPower(power);
     }
 
-    //Drives forward (This is here in case encoder drive breaks)
+    //updates the zeroPower Behavior
+    public void setZeroPowerBehavior(){
+        hardware.front_left_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
+        hardware.back_left_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
+
+        hardware.front_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
+        hardware.back_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
+    }
+
+    //drives forward
     public void drive(double power, long time) {
         setPowerLeft(-power + hardware.correction);
         setPowerRight(-power);
@@ -74,7 +83,7 @@ public class Robot { //parent class
         setPowerRight(0);
     }
 
-    //Lift the... lifter.
+    //lift the... lifter.
     public void lift(double power){
         hardware.lifter.setPower(power);
     }
@@ -226,6 +235,23 @@ public class Robot { //parent class
 
         //reset angle
         resetAngle();
+    }
+
+    //update config
+    public void updateConfig(boolean topSpeed, double speed, double maxSpeed, double minSpeed){
+        if(context.gamepad1.left_bumper)
+            hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
+
+        else
+            hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
+
+        if(context.gamepad1.right_bumper)
+            topSpeed = !topSpeed;
+
+        if(topSpeed == false)
+            speed = minSpeed;
+        else
+            speed = maxSpeed;
     }
 
     //makes the robot take a fat nap

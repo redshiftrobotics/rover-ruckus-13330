@@ -44,12 +44,14 @@ public class Console { // parent class
         this.context = context;
     }
 
-    public void displayAngles(){ // used to display the current angles.
+    public void displayAngles(boolean topSpeed){ // used to display the current angles.
 
         context.telemetry.addData("Current Angle:", robot.getAngle());
         context.telemetry.addData("Forward Angle:", hardware.oldAngle.firstAngle);
         context.telemetry.addData("Correction Angle:", hardware.correction);
         context.telemetry.addData("Current Global Angle:", hardware.globalAngle);
+        context.telemetry.addData("Current topspeed", topSpeed);
+        context.telemetry.addData("Current MineralKickerAngle", hardware.mineralKicker.getPosition());
 
         context.telemetry.update();
 

@@ -31,12 +31,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "TeleOp", group = "13330 Pulsar")
 public class teleop extends LinearOpMode {
 
     // version name for organization.
     public double version = 0.07;
+
+
+   public boolean topSpeed = false;
+   public double maxSpeed = 1;
+   public double minSpeed = 0.3;
+   public double speed = minSpeed;
 
 
     //instances of hardware, robot, and text
@@ -70,13 +77,15 @@ public class teleop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            console.displayAngles();
-            console.displayColorData();
-            //Allows the driver to maneuver the robot
-            robot.setPowerLeft(gamepad1.left_stick_y);
-            robot.setPowerRight(gamepad1.right_stick_y);
-            //Allows the driver to control mechanisms.
-            robot.lift(gamepad1.right_stick_x);
+
+            robot.updateConfig(topSpeed, speed, maxSpeed, minSpeed);
+
+            robot.setPowerLeft(gamepad1.left_stick_y * speed);
+            robot.setPowerRight(gamepad1.right_stick_y * speed);
+
+            robot.setZeroPowerBehavior();
+
+            console.displayAngles(topSpeed);
         }
     }
 }

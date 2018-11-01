@@ -44,30 +44,18 @@ public class Console { // parent class
         this.context = context;
     }
 
-    public void displayAngles(boolean topSpeed){ // used to display the current angles.
+    public void displayAngles(){ // used to display the current angles.
 
         context.telemetry.addData("Current Angle:", robot.getAngle());
         context.telemetry.addData("Forward Angle:", hardware.oldAngle.firstAngle);
         context.telemetry.addData("Correction Angle:", hardware.correction);
         context.telemetry.addData("Current Global Angle:", hardware.globalAngle);
-        context.telemetry.addData("Current topspeed", topSpeed);
         context.telemetry.addData("Current MineralKickerAngle", hardware.mineralKicker.getPosition());
-
-        context.telemetry.update();
-
     }
-
+/*
     public void displayColorData(){ // used to get the color sensor's color average and difference.
 
-        context.telemetry.addLine();
-        context.telemetry.addData("Color Sensor Status: ", "");
-        context.telemetry.addData(" > RED", hardware.color_sensor_1.red());
-        context.telemetry.addData(" > GREEN", hardware.color_sensor_1.green());
-        context.telemetry.addData(" > BLUE", hardware.color_sensor_1.blue());
 
-        context.telemetry.addLine();
-
-        context.telemetry.addLine();
         if (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 70){
             context.telemetry.addData("Mineral is Silver.", "");
 
@@ -76,24 +64,23 @@ public class Console { // parent class
         } else {
             context.telemetry.addData("No Mineral seen.","");
         }
+    }
+    */
 
+    public void Update(){
         context.telemetry.update();
-
     }
 
-    public void displayStatistics(double versionName, String type){ // used to display the statistics.
+    public void Log(String caption, String text){ // a very important essential method that is necessary to the structural integrity of our code.
 
+        context.telemetry.addData(caption, text);
+    }
+
+    public void initStats(double versionName, String type){ // used to display the statistics.
         context.telemetry.addData("Action:", "waiting for start");
         context.telemetry.addData("IMU Status: ", hardware.imu.getCalibrationStatus().toString());
         context.telemetry.addData(type + " Version: ", "v" + versionName);
 
-        context.telemetry.update();
-
-    }
-
-    public void Log(String caption, String text){ // a very important essential method that is necessary to the structural integrity of our code.
-        context.telemetry.addData(caption, text);
-        context.telemetry.update();
     }
 
 }

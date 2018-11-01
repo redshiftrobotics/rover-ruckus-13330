@@ -50,7 +50,6 @@ public class Robot { //parent class
     }
 
 
-
 //DRIVE FUNCTIONS
 
     //sets power of the right drive with a double that determines motor power
@@ -66,7 +65,7 @@ public class Robot { //parent class
     }
 
     //updates the zeroPower Behavior
-    public void setZeroPowerBehavior(){
+    public void setZeroPowerBehavior() {
         hardware.front_left_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
         hardware.back_left_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
 
@@ -84,21 +83,45 @@ public class Robot { //parent class
     }
 
     //lift the... lifter.
-    public void lift(double power){
+    public void lift(double power) {
         hardware.lifter.setPower(power);
     }
 
     //method that moves forward for the specified time and detects the gold block.
-    public void senseColor(double power){
+    public void senseColor(double power) {
+        int numGold = 0;
 
-        while(hardware.color_sensor_1.blue() + hardware.color_sensor_1.red() > hardware.color_sensor_1.green()){ //TODO: Change this to an actual formula.
 
-            setPowerLeft(power);
-            setPowerRight(power);
+        while (context.opModeIsActive()) {
+            setPowerRight(-0.01);
+            setPowerLeft(-0.01);
+
+            if (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 50){
+                context.telemetry.addData("Mineral is Silver.", "");
+                numGold = 0;
+
+            } else if(hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 < 50 && hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 20) {
+                context.telemetry.addData("Mineral is Gold.", "");
+                numGold ++;
+
+            } else {
+                context.telemetry.addData("No Mineral seen.","");
+                numGold = 0;
+            }
+
+            if(numGold == 3)
+                break;
+
+
+            context.telemetry.addData("Color", hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue() / 3);
+            context.telemetry.addData("NumGold", numGold);
+            context.telemetry.update();
         }
 
-        setPowerLeft(0);
-        setPowerRight(0);
+        //hardware.mineralKicker.setPosition(90);
+
+        context.telemetry.addData("Stopped", "");
+        context.telemetry.update();
 
     }
 
@@ -158,7 +181,7 @@ public class Robot { //parent class
 
         average /= 4;
 
-        return (average/hardware.GEAR_RATIO)/(360/hardware.CIRCUMFERENCE);
+        return (average / hardware.GEAR_RATIO) / (360 / hardware.CIRCUMFERENCE);
     }
 
 //SUPER FUNCTIONS
@@ -207,7 +230,7 @@ public class Robot { //parent class
     }
 
     //rotates the robot x degrees
-    public void rotate(int degrees, double power, double stopThreashold) {
+    public void rotatePID(int degrees, double power, double stopThreashold) {
         double turnPower = 1;
 
         //makes the degrees between -359 and 359, zero is 360
@@ -225,10 +248,46 @@ public class Robot { //parent class
         //turn right
         while (context.opModeIsActive() && Math.abs(turnPower) >= stopThreashold) {
 
-            turnPower = PIDSeek(degrees, getAngle(), 0.01, 0.00000001, 0.0009);
+            turnPower = PIDSeek(degrees, getAngle(), 0.00002, 0.00000001, 0.000009);
 
-            setPowerLeft(turnPower);
-            setPowerRight(-turnPower);
+            setPowerLeft(turnPower * 100 * power);
+            setPowerRight(-turnPower * 100 * power);
+        }
+        setPowerLeft(0);
+        setPowerRight(0);
+
+        //reset angle
+        resetAngle();
+    }
+
+    public void rotate(int degrees, double power, double stopThreashold) {
+        double turnPower = 1;
+        double turnPercentage = 0;
+
+        //makes the degrees between -359 and 359, zero is 360
+        degrees = degrees % 360;
+
+        //finds most efficient way to turn
+        if (degrees < -180)
+            degrees += 360;
+        else if (degrees > 180)
+            degrees -= 360;
+
+        //restart imu movement tracking
+        resetAngle();
+
+        //turn right
+        while (context.opModeIsActive() && turnPercentage > stopThreashold) {
+
+            if(degrees > 0) {
+                setPowerLeft(turnPower);
+                setPowerRight(-turnPower);
+            } else {
+                setPowerLeft(-turnPower);
+                setPowerRight(turnPower);
+            }
+
+            turnPercentage = getAngle()/degrees;
         }
         setPowerLeft(0);
         setPowerRight(0);
@@ -238,20 +297,29 @@ public class Robot { //parent class
     }
 
     //update config
-    public void updateConfig(boolean topSpeed, double speed, double maxSpeed, double minSpeed){
-        if(context.gamepad1.left_bumper)
+    public void updateConfig() {
+
+        if (context.gamepad1.left_bumper) {
             hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
-
-        else
+        } else {
             hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
+        }
 
-        if(context.gamepad1.right_bumper)
-            topSpeed = !topSpeed;
 
-        if(topSpeed == false)
-            speed = minSpeed;
+        if (context.gamepad1.right_bumper)
+            hardware.topSpeed = !hardware.topSpeed;
+        if (hardware.topSpeed == false)
+            hardware.speed = hardware.minSpeed;
         else
-            speed = maxSpeed;
+            hardware.speed = hardware.maxSpeed;
+
+
+        if(context.gamepad2.dpad_left)
+            hardware.currentArmValue = hardware.armValues[0];
+        else if(context.gamepad2.dpad_up)
+            hardware.currentArmValue = hardware.armValues[1];
+        else if(context.gamepad2.dpad_right)
+            hardware.currentArmValue = hardware.armValues[2];
     }
 
     //makes the robot take a fat nap
@@ -265,6 +333,14 @@ public class Robot { //parent class
     //clamps a value
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
+    }
+
+    public double silverDistance(double distance) {
+        return 3806 * Math.pow(Math.E, (-1.16 * distance));
+    }
+
+    public double goldDistance(double distance) {
+        return 1851 * Math.pow(Math.E, (-0.877 * distance));
     }
 
 
@@ -320,11 +396,12 @@ public class Robot { //parent class
 
     /**
      * Compute the motor power for a given timestamp along an ASAM curve
+     *
      * @param totalRunTime total time allocated to the movement
-     * @param elapsedTime time elapsed since the movement began
-     * @param startSpeed starting speed of the movement
-     * @param endSpeed ending speed of the movement
-     * @param accelTime amount of time to accelerate/decelerate
+     * @param elapsedTime  time elapsed since the movement began
+     * @param startSpeed   starting speed of the movement
+     * @param endSpeed     ending speed of the movement
+     * @param accelTime    amount of time to accelerate/decelerate
      * @return
      */
     public double computeMotorPower(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
@@ -341,10 +418,10 @@ public class Robot { //parent class
      * Compute the acceleration section of the curve
      *
      * @param totalRunTime total move time
-     * @param elapsedTime total elapsed time
-     * @param startSpeed starting speed
-     * @param endSpeed ending speed
-     * @param accelTime amount of time to accelerate
+     * @param elapsedTime  total elapsed time
+     * @param startSpeed   starting speed
+     * @param endSpeed     ending speed
+     * @param accelTime    amount of time to accelerate
      * @return current motor power
      */
     private double computeAcceleration(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {
@@ -360,10 +437,10 @@ public class Robot { //parent class
      * Compute the deceleration section of the curve
      *
      * @param totalRunTime total move time
-     * @param elapsedTime total elapsed time
-     * @param startSpeed starting speed
-     * @param endSpeed ending speed
-     * @param accelTime amount of time to deceleration
+     * @param elapsedTime  total elapsed time
+     * @param startSpeed   starting speed
+     * @param endSpeed     ending speed
+     * @param accelTime    amount of time to deceleration
      * @return current motor power
      */
     private double computeDeceleration(long totalRunTime, long elapsedTime, float startSpeed, float endSpeed, long accelTime) {

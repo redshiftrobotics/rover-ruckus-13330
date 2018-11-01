@@ -50,6 +50,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor back_left_motor;
 
     public DcMotor lifter;
+    public DcMotor arm;
     public Servo mineralKicker;
 
     public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
@@ -63,11 +64,20 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public double globalAngle;
     public double correction;
+    public int[] armValues = {0,1,2};
+    public int currentArmValue = armValues[0];
+
+
+    public boolean topSpeed = false;
+    public double maxSpeed = 1;
+    public double minSpeed = 0.3;
+    public double speed = minSpeed;
 
     //encoders!
 
     public double GEAR_RATIO = 1;
     public double WHEEL_DIAMETER = 4;
+    public double COLOR_SENSOR_DISTANCE = 3.5;
     double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
@@ -114,6 +124,11 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         front_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
         back_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
+
+
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
     }
 
 // this blank space was added to allow its github commit count to reach 100. Cheers.

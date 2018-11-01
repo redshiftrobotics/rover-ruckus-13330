@@ -37,13 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class teleop extends LinearOpMode {
 
     // version name for organization.
-    public double version = 0.07;
+    public double version = 0.13;
 
-
-   public boolean topSpeed = false;
-   public double maxSpeed = 1;
-   public double minSpeed = 0.3;
-   public double speed = minSpeed;
 
 
     //instances of hardware, robot, and text
@@ -62,8 +57,9 @@ public class teleop extends LinearOpMode {
         this.console = new Console(this.hardware, this.robot, this);
 
 
-        telemetry.addData("Action:", "waiting for IMU initialization");
-        telemetry.update();
+        console.Log("Action:", "waiting for IMU initialization");
+        console.Update();
+
 
 
         //wait for the IMU to be initiated
@@ -71,21 +67,29 @@ public class teleop extends LinearOpMode {
             idle();
         }
 
-        //prints out various statistics to help debugging
-        console.displayStatistics(version, "TeleOp");
 
+
+        console.initStats(version, "TeleOp");
+        console.Update();
+
+
+        //wait for play button to be pressed
         waitForStart();
 
+        //while running...
         while (opModeIsActive()) {
 
-            robot.updateConfig(topSpeed, speed, maxSpeed, minSpeed);
+            robot.updateConfig();
 
-            robot.setPowerLeft(gamepad1.left_stick_y * speed);
-            robot.setPowerRight(gamepad1.right_stick_y * speed);
+            console.Log("Arm Position", "" + hardware.arm.getCurrentPosition());
+            console.Log("Color", hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue() / 3 + "");
+
+            robot.setPowerLeft(gamepad1.left_stick_y * hardware.speed);
+            robot.setPowerRight(gamepad1.right_stick_y * hardware.speed);
+
 
             robot.setZeroPowerBehavior();
-
-            console.displayAngles(topSpeed);
+            console.Update();
         }
     }
 }

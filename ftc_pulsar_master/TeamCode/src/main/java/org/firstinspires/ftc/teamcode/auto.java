@@ -47,6 +47,8 @@ public class auto extends LinearOpMode {
     private Robot robot;
     private Console console;
 
+    private Integer POSITION = null;
+
 
 
     @Override
@@ -60,33 +62,64 @@ public class auto extends LinearOpMode {
         this.console = new Console(this.hardware, this.robot, this);
 
 
-        telemetry.addData("Action:", "waiting for IMU initialization");
-        telemetry.update();
+        console.Log("Action:", "waiting for IMU initialization");
+        console.Update();
 
 
         //wait for the IMU to be initiated
-        while (!hardware.imu.isGyroCalibrated()) {
+        while (!hardware.imu.isGyroCalibrated() || POSITION == null) {
+
             idle();
+            if(gamepad1.dpad_right) {
+                POSITION = 1;
+                console.Log("Crater Position", "");
+                console.Update();
+            }
+            else if(gamepad1.dpad_left) {
+                POSITION = 0;
+                console.Log("Depo Position", "");
+                console.Update();
+            }
+            else if(gamepad1.dpad_down){
+                POSITION = 3;
+                console.Log("Test Mode Enabled", "");
+                console.Update();
+            }
         }
 
         //makes sure the color sensor is enabled
 
         //prints out various statistics for debugging purposes
-        console.displayStatistics(version, "Autonomous");
+        console.initStats(version, "Autonomous");
+        console.Update();
+
 
         //waits until the program is started
         waitForStart();
 
-        robot.rotate(30, 1,0.1);
-        sleep(100);
-        robot.asamDrive(1500, 1000);
-
-        robot.rotate(-120, 1,0.1);
 
 
+        telemetry.addData("KickerPos", hardware.mineralKicker.getPosition());
+
+        switch(POSITION) {
+            case (0):
+                robot.drive(0.1, 3000);
+                robot.rotate(-135, 0.5, 0.90);
+                robot.drive( 0.3, 1000);
+                break;
+            case (1):
+                robot.drive(1, 500);
+                break;
+            default:
+
+                break;
+
+        }
+
+        robot.rotate(90,0.1,0.90);
 
         telemetry.addData("Auto Completed.", "");
-        telemetry.update();
+        console.Update();
 
     }
 }

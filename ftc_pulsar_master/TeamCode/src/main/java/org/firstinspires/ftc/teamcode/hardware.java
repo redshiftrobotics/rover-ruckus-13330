@@ -50,13 +50,11 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor back_left_motor;
 
     public DcMotor lifter;
-    public DcMotor shoulder;
-    public DcMotor elbow;
-    public DcMotor collector;
     public DcMotor arm;
 
     public DcMotor lowerArm;
     public DcMotor upperArm;
+    public DcMotor collector;
 
     public Servo mineralKicker;
 
@@ -113,6 +111,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         lowerArm = context.hardwareMap.dcMotor.get("lowerArm");
         upperArm = context.hardwareMap.dcMotor.get("upperArm");
+        collector = context.hardwareMap.dcMotor.get("collector");
 
         front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
         back_left_motor = context.hardwareMap.dcMotor.get("back_left_motor");
@@ -121,10 +120,6 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
 
 
-        shoulder = context.hardwareMap.dcMotor.get("shoulder");
-        elbow = context.hardwareMap.dcMotor.get("elbow");
-        collector = context.hardwareMap.dcMotor.get("collector");
-        
         lifter = context.hardwareMap.dcMotor.get("lifter");
         mineralKicker = context.hardwareMap.servo.get("mineralKicker");
 

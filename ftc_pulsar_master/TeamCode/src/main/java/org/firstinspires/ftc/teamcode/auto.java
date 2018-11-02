@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -97,18 +98,25 @@ public class auto extends LinearOpMode {
         //waits until the program is started
         waitForStart();
 
+        hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE; //makes it so the motors can brake.
 
 
+        robot.moveMineralKicker(1,500);
         telemetry.addData("KickerPos", hardware.mineralKicker.getPosition());
 
-        switch(POSITION) {
+
+        switch(POSITION) { //changes the auto based on our starting position.
             case (0):
-                robot.drive(0.1, 3000);
-                robot.rotate(-135, 0.5, 0.90);
-                robot.drive( 0.3, 1000);
+                robot.drive(0.1, 3000); //moves forward
+                robot.rotate(-135, 0.5, 0.90); //turns right
+                robot.drive( 0.3, 1000); //moves forward to hit the mineral and then brakes to release the team marker.
+                robot.setPowerLeft(0);
+                robot.setPowerRight(0);
                 break;
             case (1):
-                robot.drive(1, 500);
+                robot.drive(1, 500); //moves forward and then brakes to release the marker.
+                robot.setPowerLeft(0);
+                robot.setPowerRight(0);
                 break;
             default:
 

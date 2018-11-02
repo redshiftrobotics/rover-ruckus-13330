@@ -125,6 +125,12 @@ public class Robot { //parent class
 
     }
 
+    public void moveMineralKicker(double power, long time){ //raises/lowers mineral kicker.
+        hardware.collector.setPower(power);
+        waitFor(time);
+        hardware.collector.setPower(0);
+    }
+
 //ENCODERS
 
     //returns if the right drive is moving

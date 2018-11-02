@@ -314,12 +314,18 @@ public class Robot { //parent class
             hardware.speed = hardware.maxSpeed;
 
 
-        if(context.gamepad2.dpad_left)
-            hardware.currentArmValue = hardware.armValues[0];
-        else if(context.gamepad2.dpad_up)
-            hardware.currentArmValue = hardware.armValues[1];
-        else if(context.gamepad2.dpad_right)
-            hardware.currentArmValue = hardware.armValues[2];
+        if(context.gamepad2.dpad_left) {
+            hardware.currentLowerArmValue = hardware.lowerArmValues[0];
+            hardware.currentUpperArmValue = hardware.upperArmValues[0];
+        }
+        else if(context.gamepad2.dpad_up) {
+            hardware.currentLowerArmValue = hardware.lowerArmValues[1];
+            hardware.currentUpperArmValue = hardware.upperArmValues[1];
+        }
+        else if(context.gamepad2.dpad_right) {
+            hardware.currentLowerArmValue = hardware.lowerArmValues[2];
+            hardware.currentUpperArmValue = hardware.upperArmValues[2];
+        }
     }
 
     //makes the robot take a fat nap

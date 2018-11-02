@@ -78,10 +78,11 @@ public class teleop extends LinearOpMode {
 
         //while running...
         while (opModeIsActive()) {
-
+            robot.resetEncoders();
             robot.updateConfig();
 
-            console.Log("Arm Position", "" + hardware.arm.getCurrentPosition());
+            console.Log("Lower Arm Position", "" + hardware.lowerArm.getCurrentPosition());
+            console.Log("Upper Arm Position", "" + hardware.upperArm.getCurrentPosition());
             console.Log("Color", hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue() / 3 + "");
 
             robot.setPowerLeft(gamepad1.left_stick_y * hardware.speed);

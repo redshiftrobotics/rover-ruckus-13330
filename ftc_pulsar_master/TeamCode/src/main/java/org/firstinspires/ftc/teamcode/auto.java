@@ -101,7 +101,7 @@ public class auto extends LinearOpMode {
         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE; //makes it so the motors can brake.
 
 
-        robot.moveMineralKicker(1,500);
+        //robot.moveMineralKicker(1,500);
         telemetry.addData("KickerPos", hardware.mineralKicker.getPosition());
 
 

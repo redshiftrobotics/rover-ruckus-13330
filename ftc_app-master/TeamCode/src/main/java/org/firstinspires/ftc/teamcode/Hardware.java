@@ -57,7 +57,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public Servo mineralKicker;
 
-    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
+    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
     public ColorSensor color_sensor_1;
 
@@ -109,7 +109,8 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         lowerArm = context.hardwareMap.dcMotor.get("lowerArm");
         upperArm = context.hardwareMap.dcMotor.get("upperArm");
-        //collector = context.hardwareMap.dcMotor.get("collector");
+        mineralKicker = context.hardwareMap.servo.get("mineralKicker");
+        collector = context.hardwareMap.dcMotor.get("collector");
 
         front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
         back_left_motor = context.hardwareMap.dcMotor.get("back_left_motor");
@@ -117,9 +118,6 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
         back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
 
-
-        //lifter = context.hardwareMap.dcMotor.get("lifter");
-        mineralKicker = context.hardwareMap.servo.get("mineralKicker");
 
         color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
 

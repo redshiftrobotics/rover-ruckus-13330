@@ -126,9 +126,20 @@ public class Robot { //parent class
     }
 
     public void moveMineralKicker(double power, long time){ //raises/lowers mineral kicker.
-        hardware.collector.setPower(power);
+        hardware.mineralKicker.setPosition(power);
         waitFor(time);
         hardware.collector.setPower(0);
+    }
+
+    public void collect(){
+        if(context.gamepad2.right_trigger > 0.1){
+            hardware.collector.setPower(1);
+        } else if(context.gamepad2.left_trigger > 0.1){
+            hardware.collector.setPower(-1);
+        } else {
+            hardware.collector.setPower(0);
+        }
+
     }
 
 //ENCODERS
@@ -316,13 +327,6 @@ public class Robot { //parent class
     //update config
     public void updateConfig() {
 
-        if (context.gamepad1.left_bumper) {
-            hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
-        } else {
-            hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
-        }
-
-
         if (context.gamepad1.right_bumper)
             hardware.topSpeed = !hardware.topSpeed;
         if (hardware.topSpeed == false)
@@ -343,6 +347,12 @@ public class Robot { //parent class
             hardware.currentLowerArmValue = hardware.lowerArmValues[2];
             hardware.currentUpperArmValue = hardware.upperArmValues[2];
         }
+
+        if(context.gamepad1.left_stick_y < 0.1 && context.gamepad1.left_stick_y > -0.1)
+            context.gamepad1.left_stick_y = 0;
+
+        if(context.gamepad2.left_stick_y < 0.1 && context.gamepad2.left_stick_y > -0.1)
+            context.gamepad2.left_stick_y = 0;
     }
 
     //makes the robot take a fat nap

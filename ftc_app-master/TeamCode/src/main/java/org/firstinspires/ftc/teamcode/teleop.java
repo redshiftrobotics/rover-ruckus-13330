@@ -87,8 +87,10 @@ public class teleop extends LinearOpMode {
             robot.setPowerLeft(gamepad1.left_stick_y * hardware.speed);
             robot.setPowerRight(gamepad1.right_stick_y * hardware.speed);
 
-            hardware.lowerArm.setPower(gamepad2.right_stick_y);
+            hardware.lowerArm.setPower(gamepad2.right_stick_y/0.7);
             hardware.upperArm.setPower(gamepad2.left_stick_y);
+
+            robot.collect();
 
             console.Log("Lower Arm Position", "" + hardware.lowerArm.getCurrentPosition());
             console.Log("Upper Arm Position", "" + hardware.upperArm.getCurrentPosition());

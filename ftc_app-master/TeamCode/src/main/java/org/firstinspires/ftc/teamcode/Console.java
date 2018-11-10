@@ -71,9 +71,9 @@ public class Console { // parent class
         context.telemetry.update();
     }
 
-    public void Log(String caption, String text){ // a very important essential method that is necessary to the structural integrity of our code.
+    public void Log(String caption, Object value){ // a very important essential method that is necessary to the structural integrity of our code.
 
-        context.telemetry.addData(caption, text);
+        context.telemetry.addData(caption, value);
     }
 
     public void initStats(double versionName, String type){ // used to display the statistics.

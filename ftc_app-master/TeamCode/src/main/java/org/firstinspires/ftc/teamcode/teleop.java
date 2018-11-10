@@ -36,36 +36,38 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "TeleOp", group = "13330 Pulsar")
 public class teleop extends LinearOpMode {
 
-    // version name for organization.
-    public double version = 0.13;
+    // ones = after which comp
+    // hundredths = which practice
+    public double version = 1.00;
 
 
 
-    //instances of hardware, robot, and text
+
+
+    // instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
     private Console console;
+    private ReadConfig rc;
 
     @Override
     public void runOpMode() {
 
-        //makes an instance of hardware with this LinearOpMode as its context
+        // initializes other classes
         this.hardware = new Hardware(this);
-        //makes in instance or robot with this hardware /\ as context
         this.robot = new Robot(this.hardware, this);
-        //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot, this);
+        this.rc = new ReadConfig(this.hardware, this.robot, console, this);
 
 
         console.Log("Action:", "waiting for IMU initialization");
         console.Update();
 
 
-
         //wait for the IMU to be initiated
-        while (!hardware.imu.isGyroCalibrated()) {
-            idle();
-        }
+        //while (!hardware.imu.isGyroCalibrated())
+        //    idle();
+
 
 
 
@@ -73,31 +75,20 @@ public class teleop extends LinearOpMode {
         console.Update();
 
 
-        //wait for play button to be pressed
         waitForStart();
+        console.Log("started", "");
+        rc.readFile("TestConfig.txt");
+        console.Log("finished config", "");
 
-        //robot.resetEncoders();
 
-        //while running...
         while (opModeIsActive()) {
 
-            robot.updateConfig();
             robot.setZeroPowerBehavior();
-
-            robot.setPowerLeft(gamepad1.left_stick_y * hardware.speed);
-            robot.setPowerRight(gamepad1.right_stick_y * hardware.speed);
-
-            hardware.lowerArm.setPower(gamepad2.right_stick_y/0.7);
-            hardware.upperArm.setPower(gamepad2.left_stick_y);
-
-            robot.collect();
-
-            console.Log("Lower Arm Position", "" + hardware.lowerArm.getCurrentPosition());
-            console.Log("Upper Arm Position", "" + hardware.upperArm.getCurrentPosition());
-            console.Log("Color", hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue() / 3 + "");
-
+            rc.updateControls();
 
             console.Update();
+
+            idle();
         }
     }
 }

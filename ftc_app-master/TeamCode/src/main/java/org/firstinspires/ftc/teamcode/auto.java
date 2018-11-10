@@ -39,11 +39,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Autonomous(name = "Autonomous", group = "13330 Pulsar")
 public class auto extends LinearOpMode {
 
-    public double version = 0.05; // version name for organization.
+    // ones = after which comp
+    // hundredths = which practice
+    public double version = 1.00;
 
-
-
-    //this.instances of hardware, robot, and text
+    // instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
     private Console console;
@@ -55,11 +55,9 @@ public class auto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        //makes an instance of hardware with this LinearOpMode as its context
+        // initializes other classes
         this.hardware = new Hardware(this);
-        //makes in instance or robot with this hardware as context
         this.robot = new Robot(this.hardware, this);
-        //makes an instance of Text with Hardware and Robot as its context
         this.console = new Console(this.hardware, this.robot, this);
 
 
@@ -68,17 +66,23 @@ public class auto extends LinearOpMode {
 
 
         //wait for the IMU to be initiated
-        while (!hardware.imu.isGyroCalibrated() || POSITION == null) {
-
+        while (!hardware.imu.isGyroCalibrated())
             idle();
-            if(gamepad1.dpad_right) {
-                POSITION = 1;
-                console.Log("Crater Position", "");
-                console.Update();
-            }
-            else if(gamepad1.dpad_left) {
+
+
+        console.Log("Action:", "waiting for POSITION input");
+        console.Update();
+
+
+        while (POSITION == null) {
+            if(gamepad1.dpad_left) {
                 POSITION = 0;
                 console.Log("Depo Position", "");
+                console.Update();
+            }
+            else if(gamepad1.dpad_right) {
+                POSITION = 1;
+                console.Log("Crater Position", "");
                 console.Update();
             }
             else if(gamepad1.dpad_down){
@@ -86,48 +90,48 @@ public class auto extends LinearOpMode {
                 console.Log("Test Mode Enabled", "");
                 console.Update();
             }
+
+            idle();
         }
 
-        //makes sure the color sensor is enabled
+        sleep(500);
 
-        //prints out various statistics for debugging purposes
+        // prints out various statistics for debugging
         console.initStats(version, "Autonomous");
         console.Update();
 
 
-        //waits until the program is started
+        // waits until the program is started
         waitForStart();
 
-        hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE; //makes it so the motors can brake.
 
+    // AUTO SCRIPT
 
-        //robot.moveMineralKicker(1,500);
-        telemetry.addData("KickerPos", hardware.mineralKicker.getPosition());
+        // runs different code depending on starting position
+        switch(POSITION) {
 
-
-        switch(POSITION) { //changes the auto based on our starting position.
+            // depo position
             case (0):
-                robot.drive(0.1, 1000); //moves forward
-                robot.rotate(-135, 0.5, 0.90); //turns right
-                robot.drive( 0.3, 1000); //moves forward to hit the mineral and then brakes to release the team marker.
-                robot.setPowerLeft(0);
-                robot.setPowerRight(0);
+
+                //code me...
+
                 break;
+
+
+            // crater position
             case (1):
-                robot.drive(1, 1000); //moves forward and then brakes to release the marker.
-                robot.setPowerLeft(0);
-                robot.setPowerRight(0);
+
+                //code me...
+
                 break;
+
+
             default:
+
+                //code me...
 
                 break;
 
         }
-
-        robot.rotate(90,0.1,0.90);
-
-        telemetry.addData("Auto Completed.", "");
-        console.Update();
-
     }
 }

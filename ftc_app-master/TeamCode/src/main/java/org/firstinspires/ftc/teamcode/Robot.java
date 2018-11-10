@@ -42,12 +42,18 @@ public class Robot { //parent class
 
     private Hardware hardware;
     private LinearOpMode context;
+    private Console console;
+
 
     //constructor that allows the Robot class to use opModes and hardware
     public Robot(Hardware hardware, LinearOpMode context) {
         this.hardware = hardware;
         this.context = context;
+        this.console = new Console(hardware, this, context);
     }
+
+    public boolean speedToggle = false;
+    public double[] speed = {0.33, 1};
 
 
 //DRIVE FUNCTIONS
@@ -325,7 +331,7 @@ public class Robot { //parent class
     }
 
     //update config
-    public void updateConfig() {
+    public void updateConfig(LinearOpMode context) {
 
         if (context.gamepad1.right_bumper)
             hardware.topSpeed = !hardware.topSpeed;
@@ -333,6 +339,8 @@ public class Robot { //parent class
             hardware.speed = hardware.minSpeed;
         else
             hardware.speed = hardware.maxSpeed;
+
+        console.Log("TopSpeed", hardware.topSpeed);
 
 
         if(context.gamepad2.dpad_left) {

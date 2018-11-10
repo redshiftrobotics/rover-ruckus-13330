@@ -57,11 +57,13 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public Servo mineralKicker;
 
-    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
     public ColorSensor color_sensor_1;
 
-    public BNO055IMU imu; // imu initialization.
+    public BNO055IMU imu;
+
+
+    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
     public Orientation oldAngle = new Orientation();
     public Orientation angles = new Orientation();
 

@@ -27,15 +27,12 @@ public class ControllerMethods {
         console.Log("Toggled Speed!", null);
     }
 
-    public void rightDrivePower(double power){
+    public void rightDrivePower(float power){
         console.Log("set motor power to", power);
     }
 
-    public void leftDrivePower(double power){
+    public void leftDrivePower(float power){
         console.Log("set motor power to", power);
     }
 
-    public void notAssigned(){
-        return;
-    }
 }

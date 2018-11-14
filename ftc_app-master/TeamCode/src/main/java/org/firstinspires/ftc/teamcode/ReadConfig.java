@@ -97,10 +97,6 @@ public class ReadConfig {
 
         BufferedReader br;
 
-        Class[] doubleArgs = new Class[1];
-        doubleArgs[0] = double.class;
-
-
         String[] validTokens = {
                 "rightDrivePower",
                 "leftDrivePower",

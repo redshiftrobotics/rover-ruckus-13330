@@ -2,12 +2,12 @@ gamepad1.a		            : null
 gamepad1.b		            : null
 gamepad1.x		            : null
 gamepad1.y		            : null
-gamepad1.right_bumper		: speedToggle       : Boolean
+gamepad1.right_bumper		: speedToggle       : boolean
 gamepad1.left_bumper		: null
 gamepad1.right_trigger	    : null
 gamepad1.left_trigger		: null
-gamepad1.right_stick_y	    : rightDrivePower   : Float
-gamepad1.left_stick_y       : leftDrivePower    : Float
+gamepad1.right_stick_y	    : rightDrivePower   : float
+gamepad1.left_stick_y       : leftDrivePower    : float
 gamepad1.right_stick_x      : null
 gamepad1.left_stick_x       : null
 gamepad1.dpad_right		    : null

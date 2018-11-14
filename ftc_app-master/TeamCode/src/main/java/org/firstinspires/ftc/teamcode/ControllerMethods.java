@@ -29,10 +29,14 @@ public class ControllerMethods {
 
     public void rightDrivePower(float power){
         console.Log("set motor power to", power);
+        hardware.back_right_motor.setPower(power);
+        hardware.front_right_motor.setPower(power);
     }
 
     public void leftDrivePower(float power){
         console.Log("set motor power to", power);
+        hardware.back_left_motor.setPower(power);
+        hardware.front_left_motor.setPower(power);
     }
 
 }

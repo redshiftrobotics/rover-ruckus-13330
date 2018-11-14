@@ -83,6 +83,7 @@ public class teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            robot.checkDirection();
             robot.setZeroPowerBehavior();
             rc.updateControls();
 

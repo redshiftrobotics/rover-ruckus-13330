@@ -58,19 +58,16 @@ public class Robot { //parent class
 
 //DRIVE FUNCTIONS
 
-    //sets power of the right drive with a double that determines motor power
-    public void setPowerRight(double power) {
-        hardware.back_right_motor.setPower(power);
-        hardware.front_right_motor.setPower(power);
+    public void setPowerLeft(double power){
+        hardware.back_left_motor.setPower(-power);
+        hardware.front_left_motor.setPower(-power);
     }
 
-    //sets power of the left drive with a double that determines motor power
-    public void setPowerLeft(double power) {
-        hardware.back_left_motor.setPower(power);
-        hardware.front_left_motor.setPower(power);
+    public void setPowerRight(double power){
+        hardware.back_right_motor.setPower(-power);
+        hardware.front_right_motor.setPower(-power);
     }
 
-    //updates the zeroPower Behavior
     public void setZeroPowerBehavior() {
         hardware.front_left_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
         hardware.back_left_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
@@ -79,18 +76,17 @@ public class Robot { //parent class
         hardware.back_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
     }
 
-    //drives forward
+    //drives forward with time
     public void drive(double power, long time) {
-        setPowerLeft(-power + hardware.correction);
-        setPowerRight(-power);
+        hardware.back_right_motor.setPower(-power + hardware.correction);
+        hardware.front_right_motor.setPower(-power + hardware.correction);
+        hardware.back_left_motor.setPower(-power);
+        hardware.front_left_motor.setPower(-power);
         context.sleep(time);
-        setPowerLeft(0);
-        setPowerRight(0);
-    }
-
-    //lift the... lifter.
-    public void lift(double power) {
-        hardware.lifter.setPower(power);
+        hardware.back_right_motor.setPower(0);
+        hardware.front_right_motor.setPower(0);
+        hardware.back_left_motor.setPower(0);
+        hardware.front_left_motor.setPower(0);
     }
 
     //method that moves forward for the specified time and detects the gold block.
@@ -99,8 +95,7 @@ public class Robot { //parent class
 
 
         while (context.opModeIsActive()) {
-            setPowerRight(-0.01);
-            setPowerLeft(-0.01);
+            //go forward
 
             if (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 50){
                 context.telemetry.addData("Mineral is Silver.", "");
@@ -131,42 +126,7 @@ public class Robot { //parent class
 
     }
 
-    public void moveMineralKicker(double power, long time){ //raises/lowers mineral kicker.
-        hardware.mineralKicker.setPosition(power);
-        waitFor(time);
-        hardware.collector.setPower(0);
-    }
-
-    public void collect(){
-        if(context.gamepad2.right_trigger > 0.1){
-            hardware.collector.setPower(1);
-        } else if(context.gamepad2.left_trigger > 0.1){
-            hardware.collector.setPower(-1);
-        } else {
-            hardware.collector.setPower(0);
-        }
-
-    }
-
 //ENCODERS
-
-    //returns if the right drive is moving
-    public boolean isBusyRight() {
-        if (hardware.back_right_motor.isBusy() && hardware.front_right_motor.isBusy())
-            return true;
-        else
-            return false;
-
-    }
-
-    //returns if the left drive is moving
-    public boolean isBusyLeft() {
-        if (hardware.back_left_motor.isBusy() && hardware.front_left_motor.isBusy())
-            return true;
-        else
-            return false;
-
-    }
 
     //resets encoders
     public void resetEncoders() {
@@ -363,27 +323,10 @@ public class Robot { //parent class
             context.gamepad2.left_stick_y = 0;
     }
 
-    //makes the robot take a fat nap
-    public void waitFor(long milis) {
-        try {
-            Thread.sleep(milis);
-        } catch (Exception e) {
-        }
-    }
-
     //clamps a value
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
     }
-
-    public double silverDistance(double distance) {
-        return 3806 * Math.pow(Math.E, (-1.16 * distance));
-    }
-
-    public double goldDistance(double distance) {
-        return 1851 * Math.pow(Math.E, (-0.877 * distance));
-    }
-
 
 //PID
 

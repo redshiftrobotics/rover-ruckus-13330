@@ -152,16 +152,14 @@ public class ReadConfig {
             br = new BufferedReader(
                     new InputStreamReader(am.open(fileName)));
 
-            // do reading, usually loop until end of file reading
-
             console.Log(br.toString(), " ye");
+            console.Update();
 
-            // each line just look like “a : b : c …”
-            // where a=“gamepad1.devicename”
-            // where b=the exact name of the method to call to do the operation (null means ignore device)
-            // where c= either nothing if b=null or parameter type ("Boolean" or "Float")
+
             String x;
+
             while ((x = br.readLine()) != null) {
+
                 // process each line and get tokens stripping all random characters away
                 String[] tokens = x.split(":"); //split it up via : separators
 
@@ -170,11 +168,9 @@ public class ReadConfig {
                     tokens[i] = tokens[i].replace(" ", ""); //remove all spaces
                 }
 
-                console.Log("Inited ", tokens[0] + ":" + tokens[1]);
 
                 // Verify valid first token (device name)
-                int devicePosition;
-                devicePosition = Arrays.asList(deviceNames).indexOf(tokens[0]);
+                int devicePosition = Arrays.asList(deviceNames).indexOf(tokens[0]);
                 if (devicePosition == -1) {
                     console.Log("config syntax error: unrecognized device: " + tokens[0], "");
                     console.Update();
@@ -183,8 +179,7 @@ public class ReadConfig {
                 }
 
                 // Verify valid second token (operation)
-                int operationPosition;
-                operationPosition = Arrays.asList(validTokens).indexOf(tokens[1]);
+                int operationPosition = Arrays.asList(validTokens).indexOf(tokens[1]);
                 if (operationPosition == -1) {
                     console.Log("config syntax error: unrecognized operation: " + tokens[1], "");
                     console.Update();
@@ -193,26 +188,33 @@ public class ReadConfig {
                 }
 
                 // If no assigned operation, then assign null and skip rest of processing
-                if (tokens[1] == null) {
-                    deviceMethods[devicePosition]= null;
-                }
+                if (tokens[1] == null)
+                    deviceMethods[devicePosition] = null;
+
+
                 else {
                     try {
-                        // if real operation, then find data type and assign operation method address
-                        if (tokens[2] == "Boolean") {
-                            deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1]);
-                        }
-                        if (tokens[2] == "Float") {
-                            deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1], float.class);
-                        } else {
-                            console.Log("config syntax error: operation not Boolean or Float", "");
-                            console.Update();
-                            context.sleep(100000);
-                            context.stop();
+                        if(tokens.length >= 3) {
+                            // if real operation, then find data type and assign operation method address
+                            if (tokens[2].equals("boolean")) {
+                                deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1]);
+                            }
+                            else if (tokens[2].equals( "float")) {
+                                deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1], float.class);
+                            } else {
+                                console.Log("Test", tokens[0]);
+                                console.Log("Test1", tokens[1]);
+                                console.Log("Test2", tokens[2]);
+                                console.Log("config syntax error: operation not Boolean or Float", "");
+                                console.Update();
+                                context.sleep(100000);
+                                context.stop();
+                            }
+
                         }
 
                     } catch (NoSuchMethodException e) { //this will only happen if the method doesn't exist in the code
-                        console.Log("Fatal Error: missing method", e);
+                        console.Log("Fatal Error: ", e);
                         console.Log("Stack Trace", e.getStackTrace()[0]);
                         console.Update();
                         e.printStackTrace();
@@ -231,33 +233,29 @@ public class ReadConfig {
 
 
         console.Log("Finished Initialization of " + fileName + " config.", "");
-        //console.Update();
     }
 
-    // This is the core of the run loop.
-    //
-    // Test every device on gamepad1 and gamepad2 and if there is an operation
-    // assigned to the device, then execute the operation if device (e.g., stick, button) has been depressed
 
     public void updateControls() {
         /* for reference....
-        public static int g1A = 0;
-        public static int g1B = 1;
-        public static int g1X = 2;
-        public static int g1Y = 3;
-        public static int g1right_bumper = 4;
-        public static int g1left_bumper = 5;
-        public static int g1right_trigger = 6;
-        public static int g1left_trigger = 7;
-        public static int g1right_stick_y = 8;
-        public static int g1left_stick_y = 9;
-        public static int g1right_stick_x = 10;
-        public static int g1left_stick_x = 11;
-        public static int g1dpad_right = 12;
-        public static int g1dpad_left = 13;
-        public static int g1dpad_up = 14;;
-        public static int g1dpad_down = 15;
-    */
+        g1A = 0;
+        g1B = 1;
+        g1X = 2;
+        g1Y = 3;
+        g1right_bumper = 4;
+        g1left_bumper = 5;
+        g1right_trigger = 6;
+        g1left_trigger = 7;
+        g1right_stick_y = 8;
+        g1left_stick_y = 9;
+        g1right_stick_x = 10;
+        g1left_stick_x = 11;
+        g1dpad_right = 12;
+        g1dpad_left = 13;
+        g1dpad_up = 14;;
+        g1dpad_down = 15;
+        */
+
         try {
             // controller gamepad1
             if (context.gamepad1.a && deviceMethods[gA]!=null)

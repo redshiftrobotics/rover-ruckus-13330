@@ -92,8 +92,6 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
-
-
         imu = context.hardwareMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
@@ -151,7 +149,4 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
 
     }
-
-// this blank space was added to allow its github commit count to reach 100. Cheers.
-
 }

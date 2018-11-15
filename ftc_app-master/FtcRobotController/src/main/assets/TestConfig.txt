@@ -1,3 +1,15 @@
+//This is the custom config for [NAME]
+//Avalable functions to call
+//      "rightDrivePower",
+//		"leftDrivePower",
+//		"speedToggle",
+//		"test",
+//		"null",
+//To edit the config
+//———————————————————————————————————————————————————————————————————————————
+//   No                     | What              | Specify if bool (button) of
+//   Change                 | it does           | float (joystick/trigger)
+//
 gamepad1.a		            : null
 gamepad1.b		            : null
 gamepad1.x		            : null
@@ -10,7 +22,7 @@ gamepad1.right_stick_y	    : rightDrivePower   : float
 gamepad1.left_stick_y       : leftDrivePower    : float
 gamepad1.right_stick_x      : null
 gamepad1.left_stick_x       : null
-gamepad1.dpad_right		    : null
+gamepad1.dpad_right		    : setArmPosition    : boolean       : 3
 gamepad1.dpad_left		    : null
 gamepad1.dpad_up		    : null
 gamepad1.dpad_down		    : null

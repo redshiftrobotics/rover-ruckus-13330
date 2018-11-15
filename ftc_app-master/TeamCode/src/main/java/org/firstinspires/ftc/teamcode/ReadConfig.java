@@ -1,3 +1,32 @@
+/* Copyright (c) 2017 FIRST. All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without modification,
+* are permitted (subject to the limitations in the disclaimer below) provided that
+* the following conditions are met:
+*
+* Redistributions of source code must retain the above copyright notice, this list
+* of conditions and the following disclaimer.
+*
+* Redistributions in binary form must reproduce the above copyright notice, this
+* list of conditions and the following disclaimer in the documentation and/or
+* other materials provided with the distribution.
+*
+* Neither the name of FIRST nor the names of its contributors may be used to endorse or
+* promote products derived from this software without specific prior written permission.
+*
+* NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+* LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 package org.firstinspires.ftc.teamcode;
 
 import android.content.res.AssetManager;
@@ -51,7 +80,8 @@ public class ReadConfig {
     public static int gleft_stick_x = 11;
     public static int gdpad_right = 12;
     public static int gdpad_left = 13;
-    public static int gdpad_up = 14;;
+    public static int gdpad_up = 14;
+    ;
     public static int gdpad_down = 15;
 
 
@@ -93,6 +123,44 @@ public class ReadConfig {
             null        // dpad down
     };
 
+    public float[] methodParams = {
+            // gamepad 1 Assigned Methods
+            0,       // A
+            0,       // B
+            0,       // X
+            0,       // Y
+            0,       // right bumper
+            0,       // left bumper
+            0,       // right trigger
+            0,       // left trigger
+            0,       // right stick y
+            0,       // left stick y
+            0,       // right stick x
+            0,       // left stick x
+            0,       // dpad right
+            0,       // dpad left
+            0,       // dpad up
+            0,       // dpad down
+
+            // gamepad 2 Assigned Methods
+            0,       // A
+            0,       // B
+            0,       // X
+            0,       // Y
+            0,       // right bumper
+            0,       // left bumper
+            0,       // right trigger
+            0,       // left trigger
+            0,       // right stick y
+            0,       // left stick y
+            0,       // right stick x
+            0,       // left stick x
+            0,       // dpad right
+            0,       // dpad left
+            0,       // dpad up
+            0        // dpad down
+    };
+
     public void readFile(String fileName) {
 
         BufferedReader br;
@@ -101,42 +169,43 @@ public class ReadConfig {
                 "rightDrivePower",
                 "leftDrivePower",
                 "speedToggle",
+                "setArmPosition",
                 "test",
                 "null",
         };
 
         String[] deviceNames = { //MUST BE IN ORDER with deviceMethods
-                "gamepad1.a" ,
-                "gamepad1.b" ,
-                "gamepad1.x" ,
-                "gamepad1.y" ,
-                "gamepad1.right_bumper" ,
-                "gamepad1.left_bumper" ,
-                "gamepad1.right_trigger" ,
-                "gamepad1.left_trigger" ,
-                "gamepad1.right_stick_y" ,
-                "gamepad1.left_stick_y" ,
-                "gamepad1.right_stick_x" ,
-                "gamepad1.left_stick_x" ,
-                "gamepad1.dpad_right" ,
-                "gamepad1.dpad_left" ,
-                "gamepad1.dpad_up" ,
-                "gamepad1.dpad_down" ,
-                "gamepad2.a" ,
-                "gamepad2.b" ,
-                "gamepad2.x" ,
-                "gamepad2.y" ,
-                "gamepad2.right_bumper" ,
-                "gamepad2.left_bumper" ,
-                "gamepad2.right_trigger" ,
-                "gamepad2.left_trigger" ,
-                "gamepad2.right_stick_y" ,
-                "gamepad2.left_stick_y" ,
-                "gamepad2.right_stick_x" ,
-                "gamepad2.left_stick_x" ,
-                "gamepad2.dpad_right" ,
-                "gamepad2.dpad_left" ,
-                "gamepad2.dpad_up" ,
+                "gamepad1.a",
+                "gamepad1.b",
+                "gamepad1.x",
+                "gamepad1.y",
+                "gamepad1.right_bumper",
+                "gamepad1.left_bumper",
+                "gamepad1.right_trigger",
+                "gamepad1.left_trigger",
+                "gamepad1.right_stick_y",
+                "gamepad1.left_stick_y",
+                "gamepad1.right_stick_x",
+                "gamepad1.left_stick_x",
+                "gamepad1.dpad_right",
+                "gamepad1.dpad_left",
+                "gamepad1.dpad_up",
+                "gamepad1.dpad_down",
+                "gamepad2.a",
+                "gamepad2.b",
+                "gamepad2.x",
+                "gamepad2.y",
+                "gamepad2.right_bumper",
+                "gamepad2.left_bumper",
+                "gamepad2.right_trigger",
+                "gamepad2.left_trigger",
+                "gamepad2.right_stick_y",
+                "gamepad2.left_stick_y",
+                "gamepad2.right_stick_x",
+                "gamepad2.left_stick_x",
+                "gamepad2.dpad_right",
+                "gamepad2.dpad_left",
+                "gamepad2.dpad_up",
                 "gamepad2.dpad_down"
         };
 
@@ -154,7 +223,10 @@ public class ReadConfig {
 
             String x;
 
-            while ((x = br.readLine()) != null) {
+            for (x = br.readLine(); x != null; x = br.readLine()) {
+
+                if ((x.charAt(0) == '/' && x.charAt(1) == '/') || x.isEmpty())
+                    continue;
 
                 // process each line and get tokens stripping all random characters away
                 String[] tokens = x.split(":"); //split it up via : separators
@@ -168,7 +240,7 @@ public class ReadConfig {
                 // Verify valid first token (device name)
                 int devicePosition = Arrays.asList(deviceNames).indexOf(tokens[0]);
                 if (devicePosition == -1) {
-                    console.Log("config syntax error: unrecognized device: " + tokens[0], "");
+                    console.Log("config syntax error: unrecognized device: ", tokens[0]);
                     console.Update();
                     context.sleep(100000);
                     context.stop();
@@ -183,6 +255,7 @@ public class ReadConfig {
                     context.stop();
                 }
 
+
                 // If no assigned operation, then assign null and skip rest of processing
                 if (tokens[1] == null)
                     deviceMethods[devicePosition] = null;
@@ -190,17 +263,26 @@ public class ReadConfig {
 
                 else {
                     try {
-                        if(tokens.length >= 3) {
+                        if (tokens.length > 2) {
                             // if real operation, then find data type and assign operation method address
                             if (tokens[2].equals("boolean")) {
-                                deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1]);
-                            }
-                            else if (tokens[2].equals( "float")) {
+
+                                if(tokens.length == 3)
+                                    deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1]);
+
+                                if (tokens.length == 4) {
+
+                                    deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1], float.class);
+
+                                    methodParams[devicePosition] = Float.parseFloat(tokens[3]);
+                                }
+                                console.Log(deviceMethods[devicePosition] + "", "");
+                                console.Update();
+                                context.sleep(1000);
+
+                            } else if (tokens[2].equals("float")) {
                                 deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1], float.class);
                             } else {
-                                console.Log("Test", tokens[0]);
-                                console.Log("Test1", tokens[1]);
-                                console.Log("Test2", tokens[2]);
                                 console.Log("config syntax error: operation not Boolean or Float", "");
                                 console.Update();
                                 context.sleep(100000);
@@ -254,27 +336,27 @@ public class ReadConfig {
 
         try {
             // controller gamepad1
-            if (context.gamepad1.a && deviceMethods[gA]!=null)
-                deviceMethods[gA].invoke(cm);
+            if (context.gamepad1.a && deviceMethods[gA] != null && methodParams[gA] != 0)
+                deviceMethods[gA].invoke(cm, methodParams[gA]);
 
-            if (context.gamepad1.b && deviceMethods[gB]!=null)
-                deviceMethods[gB].invoke(cm);
+            if (context.gamepad1.b && deviceMethods[gB] != null && methodParams[gB] != 0)
+                deviceMethods[gB].invoke(cm, methodParams[gB]);
 
-            if (context.gamepad1.x && deviceMethods[gX]!=null)
-                deviceMethods[gX].invoke(cm);
+            if (context.gamepad1.x && deviceMethods[gX] != null && methodParams[gX] != 0)
+                deviceMethods[gX].invoke(cm, methodParams[gX]);
 
-            if (context.gamepad1.y && deviceMethods[gY]!=null)
-                deviceMethods[gY].invoke(cm);
+            if (context.gamepad1.y && deviceMethods[gY] != null && methodParams[gY] != 0)
+                deviceMethods[gY].invoke(cm, methodParams[gY]);
 
-            if (context.gamepad1.right_bumper && deviceMethods[gright_bumper]!=null)
-                deviceMethods[gright_bumper].invoke(cm);
+            if (context.gamepad1.right_bumper && deviceMethods[gright_bumper] != null && methodParams[gright_bumper] != 0)
+                deviceMethods[gright_bumper].invoke(cm, methodParams[gright_bumper]);
 
-            if (context.gamepad1.left_bumper && deviceMethods[gleft_bumper]!=null)
-                deviceMethods[gleft_bumper].invoke(cm);
+            if (context.gamepad1.left_bumper && deviceMethods[gleft_bumper] != null && methodParams[gleft_bumper] != 0)
+                deviceMethods[gleft_bumper].invoke(cm, methodParams[gleft_bumper]);
 
             if (deviceMethods[gright_trigger] != null)
                 deviceMethods[gright_trigger].invoke(cm, context.gamepad1.right_trigger);
-            
+
             if (deviceMethods[gleft_trigger] != null)
                 deviceMethods[gleft_trigger].invoke(cm, context.gamepad1.left_trigger);
 
@@ -290,67 +372,67 @@ public class ReadConfig {
             if (deviceMethods[gleft_stick_x] != null)
                 deviceMethods[gleft_stick_x].invoke(cm, context.gamepad1.left_stick_x);
 
-            if(context.gamepad1.dpad_right && deviceMethods[gdpad_right]!=null)
-                deviceMethods[gdpad_right].invoke(cm);
+            if (context.gamepad1.dpad_right && deviceMethods[gdpad_right] != null && methodParams[gdpad_right] != 0)
+                deviceMethods[gdpad_right].invoke(cm, methodParams[gdpad_right]);
 
-            if(context.gamepad1.dpad_left && deviceMethods[gdpad_left]!=null)
-                deviceMethods[gdpad_left].invoke(cm);
+            if (context.gamepad1.dpad_left && deviceMethods[gdpad_left] != null && methodParams[gdpad_left] != 0)
+                deviceMethods[gdpad_left].invoke(cm, methodParams[gdpad_left]);
 
-            if(context.gamepad1.dpad_up && deviceMethods[gdpad_up]!=null)
-                deviceMethods[gdpad_up].invoke(cm);
+            if (context.gamepad1.dpad_up && deviceMethods[gdpad_up] != null && methodParams[gdpad_up] != 0)
+                deviceMethods[gdpad_up].invoke(cm, methodParams[gdpad_up]);
 
-            if(context.gamepad1.dpad_down && deviceMethods[gdpad_down]!=null)
-                deviceMethods[gdpad_down].invoke(cm);
-            
-            
+            if (context.gamepad1.dpad_down && deviceMethods[gdpad_down] != null && methodParams[gdpad_down] != 0)
+                deviceMethods[gdpad_down].invoke(cm, methodParams[gdpad_down]);
+
+
             //controller gamepad2
-            if (context.gamepad2.a && deviceMethods[gA+16]!=null)
-                deviceMethods[gA+16].invoke(cm);
+            if (context.gamepad2.a && deviceMethods[gA + 16] != null)
+                deviceMethods[gA + 16].invoke(cm);
 
-            if (context.gamepad2.b && deviceMethods[gB+16]!=null)
-                deviceMethods[gB+16].invoke(cm);
+            if (context.gamepad2.b && deviceMethods[gB + 16] != null)
+                deviceMethods[gB + 16].invoke(cm);
 
-            if (context.gamepad2.x && deviceMethods[gX+16]!=null)
-                deviceMethods[gX+16].invoke(cm);
+            if (context.gamepad2.x && deviceMethods[gX + 16] != null)
+                deviceMethods[gX + 16].invoke(cm);
 
-            if (context.gamepad2.y && deviceMethods[gY+16]!=null)
-                deviceMethods[gY+16].invoke(cm);
+            if (context.gamepad2.y && deviceMethods[gY + 16] != null)
+                deviceMethods[gY + 16].invoke(cm);
 
-            if (context.gamepad2.right_bumper && deviceMethods[gright_bumper+16]!=null)
-                deviceMethods[gright_bumper+16].invoke(cm);
+            if (context.gamepad2.right_bumper && deviceMethods[gright_bumper + 16] != null)
+                deviceMethods[gright_bumper + 16].invoke(cm);
 
-            if (context.gamepad2.left_bumper && deviceMethods[gleft_bumper+16]!=null)
-                deviceMethods[gleft_bumper+16].invoke(cm);
+            if (context.gamepad2.left_bumper && deviceMethods[gleft_bumper + 16] != null)
+                deviceMethods[gleft_bumper + 16].invoke(cm);
 
-            if (deviceMethods[gright_trigger+16] != null)
-                deviceMethods[gright_trigger+16].invoke(cm, context.gamepad2.right_trigger);
+            if (deviceMethods[gright_trigger + 16] != null)
+                deviceMethods[gright_trigger + 16].invoke(cm, context.gamepad2.right_trigger);
 
-            if (deviceMethods[gleft_trigger+16] != null)
-                deviceMethods[gleft_trigger+16].invoke(cm, context.gamepad2.left_trigger);
+            if (deviceMethods[gleft_trigger + 16] != null)
+                deviceMethods[gleft_trigger + 16].invoke(cm, context.gamepad2.left_trigger);
 
-            if (deviceMethods[gright_stick_y+16] != null)
-                deviceMethods[gright_stick_y+16].invoke(cm, context.gamepad2.right_stick_y);
+            if (deviceMethods[gright_stick_y + 16] != null)
+                deviceMethods[gright_stick_y + 16].invoke(cm, context.gamepad2.right_stick_y);
 
-            if (deviceMethods[gleft_stick_y+16] != null)
-                deviceMethods[gleft_stick_y+16].invoke(cm, context.gamepad2.left_stick_y);
+            if (deviceMethods[gleft_stick_y + 16] != null)
+                deviceMethods[gleft_stick_y + 16].invoke(cm, context.gamepad2.left_stick_y);
 
-            if (deviceMethods[gright_stick_x+16] != null)
-                deviceMethods[gright_stick_x+16].invoke(cm, context.gamepad2.right_stick_x);
+            if (deviceMethods[gright_stick_x + 16] != null)
+                deviceMethods[gright_stick_x + 16].invoke(cm, context.gamepad2.right_stick_x);
 
-            if (deviceMethods[gleft_stick_x+16] != null)
-                deviceMethods[gleft_stick_x+16].invoke(cm, context.gamepad2.left_stick_x);
+            if (deviceMethods[gleft_stick_x + 16] != null)
+                deviceMethods[gleft_stick_x + 16].invoke(cm, context.gamepad2.left_stick_x);
 
-            if(context.gamepad2.dpad_right && deviceMethods[gdpad_right+16]!=null)
-                deviceMethods[gdpad_right+16].invoke(cm);
+            if (context.gamepad2.dpad_right && deviceMethods[gdpad_right + 16] != null)
+                deviceMethods[gdpad_right + 16].invoke(cm);
 
-            if(context.gamepad2.dpad_left && deviceMethods[gdpad_left+16]!=null)
-                deviceMethods[gdpad_left+16].invoke(cm);
+            if (context.gamepad2.dpad_left && deviceMethods[gdpad_left + 16] != null)
+                deviceMethods[gdpad_left + 16].invoke(cm);
 
-            if(context.gamepad2.dpad_up && deviceMethods[gdpad_up+16]!=null)
-                deviceMethods[gdpad_up+16].invoke(cm);
+            if (context.gamepad2.dpad_up && deviceMethods[gdpad_up + 16] != null)
+                deviceMethods[gdpad_up + 16].invoke(cm);
 
-            if(context.gamepad2.dpad_down && deviceMethods[gdpad_down+16]!=null)
-                deviceMethods[gdpad_down+16].invoke(cm);
+            if (context.gamepad2.dpad_down && deviceMethods[gdpad_down + 16] != null)
+                deviceMethods[gdpad_down + 16].invoke(cm);
 
         } catch (IllegalAccessException | InvocationTargetException e) { //absolutely should NEVER happen
             console.Log("Fatal Error", e);

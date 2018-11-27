@@ -63,17 +63,25 @@ public class MineralDetection {
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGBA8888, true);
     }
 
+    public Bitmap getImage() throws InterruptedException {
+        Image image;
+        image = getImageFromFrame(vuforiaLocalizer.getFrameQueue().take(), PIXEL_FORMAT.RGBA8888);
+        Bitmap bm_img = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
+        bm_img.copyPixelsFromBuffer(image.getPixels());
+
+        return bm_img;
+    }
+
     public MineralPosition getPosition(Bitmap bm_img) {
         int centerWidth = bm_img.getWidth();
-        int centerHeight = bm_img.getHeight()/4;
-        int heightOffset = 500;
+        int centerHeight = (bm_img.getHeight() * 3) / 4;
+        int heightOffset = bm_img.getHeight()/4;
         int scaleFactor = 24;
 
         Bitmap[] thirds = new Bitmap[3];
-        Bitmap[] detectionTest = new Bitmap[2];
         int[] numYellow = new int[3];
 
-        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, (bm_img.getHeight() / 2 - centerHeight / 2) + heightOffset, centerWidth, centerHeight);
+        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, (centerHeight) - heightOffset, centerWidth, centerHeight + heightOffset);
         Bitmap scaledCroppedBitmap = Bitmap.createScaledBitmap(croppedBitmap, croppedBitmap.getWidth() / scaleFactor, croppedBitmap.getHeight() / scaleFactor, false);
 
         Bitmap visualYellow = Bitmap.createScaledBitmap(bm_img, bm_img.getWidth() / scaleFactor, bm_img.getHeight() / scaleFactor, false);
@@ -134,16 +142,6 @@ public class MineralDetection {
         } else {
             return MineralPosition.NULL;
         }
-    }
-
-    public Bitmap getImage() throws InterruptedException {
-
-        Image image;
-        image = getImageFromFrame(vuforiaLocalizer.getFrameQueue().take(), PIXEL_FORMAT.RGBA8888);
-        Bitmap bm_img = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
-        bm_img.copyPixelsFromBuffer(image.getPixels());
-
-        return bm_img;
     }
 
     public Image getImageFromFrame(VuforiaLocalizer.CloseableFrame frame, int format) {
@@ -208,7 +206,7 @@ public class MineralDetection {
             e.printStackTrace();
         }
 
-        while(context.opModeIsActive() && !file.exists()){}
+        while(!file.exists()){}
     }
 
     private boolean isYellow(int[] rgb, int method, float threashold) {

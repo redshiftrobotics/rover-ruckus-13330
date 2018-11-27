@@ -47,42 +47,45 @@ public class TestMineralDetect extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        this.console = new Console(this);
-        mineralDetection = new MineralDetection(this);
+        this.console = new Console(this); // initialization of Console class
+        mineralDetection = new MineralDetection(this); // initialization of Mineral Detection class
 
-        mineralDetection.vuforiaInit();
+        mineralDetection.vuforiaInit(); // initialization of vuforia
+
+        AssetManager am = hardwareMap.appContext.getAssets(); // gets android assets [FtcRobotController>Assets]
         MineralPosition mineralPosition = null;
-        AssetManager am = hardwareMap.appContext.getAssets();
         Bitmap sample = null;
 
+        waitForStart(); // waits until play is pressed
 
-        try {
-           sample = BitmapFactory.decodeStream(am.open("sample2.jpg"));
-        } catch (IOException e){}
+        while(opModeIsActive()) {
 
+            if (gamepad1.a) { // attempts to take photo
+                try {
+                    sample = mineralDetection.getImage();
+                } catch (InterruptedException e) {
+                }
 
-        waitForStart();
-
-        if(gamepad1.a){
-            try {
-                sample = mineralDetection.getImage();
-            } catch (InterruptedException e){
-                console.Log("Broke", "");
+                console.Log("color profile", sample.getConfig());
             }
-        } else if (gamepad1.b){
-            try {
-                sample = BitmapFactory.decodeStream(am.open("sample2.jpg"));
-            } catch (IOException e){}
+
+            else if (gamepad1.b) { // attempts to get photo from assets
+                try {
+                    sample = BitmapFactory.decodeStream(am.open("sample2.jpg"));
+                } catch (IOException e) {
+                }
+
+                console.Log("color profile", sample.getConfig());
+            }
+
+            if (gamepad1.start) { // analyzes images
+                mineralPosition = mineralDetection.getPosition(sample);
+                console.Log("mineral", mineralPosition);
+            }
+
+            console.Update(); // updates log
+
+            idle(); // idles robot
         }
-
-        console.Log("color profile", sample.getConfig());
-
-        mineralPosition = mineralDetection.getPosition(sample);
-
-        console.Log("mineral", mineralPosition);
-
-        console.Update();
-        idle();
-
     }
 }

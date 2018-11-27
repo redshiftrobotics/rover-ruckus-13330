@@ -66,6 +66,8 @@ public class auto extends LinearOpMode {
         MineralPosition mineralPosition = null;
         Bitmap sample = null;
 
+        //region Initialization
+
         console.Status("waiting for IMU initialization");
 
         //wait for the IMU to be initiated
@@ -100,12 +102,12 @@ public class auto extends LinearOpMode {
         console.initStats(version, "Autonomous");
         console.Update();
 
+        //endregion
 
         // waits until the program is started
         waitForStart();
 
-
-    // AUTO SCRIPT
+        //region Autonomous
 
         //attempts take photo
         try {
@@ -114,11 +116,15 @@ public class auto extends LinearOpMode {
             console.Log("Broke", "");
         }
 
+        new Thread(){
+            mineralPosition = mineralDetection.getPosition(sample);
+        }.start();
+
         //starts Lowering
         //TODO lowering
 
         //simultaneously start analyzing photo as lowering to minimise time loss
-        mineralPosition = mineralDetection.getPosition(sample);
+
 
         //stops lowering
         //TODO stop lowering
@@ -166,5 +172,7 @@ public class auto extends LinearOpMode {
                 break;
 
         }
+
+        //endregion
     }
 }

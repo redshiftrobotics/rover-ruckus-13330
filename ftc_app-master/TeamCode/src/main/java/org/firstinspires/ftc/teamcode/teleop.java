@@ -48,7 +48,7 @@ public class teleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // initializes other classes
+        //initializes other classes
         this.hardware = new Hardware(this);
         this.robot = new Robot(this.hardware, this);
         this.console = new Console(this.hardware, this.robot, this);
@@ -58,22 +58,19 @@ public class teleop extends LinearOpMode {
         console.Log("Action:", "waiting for IMU initialization");
         console.Update();
 
+        //reads config file
         rc.readFile("TestConfig.txt");
 
         //wait for the IMU to be initiated
         while (!hardware.imu.isGyroCalibrated())
             idle();
 
-
-
-
         console.initStats(version, "TeleOp");
         console.Update();
 
-
         waitForStart();
 
-
+        //region Run Loop
         while (opModeIsActive()) {
 
             console.Log("eat my", hardware.topSpeed);
@@ -86,5 +83,7 @@ public class teleop extends LinearOpMode {
 
             idle();
         }
+
+        //endregion
     }
 }

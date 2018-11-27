@@ -56,8 +56,7 @@ public class Robot { //parent class
     public double[] speeds = {0.33, 1};
     public double speed = speeds[0];
 
-
-//DRIVE FUNCTIONS
+    //region Drive Methods
 
     public void setPowerLeft(double power){
         hardware.back_left_motor.setPower(-power);
@@ -99,8 +98,9 @@ public class Robot { //parent class
         hardware.back_left_motor.setPower(0);
         hardware.front_left_motor.setPower(0);
     }
+    //endregion
 
-//ENCODERS
+    //region Encoders
 
     public void resetEncoders() {
         hardware.back_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -128,9 +128,9 @@ public class Robot { //parent class
         hardware.back_right_motor.setMode(runMode);
         hardware.front_right_motor.setMode(runMode);
     }
+    //endregion
 
-
-//SUPER FUNCTIONS
+    //region Super Functions
 
     public void resetAngle() {
         hardware.oldAngle = hardware.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -242,7 +242,9 @@ public class Robot { //parent class
         return Math.max(min, Math.min(max, val));
     }
 
-//PID
+    //endregion
+
+    //region PID
 
     double integral;
     double lastProportional = 0;
@@ -271,7 +273,9 @@ public class Robot { //parent class
 
     }
 
-//ASAM
+    //endregion
+
+    //region ASAM
 
     public long startTime;
     public long totalTime;
@@ -352,6 +356,7 @@ public class Robot { //parent class
         );
     }
 
+    //endregion
 }
 
 

@@ -43,6 +43,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hardware { // Here we get the DcMotors from the REV hub and assign their names.
 
+    //region Hardware Initialization
     public DcMotor front_right_motor;
     public DcMotor front_left_motor;
     public DcMotor back_right_motor;
@@ -80,7 +81,9 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public double WHEEL_DIAMETER = 4;
     public double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
 
-    public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
+    //endregion
+
+    public Hardware(OpMode context) {
 
         imu = context.hardwareMap.get(BNO055IMU.class, "imu");
 

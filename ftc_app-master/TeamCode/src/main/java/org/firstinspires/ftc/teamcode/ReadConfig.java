@@ -74,7 +74,7 @@ public class ReadConfig {
     private static int gdpad_up = 14;
     private static int gdpad_down = 15;
 
-
+    //region Method/Params arrays
     private Method[] deviceMethods = {
             // gamepad 1 Assigned Methods
             null,       // A
@@ -150,6 +150,8 @@ public class ReadConfig {
             0,       // dpad up
             0        // dpad down
     };
+
+    //endregion
 
     public void readFile(String fileName) {
 

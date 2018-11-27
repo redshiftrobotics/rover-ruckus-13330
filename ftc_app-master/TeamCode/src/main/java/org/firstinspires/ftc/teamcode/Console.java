@@ -44,6 +44,10 @@ public class Console { // parent class
         this.context = context;
     }
 
+    public Console(LinearOpMode context){
+        this.context = context;
+    }
+
     public void displayAngles(){ // used to display the current angles.
 
         context.telemetry.addData("Current Angle:", robot.getAngle());
@@ -52,28 +56,18 @@ public class Console { // parent class
         context.telemetry.addData("Current Global Angle:", hardware.globalAngle);
         context.telemetry.addData("Current MineralKickerAngle", hardware.mineralKicker.getPosition());
     }
-/*
-    public void displayColorData(){ // used to get the color sensor's color average and difference.
-
-
-        if (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 70){
-            context.telemetry.addData("Mineral is Silver.", "");
-
-        } else if(hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 < 70 && hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 20) {
-            context.telemetry.addData("Mineral is Gold.", "");
-        } else {
-            context.telemetry.addData("No Mineral seen.","");
-        }
-    }
-    */
 
     public void Update(){
         context.telemetry.update();
     }
 
     public void Log(String caption, Object value){ // a very important essential method that is necessary to the structural integrity of our code.
-
         context.telemetry.addData(caption, value);
+    }
+
+    public void Status(String status){
+        context.telemetry.addData("status", status);
+        context.telemetry.update();
     }
 
     public void initStats(double versionName, String type){ // used to display the statistics.

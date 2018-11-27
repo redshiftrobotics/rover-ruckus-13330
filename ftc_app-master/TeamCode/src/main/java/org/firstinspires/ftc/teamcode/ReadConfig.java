@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+/* Copyright (c) 2018 FIRST. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without modification,
 * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -32,22 +32,13 @@ package org.firstinspires.ftc.teamcode;
 import android.content.res.AssetManager;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-
-/**
- * Created by julian on 11/6/18.
- */
 
 public class ReadConfig {
     private Hardware hardware; // get the context of other classes to use
@@ -66,26 +57,25 @@ public class ReadConfig {
     }
 
 
-    public static int gA = 0;
-    public static int gB = 1;
-    public static int gX = 2;
-    public static int gY = 3;
-    public static int gright_bumper = 4;
-    public static int gleft_bumper = 5;
-    public static int gright_trigger = 6;
-    public static int gleft_trigger = 7;
-    public static int gright_stick_y = 8;
-    public static int gleft_stick_y = 9;
-    public static int gright_stick_x = 10;
-    public static int gleft_stick_x = 11;
-    public static int gdpad_right = 12;
-    public static int gdpad_left = 13;
-    public static int gdpad_up = 14;
-    ;
-    public static int gdpad_down = 15;
+    private static int gA = 0;
+    private static int gB = 1;
+    private static int gX = 2;
+    private static int gY = 3;
+    private static int gright_bumper = 4;
+    private static int gleft_bumper = 5;
+    private static int gright_trigger = 6;
+    private static int gleft_trigger = 7;
+    private static int gright_stick_y = 8;
+    private static int gleft_stick_y = 9;
+    private static int gright_stick_x = 10;
+    private static int gleft_stick_x = 11;
+    private static int gdpad_right = 12;
+    private static int gdpad_left = 13;
+    private static int gdpad_up = 14;
+    private static int gdpad_down = 15;
 
 
-    public Method[] deviceMethods = {
+    private Method[] deviceMethods = {
             // gamepad 1 Assigned Methods
             null,       // A
             null,       // B
@@ -123,7 +113,7 @@ public class ReadConfig {
             null        // dpad down
     };
 
-    public float[] methodParams = {
+    private float[] methodParams = {
             // gamepad 1 Assigned Methods
             0,       // A
             0,       // B
@@ -276,9 +266,6 @@ public class ReadConfig {
 
                                     methodParams[devicePosition] = Float.parseFloat(tokens[3]);
                                 }
-                                console.Log(deviceMethods[devicePosition] + "", "");
-                                console.Update();
-                                context.sleep(1000);
 
                             } else if (tokens[2].equals("float")) {
                                 deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1], float.class);

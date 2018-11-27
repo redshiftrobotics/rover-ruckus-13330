@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+/* Copyright (c) 2018 FIRST. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without modification,
 * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -30,11 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
-
-/**
- * Created by julian on 11/6/18.
- */
 
 public class ControllerMethods {
     private Hardware hardware;
@@ -52,20 +47,18 @@ public class ControllerMethods {
     }
 
     public void speedToggle(){
-        robot.speedToggle = !robot.speedToggle;
+        robot.fastMode = !robot.fastMode;
         console.Log("Toggled Speed!", null);
     }
 
     public void rightDrivePower(float power){
-        console.Log("set motor power to", power);
-       //hardware.back_right_motor.setPower(power);
-        //hardware.front_right_motor.setPower(power);
+        hardware.back_right_motor.setPower(power * hardware.speed);
+        hardware.front_right_motor.setPower(power * hardware.speed);
     }
 
     public void leftDrivePower(float power){
-        console.Log("set motor power to", power);
-        //hardware.back_left_motor.setPower(power);
-        //hardware.front_left_motor.setPower(power);
+        hardware.back_left_motor.setPower(power * hardware.speed);
+        hardware.front_left_motor.setPower(power * hardware.speed);
     }
 
     public void setArmPosition(float position){

@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+/* Copyright (c) 2018 FIRST. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without modification,
 * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -29,51 +29,53 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 
 @Autonomous(name = "Autonomous", group = "13330 Pulsar")
 public class auto extends LinearOpMode {
 
     // ones = after which comp
     // hundredths = which practice
-    public double version = 1.00;
+    public double version = 1.04;
 
     // instances of hardware, robot, and text
     private Hardware hardware;
     private Robot robot;
     private Console console;
+    private MineralDetection mineralDetection;
+
 
     private Integer POSITION = null;
-
-
 
     @Override
     public void runOpMode() {
 
-        // initializes other classes
+        //initializes other classes
         this.hardware = new Hardware(this);
         this.robot = new Robot(this.hardware, this);
         this.console = new Console(this.hardware, this.robot, this);
+        this.mineralDetection = new MineralDetection(this);
 
+        //initializes vuforia
+        mineralDetection.vuforiaInit();
 
-        console.Log("Action:", "waiting for IMU initialization");
-        console.Update();
+        //assigned null values
+        MineralPosition mineralPosition = null;
+        Bitmap sample = null;
 
+        console.Status("waiting for IMU initialization");
 
         //wait for the IMU to be initiated
         while (!hardware.imu.isGyroCalibrated())
             idle();
 
 
-        console.Log("Action:", "waiting for POSITION input");
-        console.Update();
+        console.Status("waiting for position");
 
-
+        //wait until POSITION is initialized
         while (POSITION == null) {
             if(gamepad1.dpad_left) {
                 POSITION = 0;
@@ -94,8 +96,6 @@ public class auto extends LinearOpMode {
             idle();
         }
 
-        sleep(500);
-
         // prints out various statistics for debugging
         console.initStats(version, "Autonomous");
         console.Update();
@@ -106,6 +106,39 @@ public class auto extends LinearOpMode {
 
 
     // AUTO SCRIPT
+
+        //attempts take photo
+        try {
+            sample = mineralDetection.getImage();
+        } catch (InterruptedException e){
+            console.Log("Broke", "");
+        }
+
+        //starts Lowering
+        //TODO lowering
+
+        //simultaneously start analyzing photo as lowering to minimise time loss
+        mineralPosition = mineralDetection.getPosition(sample);
+
+        //stops lowering
+        //TODO stop lowering
+
+        robot.rotate(90, 0.5, 0.1);
+        switch(mineralPosition){
+            case RIGHT:
+
+                break;
+            case CENTER:
+
+                break;
+            case LEFT:
+
+                break;
+            case NULL:
+
+                break;
+        }
+
 
         // runs different code depending on starting position
         switch(POSITION) {

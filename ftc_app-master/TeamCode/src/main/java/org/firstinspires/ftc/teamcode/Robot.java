@@ -52,8 +52,9 @@ public class Robot { //parent class
         this.console = new Console(hardware, this, context);
     }
 
-    public boolean speedToggle = false;
-    public double[] speed = {0.33, 1};
+    public boolean fastMode = false;
+    public double[] speeds = {0.33, 1};
+    public double speed = speeds[0];
 
 
 //DRIVE FUNCTIONS
@@ -76,7 +77,17 @@ public class Robot { //parent class
         hardware.back_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
     }
 
-    //drives forward with time
+    public void updateSpeed(){
+        if(fastMode) {
+            speed = speeds[1];
+            console.Log("SpeedyBoy", "");
+        } else {
+            speed = speeds[0];
+            console.Log("no speed", fastMode);
+        }
+
+    }
+
     public void drive(double power, long time) {
         hardware.back_right_motor.setPower(-power + hardware.correction);
         hardware.front_right_motor.setPower(-power + hardware.correction);
@@ -89,46 +100,8 @@ public class Robot { //parent class
         hardware.front_left_motor.setPower(0);
     }
 
-    //method that moves forward for the specified time and detects the gold block.
-    public void senseColor(double power) {
-        int numGold = 0;
-
-
-        while (context.opModeIsActive()) {
-            //go forward
-
-            if (hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 50){
-                context.telemetry.addData("Mineral is Silver.", "");
-                numGold = 0;
-
-            } else if(hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 < 50 && hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue()/3 > 20) {
-                context.telemetry.addData("Mineral is Gold.", "");
-                numGold ++;
-
-            } else {
-                context.telemetry.addData("No Mineral seen.","");
-                numGold = 0;
-            }
-
-            if(numGold == 3)
-                break;
-
-
-            context.telemetry.addData("Color", hardware.color_sensor_1.red() + hardware.color_sensor_1.green() + hardware.color_sensor_1.blue() / 3);
-            context.telemetry.addData("NumGold", numGold);
-            context.telemetry.update();
-        }
-
-        //hardware.mineralKicker.setPosition(90);
-
-        context.telemetry.addData("Stopped", "");
-        context.telemetry.update();
-
-    }
-
 //ENCODERS
 
-    //resets encoders
     public void resetEncoders() {
         hardware.back_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hardware.front_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -140,7 +113,6 @@ public class Robot { //parent class
         hardware.upperArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    //sets the target position of each motor
     public void setTargetPosition(int position) {
         hardware.back_left_motor.setTargetPosition(position);
         hardware.front_left_motor.setTargetPosition(position);
@@ -149,7 +121,6 @@ public class Robot { //parent class
         hardware.front_right_motor.setTargetPosition(position);
     }
 
-    //sets a main runmode for each motor
     public void setRunMode(DcMotor.RunMode runMode) {
         hardware.back_left_motor.setMode(runMode);
         hardware.front_left_motor.setMode(runMode);
@@ -158,36 +129,15 @@ public class Robot { //parent class
         hardware.front_right_motor.setMode(runMode);
     }
 
-    //averages the distance traveled to feet
-    public double getDistanceTraveled() {
-        int average = hardware.back_left_motor.getCurrentPosition() +
-                hardware.front_left_motor.getCurrentPosition() +
-                hardware.back_right_motor.getCurrentPosition() +
-                hardware.front_right_motor.getCurrentPosition();
-
-        average /= 4;
-
-        return (average / hardware.GEAR_RATIO) / (360 / hardware.CIRCUMFERENCE);
-    }
-
-    public void setArmPos(int lowerPos, int upperPos, double power){
-        hardware.lowerArm.setTargetPosition(lowerPos);
-        hardware.upperArm.setTargetPosition(upperPos);
-
-        hardware.lowerArm.setPower(power);
-        hardware.upperArm.setPower(power);
-    }
 
 //SUPER FUNCTIONS
 
-    //sets the angles to zero
     public void resetAngle() {
         hardware.oldAngle = hardware.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         hardware.globalAngle = 0;
     }
 
-    //gets the angle
     public double getAngle() {
 
         //we determined that imu angles works in euler angles so
@@ -207,7 +157,6 @@ public class Robot { //parent class
         return hardware.globalAngle;
     }
 
-    //returns a correction value to move in a straight line.
     public double checkDirection() {
         double correction, angle, gain = .10;
 
@@ -223,7 +172,6 @@ public class Robot { //parent class
         return correction;
     }
 
-    //rotates the robot x degrees
     public void rotatePID(int degrees, double power, double stopThreashold) {
         double turnPower = 1;
 
@@ -255,7 +203,7 @@ public class Robot { //parent class
     }
 
     public void rotate(int degrees, double power, double stopThreashold) {
-        double turnPower = 1;
+        double turnPower = power/2;
         double turnPercentage = 0;
 
         //makes the degrees between -359 and 359, zero is 360
@@ -290,40 +238,6 @@ public class Robot { //parent class
         resetAngle();
     }
 
-    //update config
-    public void updateConfig(LinearOpMode context) {
-
-        if (context.gamepad1.right_bumper)
-            hardware.topSpeed = !hardware.topSpeed;
-        if (hardware.topSpeed == false)
-            hardware.speed = hardware.minSpeed;
-        else
-            hardware.speed = hardware.maxSpeed;
-
-        console.Log("TopSpeed", hardware.topSpeed);
-
-
-        if(context.gamepad2.dpad_left) {
-            hardware.currentLowerArmValue = hardware.lowerArmValues[0];
-            hardware.currentUpperArmValue = hardware.upperArmValues[0];
-        }
-        else if(context.gamepad2.dpad_up) {
-            hardware.currentLowerArmValue = hardware.lowerArmValues[1];
-            hardware.currentUpperArmValue = hardware.upperArmValues[1];
-        }
-        else if(context.gamepad2.dpad_right) {
-            hardware.currentLowerArmValue = hardware.lowerArmValues[2];
-            hardware.currentUpperArmValue = hardware.upperArmValues[2];
-        }
-
-        if(context.gamepad1.left_stick_y < 0.1 && context.gamepad1.left_stick_y > -0.1)
-            context.gamepad1.left_stick_y = 0;
-
-        if(context.gamepad2.left_stick_y < 0.1 && context.gamepad2.left_stick_y > -0.1)
-            context.gamepad2.left_stick_y = 0;
-    }
-
-    //clamps a value
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
     }

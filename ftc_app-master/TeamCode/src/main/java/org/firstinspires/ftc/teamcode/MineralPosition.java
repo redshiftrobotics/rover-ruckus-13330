@@ -29,62 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-@TeleOp(name = "TeleOp", group = "13330 Pulsar")
-public class teleop extends LinearOpMode {
-
-    // ones = after which comp
-    // hundredths = which practice
-    public double version = 1.04;
-
-    // instances of hardware, robot, and text
-    private Hardware hardware;
-    private Robot robot;
-    private Console console;
-    private ReadConfig rc;
-
-    @Override
-    public void runOpMode() {
-
-        // initializes other classes
-        this.hardware = new Hardware(this);
-        this.robot = new Robot(this.hardware, this);
-        this.console = new Console(this.hardware, this.robot, this);
-        this.rc = new ReadConfig(this.hardware, this.robot, console, this);
-
-
-        console.Log("Action:", "waiting for IMU initialization");
-        console.Update();
-
-        rc.readFile("TestConfig.txt");
-
-        //wait for the IMU to be initiated
-        while (!hardware.imu.isGyroCalibrated())
-            idle();
-
-
-
-
-        console.initStats(version, "TeleOp");
-        console.Update();
-
-
-        waitForStart();
-
-
-        while (opModeIsActive()) {
-
-            console.Log("eat my", hardware.topSpeed);
-            robot.updateSpeed();
-            robot.checkDirection();
-            robot.setZeroPowerBehavior();
-
-            rc.updateControls();
-            console.Update();
-
-            idle();
-        }
-    }
+public enum MineralPosition {
+    LEFT, CENTER, RIGHT, NULL
 }
+

@@ -29,62 +29,60 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "TeleOp", group = "13330 Pulsar")
-public class teleop extends LinearOpMode {
+import java.io.IOException;
 
-    // ones = after which comp
-    // hundredths = which practice
-    public double version = 1.04;
+@TeleOp(name = "testMineral", group = "13330 Pulsar")
+public class TestMineralDetect extends LinearOpMode {
 
-    // instances of hardware, robot, and text
-    private Hardware hardware;
-    private Robot robot;
+    private MineralDetection mineralDetection;
     private Console console;
-    private ReadConfig rc;
 
     @Override
     public void runOpMode() {
 
-        // initializes other classes
-        this.hardware = new Hardware(this);
-        this.robot = new Robot(this.hardware, this);
-        this.console = new Console(this.hardware, this.robot, this);
-        this.rc = new ReadConfig(this.hardware, this.robot, console, this);
+        this.console = new Console(this);
+        mineralDetection = new MineralDetection(this);
+
+        mineralDetection.vuforiaInit();
+        MineralPosition mineralPosition = null;
+        AssetManager am = hardwareMap.appContext.getAssets();
+        Bitmap sample = null;
 
 
-        console.Log("Action:", "waiting for IMU initialization");
-        console.Update();
-
-        rc.readFile("TestConfig.txt");
-
-        //wait for the IMU to be initiated
-        while (!hardware.imu.isGyroCalibrated())
-            idle();
-
-
-
-
-        console.initStats(version, "TeleOp");
-        console.Update();
+        try {
+           sample = BitmapFactory.decodeStream(am.open("sample2.jpg"));
+        } catch (IOException e){}
 
 
         waitForStart();
 
-
-        while (opModeIsActive()) {
-
-            console.Log("eat my", hardware.topSpeed);
-            robot.updateSpeed();
-            robot.checkDirection();
-            robot.setZeroPowerBehavior();
-
-            rc.updateControls();
-            console.Update();
-
-            idle();
+        if(gamepad1.a){
+            try {
+                sample = mineralDetection.getImage();
+            } catch (InterruptedException e){
+                console.Log("Broke", "");
+            }
+        } else if (gamepad1.b){
+            try {
+                sample = BitmapFactory.decodeStream(am.open("sample2.jpg"));
+            } catch (IOException e){}
         }
+
+        console.Log("color profile", sample.getConfig());
+
+        mineralPosition = mineralDetection.getPosition(sample);
+
+        console.Log("mineral", mineralPosition);
+
+        console.Update();
+        idle();
+
     }
 }

@@ -203,34 +203,35 @@ public class Robot { //parent class
     }
 
     public void rotate(int degrees, double power, double stopThreashold) {
-        double turnPower = power/2;
+        double turnPower = power;
         double turnPercentage = 0;
 
         //makes the degrees between -359 and 359, zero is 360
         degrees = degrees % 360;
 
-        //finds most efficient way to turn
+        // finds most efficient way to turn
         if (degrees < -180)
             degrees += 360;
         else if (degrees > 180)
             degrees -= 360;
 
-        //restart imu movement tracking
-        resetAngle();
+        resetAngle(); // restart imu movement tracking
 
-        //turn right
-        while (context.opModeIsActive() && turnPercentage > stopThreashold) {
 
-            if(degrees > 0) {
-                setPowerLeft(turnPower);
-                setPowerRight(-turnPower);
-            } else {
-                setPowerLeft(-turnPower);
-                setPowerRight(turnPower);
+        while (context.opModeIsActive() && turnPercentage < stopThreashold) { // while the percentage of turn is less than threshold
+
+
+            if(degrees < 0) { // turn right
+                setPowerLeft(turnPower * (decay(turnPercentage, degrees)));
+                setPowerRight(-turnPower * (decay(turnPercentage, degrees)));
+            } else { // turn left
+                setPowerLeft(-turnPower * (decay(turnPercentage, degrees)));
+                setPowerRight(turnPower * (decay(turnPercentage, degrees)));
             }
 
-            turnPercentage = getAngle()/degrees;
+            turnPercentage = getAngle()/degrees; // sets turnPercentage
         }
+
         setPowerLeft(0);
         setPowerRight(0);
 
@@ -240,6 +241,12 @@ public class Robot { //parent class
 
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
+    }
+
+    public double decay(double turnPercentage, double toTurnDegrees){
+        double x = toTurnDegrees * turnPercentage;
+
+        return Math.pow(Math.cos((Math.PI/2) * (x/toTurnDegrees)), 0.6);
     }
 
     //endregion
@@ -357,6 +364,8 @@ public class Robot { //parent class
     }
 
     //endregion
+
+
 }
 
 

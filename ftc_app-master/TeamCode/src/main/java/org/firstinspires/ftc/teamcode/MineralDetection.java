@@ -35,8 +35,11 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.RobotLog;
+import com.vuforia.Frame;
 import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.State;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -56,17 +59,32 @@ public class MineralDetection {
 
     public void vuforiaInit() {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         parameters.vuforiaLicenseKey = "Aa/SijD/////AAABmX2lVWyTR0kWqVSis8F3WSlL9qlOXlUv0WKOxOP54vVEggfrNmqvmKRwczbGHArzVWlLJdWac1BNz3PCYEH8JSpkeJRjxWWj3be7l+Ingj+/RVpMhiQWC4XMTqNoB44IlsIiD6zyiPHU3xanV/nUTMJNbO+nM8LeT6V8fId3S1yL5WYITwy5ifPBsQMw/2awofitlWikiCKwV6y+Nx2vITJxipVyOPNQG/TVME1iK9Nx+bg5DisuXZ5WGgBDHSZzSE6O4TzJHAg2skI0Go/TRPgF1j2kwUHO5ubIPSj3oICokrNtK21220HUdedKA5JhcSZgyC0n0hIGGNIpWIJyfMlpZSvyjzUBTA+IZF4z5LRe";
         vuforiaLocalizer = new VuforiaLocalizerImpl(parameters);
         vuforiaLocalizer.setFrameQueueCapacity(1);
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGBA8888, true);
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
     }
 
+
     public Bitmap getImage() throws InterruptedException {
-        Image image;
-        image = getImageFromFrame(vuforiaLocalizer.getFrameQueue().take(), PIXEL_FORMAT.RGBA8888);
-        Bitmap bm_img = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
+
+
+        Image image = null;
+
+        VuforiaLocalizer.CloseableFrame frame = vuforiaLocalizer.getFrameQueue().take(); //takes the frame at the head of the queue    <-----  If I uncomment this the code crashes at about 5 seconds????
+
+        long numImages = frame.getNumImages();
+
+        for (int i = 0; i < numImages; i++)
+        {
+            if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565)
+            {
+                image = frame.getImage(i);
+            }
+        }
+
+        Bitmap bm_img = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
         bm_img.copyPixelsFromBuffer(image.getPixels());
 
         return bm_img;
@@ -74,14 +92,14 @@ public class MineralDetection {
 
     public MineralPosition getPosition(Bitmap bm_img) {
         int centerWidth = bm_img.getWidth();
-        int centerHeight = (bm_img.getHeight() * 3) / 4;
-        int heightOffset = bm_img.getHeight()/4;
+        int centerHeight = (bm_img.getHeight()/2) + 100;
+        int heightOffset = 500;
         int scaleFactor = 24;
 
         Bitmap[] thirds = new Bitmap[3];
         int[] numYellow = new int[3];
 
-        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, (centerHeight) - heightOffset, centerWidth, centerHeight + heightOffset);
+        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, 0, bm_img.getWidth(), bm_img.getHeight());
         Bitmap scaledCroppedBitmap = Bitmap.createScaledBitmap(croppedBitmap, croppedBitmap.getWidth() / scaleFactor, croppedBitmap.getHeight() / scaleFactor, false);
 
         Bitmap visualYellow = Bitmap.createScaledBitmap(bm_img, bm_img.getWidth() / scaleFactor, bm_img.getHeight() / scaleFactor, false);
@@ -142,16 +160,6 @@ public class MineralDetection {
         } else {
             return MineralPosition.NULL;
         }
-    }
-
-    public Image getImageFromFrame(VuforiaLocalizer.CloseableFrame frame, int format) {
-        long numImages = frame.getNumImages();
-        for (int i = 0; i < numImages; i++) {
-            if (frame.getImage(i).getFormat() == format) {
-                return frame.getImage(1);
-            }
-        }
-        return null;
     }
 
     public float[] rgb2cmyk(int r, int g, int b) {

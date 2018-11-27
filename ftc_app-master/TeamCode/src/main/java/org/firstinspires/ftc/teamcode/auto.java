@@ -45,8 +45,10 @@ public class auto extends LinearOpMode {
     private Hardware hardware;
     private Robot robot;
     private Console console;
-    private MineralDetection mineralDetection;
+    public MineralDetection mineralDetection;
 
+    public MineralPosition mineralPosition = null;
+    public Bitmap sample = null;
 
     private Integer POSITION = null;
 
@@ -62,9 +64,6 @@ public class auto extends LinearOpMode {
         //initializes vuforia
         mineralDetection.vuforiaInit();
 
-        //assigned null values
-        MineralPosition mineralPosition = null;
-        Bitmap sample = null;
 
         //region Initialization
 
@@ -116,20 +115,23 @@ public class auto extends LinearOpMode {
             console.Log("Broke", "");
         }
 
-        new Thread(){
-            mineralPosition = mineralDetection.getPosition(sample);
-        }.start();
+        Thread analyzePosition = new Thread(){
+            public void run() {
+                mineralPosition = mineralDetection.getPosition(sample);
+            }
+        };
 
-        //starts Lowering
-        //TODO lowering
+        analyzePosition.start(); // starts a simultaneous method to analyze position
 
-        //simultaneously start analyzing photo as lowering to minimise time loss
+        // TODO lowering
 
+        // TODO stop lowering
 
-        //stops lowering
-        //TODO stop lowering
+        try {
+            analyzePosition.join();
+        } catch (InterruptedException e){}
 
-        robot.rotate(90, 0.5, 0.1);
+        robot.rotate(90, 0.5, 0.98);
         switch(mineralPosition){
             case RIGHT:
 

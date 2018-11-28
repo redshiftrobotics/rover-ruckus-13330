@@ -58,12 +58,12 @@ public class Robot { //parent class
 
     //region Drive Methods
 
-    public void setPowerLeft(double power){
+    public void setPowerLeft(double power) {
         hardware.back_left_motor.setPower(-power);
         hardware.front_left_motor.setPower(-power);
     }
 
-    public void setPowerRight(double power){
+    public void setPowerRight(double power) {
         hardware.back_right_motor.setPower(-power);
         hardware.front_right_motor.setPower(-power);
     }
@@ -76,8 +76,8 @@ public class Robot { //parent class
         hardware.back_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
     }
 
-    public void updateSpeed(){
-        if(fastMode) {
+    public void updateSpeed() {
+        if (fastMode) {
             speed = speeds[1];
             console.Log("SpeedyBoy", "");
         } else {
@@ -216,20 +216,25 @@ public class Robot { //parent class
             degrees -= 360;
 
         resetAngle(); // restart imu movement tracking
+        console.Log("BeforeLoop", turnPercentage);
 
 
         while (context.opModeIsActive() && turnPercentage < stopThreashold) { // while the percentage of turn is less than threshold
 
+            console.Status(" " + turnPower * (1 - turnPercentage * 2));
 
-            if(degrees < 0) { // turn right
-                setPowerLeft(turnPower * (decay(turnPercentage, degrees)));
-                setPowerRight(-turnPower * (decay(turnPercentage, degrees)));
+            if (degrees < 0) { // turn right
+                setPowerLeft(turnPower * (1 - turnPercentage * 2));
+                setPowerRight(-turnPower * (1 - turnPercentage * 2));
             } else { // turn left
-                setPowerLeft(-turnPower * (decay(turnPercentage, degrees)));
-                setPowerRight(turnPower * (decay(turnPercentage, degrees)));
+                setPowerLeft(-turnPower * (1 - turnPercentage * 2));
+                setPowerRight(turnPower * (1 - turnPercentage * 2));
             }
 
-            turnPercentage = getAngle()/degrees; // sets turnPercentage
+
+            turnPercentage = getAngle() / degrees; // sets turnPercentage
+
+            context.idle();
         }
 
         setPowerLeft(0);
@@ -243,10 +248,10 @@ public class Robot { //parent class
         return Math.max(min, Math.min(max, val));
     }
 
-    public double decay(double turnPercentage, double toTurnDegrees){
+    public double decay(double turnPercentage, double toTurnDegrees) {
         double x = toTurnDegrees * turnPercentage;
 
-        return Math.pow(Math.cos((Math.PI/2) * (x/toTurnDegrees)), 0.6);
+        return Math.pow(Math.cos((Math.PI / 2) * (x / toTurnDegrees)), 0.6);
     }
 
     //endregion

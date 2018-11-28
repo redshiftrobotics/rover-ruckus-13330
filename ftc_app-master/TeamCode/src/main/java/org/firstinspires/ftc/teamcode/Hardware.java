@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+/* Copyright (c) 2018 FIRST. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without modification,
 * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -43,11 +43,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hardware { // Here we get the DcMotors from the REV hub and assign their names.
 
-    //region Hardware Initialization
-    public DcMotor front_right_motor;
+
+    public DcMotor front_right_motor; // motor initialization
     public DcMotor front_left_motor;
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
+
 
     public DcMotor lowerArm;
     public DcMotor upperArm;
@@ -55,79 +56,95 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public Servo mineralKicker;
 
-    public DcMotor lifter;
 
     public ColorSensor color_sensor_1;
 
-    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
-
     public BNO055IMU imu;
+
+
+    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
     public Orientation oldAngle = new Orientation();
     public Orientation angles = new Orientation();
+
+
     public double globalAngle;
     public double correction;
 
     public int[] lowerArmValues = {0,1,2};
     public int currentLowerArmValue = lowerArmValues[0];
+
     public int[] upperArmValues = {0,1,2};
     public int currentUpperArmValue = upperArmValues[0];
+
 
     public boolean topSpeed = false;
     public double maxSpeed = 1;
     public double minSpeed = 0.3;
     public double speed = minSpeed;
 
-    public double GEAR_RATIO = 1;
+    //encoders!
+
     public double WHEEL_DIAMETER = 4;
-    public double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
+    public double COLOR_SENSOR_DISTANCE = 3.5;
+    double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
 
-    //endregion
-
-    public Hardware(OpMode context) {
+    public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
         imu = context.hardwareMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
 
-        imuParameters.mode              = BNO055IMU.SensorMode.IMU;
-        imuParameters.angleUnit         = BNO055IMU.AngleUnit.DEGREES;
-        imuParameters.accelUnit         = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        imuParameters.loggingEnabled    = false;
+        imuParameters.mode                = BNO055IMU.SensorMode.IMU;
+        imuParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        imuParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imuParameters.loggingEnabled      = false;
 
         imu.initialize(imuParameters);
 
 
-        color_sensor_1                  = context.hardwareMap.colorSensor.get("color_sensor_1");
 
-        mineralKicker                   = context.hardwareMap.servo.get("mineralKicker");
-        collector                       = context.hardwareMap.dcMotor.get("collector");
+        color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
 
-        front_left_motor                = context.hardwareMap.dcMotor.get("front_left_motor");
-        front_left_motor                .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        front_left_motor                .setDirection(DcMotor.Direction.REVERSE);
-        front_left_motor                .setZeroPowerBehavior(zeroPowerBehavior);
+        lowerArm = context.hardwareMap.dcMotor.get("lowerArm");
+        upperArm = context.hardwareMap.dcMotor.get("upperArm");
+        mineralKicker = context.hardwareMap.servo.get("mineralKicker");
+        collector = context.hardwareMap.dcMotor.get("collector");
 
-        back_left_motor                 = context.hardwareMap.dcMotor.get("back_left_motor");
-        back_left_motor                 .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_left_motor                 .setDirection(DcMotor.Direction.REVERSE);
-        back_left_motor                 .setZeroPowerBehavior(zeroPowerBehavior);
+        front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
+        back_left_motor = context.hardwareMap.dcMotor.get("back_left_motor");
 
-        front_right_motor               = context.hardwareMap.dcMotor.get("front_right_motor");
-        front_right_motor               .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        front_right_motor               .setDirection(DcMotor.Direction.FORWARD);
-        front_right_motor               .setZeroPowerBehavior(zeroPowerBehavior);
+        front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
+        back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
 
-        back_right_motor                 = context.hardwareMap.dcMotor.get("back_right_motor");
-        back_right_motor                .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_right_motor                .setDirection(DcMotor.Direction.FORWARD);
-        back_right_motor                .setZeroPowerBehavior(zeroPowerBehavior);
 
-        lowerArm                        = context.hardwareMap.dcMotor.get("lowerArm");
-        lowerArm                        .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lowerArm                        .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
 
-        upperArm                        = context.hardwareMap.dcMotor.get("upperArm");
-        upperArm                        .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        upperArm                        .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        front_right_motor.setDirection(DcMotor.Direction.FORWARD);
+        back_right_motor.setDirection(DcMotor.Direction.FORWARD);
+
+        front_left_motor.setDirection(DcMotor.Direction.REVERSE);
+        back_left_motor.setDirection(DcMotor.Direction.REVERSE);
+
+        back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        front_left_motor.setZeroPowerBehavior(zeroPowerBehavior);
+        back_left_motor.setZeroPowerBehavior(zeroPowerBehavior);
+
+        front_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
+        back_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
+
+
+        lowerArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        upperArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        lowerArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        upperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
     }
 }

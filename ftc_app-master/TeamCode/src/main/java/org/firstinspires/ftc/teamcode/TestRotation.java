@@ -40,7 +40,7 @@ public class TestRotation extends LinearOpMode {
 
     // ones = after which comp
     // hundredths = which practice
-    public double version = 1.04;
+    public double version = 1.05;
 
     // instances of hardware, robot, and text
     private Hardware hardware;
@@ -71,22 +71,54 @@ public class TestRotation extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            if(gamepad1.dpad_left){
-                robot.rotate(-50, 0.1, 0.90);
+            if(gamepad1.dpad_left){ // mineral left position.
+
+                robot.rotate(-50, 0.1, 0.90); // turns toward left mineral.
                 sleep(100);
-                robot.drive(0.25, 1200);
-            } else if( gamepad1.dpad_up){
-                robot.rotate(-75, 0.1, 0.90);
+                robot.drive(0.25, 1100); // drives into it.
                 sleep(100);
-                robot.drive(0.25, 1200);
-            } else if( gamepad1.dpad_right){
-                robot.rotate(-80, 0.1, 0.90);
+                robot.rotate(80, 0.1, 0.90); //turns toward depo.
                 sleep(100);
-                robot.drive(0.5,100);
+                robot.drive(0.50, 3000); //TODO: Is .5 power too high?
                 sleep(100);
-                robot.rotate(-23, 0.15, 0.85);
+                robot.drive(-0.50, 3200); //drives backward into crater.
+
+            } else if( gamepad1.dpad_up){ // mineral middle position.
+
+                robot.rotate(-75, 0.1, 0.90); //turns towards middle mineral.
                 sleep(100);
-                robot.drive(0.25, 1200);
+                robot.drive(0.25, 1100); //drives into it.
+                sleep(100);
+                robot.rotate(75, 0.1, 0.90); // turns to original rotation.
+                sleep(100);
+                robot.drive(0.25, 200); // moves slightly forward after turning.
+                sleep(100);
+                robot.rotate(30, 0.1, 0.90); //turns toward depo.
+                sleep(100);
+                robot.drive(0.50, 3000); //drives forward into depo.
+                sleep(100);
+                robot.drive(-0.50, 3200); //drives backward into crater.
+
+            } else if( gamepad1.dpad_right){// mineral right position.
+
+                robot.rotate(-80, 0.1, 0.90); //turns all the way around.
+                sleep(100);
+                robot.drive(0.5,100); // moves out a little bit.
+                sleep(100);
+                robot.rotate(-23, 0.15, 0.85); //turns toward right mineral.
+                sleep(100);
+                robot.drive(0.25, 1100); // drives into mineral.
+                sleep(100);
+                robot.rotate(103, 0.1, 0.90); //turns back to original rotation.
+                sleep(100);
+                robot.drive(0.25, 300); // drives forward a bit after driving.
+                sleep(100);
+                robot.rotate(80, 0.1, 0.90); //turns toward depo.
+                sleep(100);
+                robot.drive(0.50, 3000); //drives forward into depo.
+                sleep(100);
+                robot.drive(-0.50, 3200); //drives backward into crater.
+
             }
             console.Log("angle", robot.getAngle());
             console.Update();

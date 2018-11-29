@@ -219,14 +219,14 @@ public class Robot { //parent class
 
         while (context.opModeIsActive() && turnPercentage < stopThreashold) { // while the percentage of turn is less than threshold
 
-            console.Status(" " + turnPower * (1 - turnPercentage * 2));
+            console.Status(" " + turnPower * (1 - turnPercentage));
 
             if (degrees < 0) { // turn right
-                setPowerLeft(turnPower * (1 - turnPercentage * 2));
-                setPowerRight(-turnPower * (1 - turnPercentage * 2));
+                setPowerLeft(turnPower * (1 - turnPercentage ));
+                setPowerRight(-turnPower * (1 - turnPercentage));
             } else { // turn left
-                setPowerLeft(-turnPower * (1 - turnPercentage * 2));
-                setPowerRight(turnPower * (1 - turnPercentage * 2));
+                setPowerLeft(-turnPower * (1 - turnPercentage));
+                setPowerRight(turnPower * (1 - turnPercentage));
             }
 
 

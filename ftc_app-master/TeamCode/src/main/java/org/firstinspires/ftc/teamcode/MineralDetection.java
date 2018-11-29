@@ -99,7 +99,7 @@ public class MineralDetection {
         Bitmap[] thirds = new Bitmap[3];
         int[] numYellow = new int[3];
 
-        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, 0, bm_img.getWidth(), bm_img.getHeight());
+        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, bm_img.getHeight() / 2, bm_img.getWidth(), bm_img.getHeight() / 2);
         Bitmap scaledCroppedBitmap = Bitmap.createScaledBitmap(croppedBitmap, croppedBitmap.getWidth() / scaleFactor, croppedBitmap.getHeight() / scaleFactor, false);
 
         Bitmap visualYellow = Bitmap.createScaledBitmap(bm_img, bm_img.getWidth() / scaleFactor, bm_img.getHeight() / scaleFactor, false);

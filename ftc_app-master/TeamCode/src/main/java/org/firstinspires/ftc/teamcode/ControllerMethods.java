@@ -46,19 +46,16 @@ public class ControllerMethods {
         this.console = new Console(hardware, this.robot, context);
     }
 
-    public void speedToggle(){
+    public void speedToggle(float nothing){
         robot.fastMode = !robot.fastMode;
-        console.Log("Toggled Speed!", null);
     }
 
     public void rightDrivePower(float power){
-        hardware.back_right_motor.setPower(power * hardware.speed);
-        hardware.front_right_motor.setPower(power * hardware.speed);
+        robot.setPowerRight(-power);
     }
 
     public void leftDrivePower(float power){
-        hardware.back_left_motor.setPower(power * hardware.speed);
-        hardware.front_left_motor.setPower(power * hardware.speed);
+        robot.setPowerLeft(-power);
     }
 
     public void setArmPosition(float position){

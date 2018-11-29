@@ -59,7 +59,7 @@ public class teleop extends LinearOpMode {
         console.Update();
 
         //reads config file
-        rc.readFile("TestConfig.txt");
+        rc.readFile("RobotConfig.txt");
 
         //wait for the IMU to be initiated
         while (!hardware.imu.isGyroCalibrated())
@@ -73,14 +73,14 @@ public class teleop extends LinearOpMode {
         //region Run Loop
         while (opModeIsActive()) {
 
-            console.Log("eat my", hardware.topSpeed);
             robot.updateSpeed();
             robot.checkDirection();
             robot.setZeroPowerBehavior();
 
             rc.updateControls();
-            console.Update();
 
+            console.Log("FastMode", robot.fastMode);
+            console.Update();
             idle();
         }
 

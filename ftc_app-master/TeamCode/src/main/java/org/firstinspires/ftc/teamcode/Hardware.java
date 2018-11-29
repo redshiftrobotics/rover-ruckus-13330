@@ -116,9 +116,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
         back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
 
-
         color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
-
 
         front_right_motor.setDirection(DcMotor.Direction.FORWARD);
         back_right_motor.setDirection(DcMotor.Direction.FORWARD);

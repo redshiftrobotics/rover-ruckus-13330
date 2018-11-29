@@ -59,13 +59,13 @@ public class Robot { //parent class
     //region Drive Methods
 
     public void setPowerLeft(double power) {
-        hardware.back_left_motor.setPower(-power);
-        hardware.front_left_motor.setPower(-power);
+        hardware.back_left_motor.setPower(-power * speed);
+        hardware.front_left_motor.setPower(-power * speed);
     }
 
     public void setPowerRight(double power) {
-        hardware.back_right_motor.setPower(-power);
-        hardware.front_right_motor.setPower(-power);
+        hardware.back_right_motor.setPower(-power * speed);
+        hardware.front_right_motor.setPower(-power * speed);
     }
 
     public void setZeroPowerBehavior() {
@@ -79,10 +79,8 @@ public class Robot { //parent class
     public void updateSpeed() {
         if (fastMode) {
             speed = speeds[1];
-            console.Log("SpeedyBoy", "");
         } else {
             speed = speeds[0];
-            console.Log("no speed", fastMode);
         }
 
     }

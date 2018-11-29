@@ -30,10 +30,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.content.res.AssetManager;
+import android.os.Environment;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
@@ -205,12 +208,10 @@ public class ReadConfig {
         AssetManager am = context.hardwareMap.appContext.getAssets();
 
         try {
+            File sdcard = Environment.getExternalStorageDirectory();
+            File file = new File(sdcard,fileName);
 
-            br = new BufferedReader(
-                    new InputStreamReader(am.open(fileName)));
-
-            console.Log(br.toString(), " ye");
-            console.Update();
+            br = new BufferedReader(new FileReader(file));
 
 
             String x;
@@ -259,15 +260,11 @@ public class ReadConfig {
                             // if real operation, then find data type and assign operation method address
                             if (tokens[2].equals("boolean")) {
 
-                                if(tokens.length == 3)
-                                    deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1]);
-
-                                if (tokens.length == 4) {
 
                                     deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1], float.class);
 
                                     methodParams[devicePosition] = Float.parseFloat(tokens[3]);
-                                }
+
 
                             } else if (tokens[2].equals("float")) {
                                 deviceMethods[devicePosition] = cm.getClass().getMethod(tokens[1], float.class);
@@ -325,8 +322,9 @@ public class ReadConfig {
 
         try {
             // controller gamepad1
-            if (context.gamepad1.a && deviceMethods[gA] != null && methodParams[gA] != 0)
+            if (context.gamepad1.a && deviceMethods[gA] != null && !Float.isNaN(methodParams[gA]))
                 deviceMethods[gA].invoke(cm, methodParams[gA]);
+
 
             if (context.gamepad1.b && deviceMethods[gB] != null && methodParams[gB] != 0)
                 deviceMethods[gB].invoke(cm, methodParams[gB]);

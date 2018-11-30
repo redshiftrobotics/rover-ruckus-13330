@@ -56,6 +56,8 @@ public class Robot { //parent class
     public double[] speeds = {0.33, 1};
     public double speed = speeds[0];
 
+
+
     //region Drive Methods
 
     public void setPowerLeft(double power) {
@@ -76,6 +78,11 @@ public class Robot { //parent class
         hardware.back_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
     }
 
+    public void setMineralKickerPostion(double position){
+        hardware.mineral_kicker_1.setPosition(position);
+        hardware.mineral_kicker_2.setPosition(position);
+    }
+
     public void updateSpeed() {
         if (fastMode) {
             speed = speeds[1];
@@ -85,12 +92,12 @@ public class Robot { //parent class
 
     }
 
-    public void drive(double power, long time) {
+    public void drive(double power, double time) {
         hardware.back_right_motor.setPower(-power + hardware.correction);
         hardware.front_right_motor.setPower(-power + hardware.correction);
         hardware.back_left_motor.setPower(-power);
         hardware.front_left_motor.setPower(-power);
-        context.sleep(time);
+        context.sleep((long)time);
         hardware.back_right_motor.setPower(0);
         hardware.front_right_motor.setPower(0);
         hardware.back_left_motor.setPower(0);

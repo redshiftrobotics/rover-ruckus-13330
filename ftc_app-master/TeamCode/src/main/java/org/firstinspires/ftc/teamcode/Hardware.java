@@ -54,10 +54,9 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor upperArm;
     public DcMotor collector;
 
-    public Servo mineralKicker;
+    public Servo mineral_kicker_1;
+    public Servo mineral_kicker_2;
 
-
-    public ColorSensor color_sensor_1;
 
     public BNO055IMU imu;
 
@@ -103,11 +102,11 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
 
 
-        color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
 
         lowerArm = context.hardwareMap.dcMotor.get("lowerArm");
         upperArm = context.hardwareMap.dcMotor.get("upperArm");
-        mineralKicker = context.hardwareMap.servo.get("mineralKicker");
+        mineral_kicker_1 = context.hardwareMap.servo.get("mineral_kicker_1");
+        mineral_kicker_2 = context.hardwareMap.servo.get("mineral_kicker_2");
         collector = context.hardwareMap.dcMotor.get("collector");
 
         front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
@@ -115,8 +114,6 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
         back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
-
-        color_sensor_1 = context.hardwareMap.colorSensor.get("color_sensor_1");
 
         front_right_motor.setDirection(DcMotor.Direction.FORWARD);
         back_right_motor.setDirection(DcMotor.Direction.FORWARD);

@@ -54,7 +54,6 @@ public class Console { // parent class
         context.telemetry.addData("Forward Angle:", hardware.oldAngle.firstAngle);
         context.telemetry.addData("Correction Angle:", hardware.correction);
         context.telemetry.addData("Current Global Angle:", hardware.globalAngle);
-        context.telemetry.addData("Current MineralKickerAngle", hardware.mineralKicker.getPosition());
     }
 
     public void Update(){

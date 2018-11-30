@@ -167,6 +167,7 @@ public class ReadConfig {
                 "setArmPosition",
                 "test",
                 "null",
+                "setMineralKickerPos",
         };
 
         String[] deviceNames = { //MUST BE IN ORDER with deviceMethods
@@ -326,13 +327,13 @@ public class ReadConfig {
                 deviceMethods[gA].invoke(cm, methodParams[gA]);
 
 
-            if (context.gamepad1.b && deviceMethods[gB] != null && methodParams[gB] != 0)
+            if (context.gamepad1.b && deviceMethods[gB] != null && !Float.isNaN(methodParams[gB]))
                 deviceMethods[gB].invoke(cm, methodParams[gB]);
 
-            if (context.gamepad1.x && deviceMethods[gX] != null && methodParams[gX] != 0)
+            if (context.gamepad1.x && deviceMethods[gX] != null && !Float.isNaN(methodParams[gX]))
                 deviceMethods[gX].invoke(cm, methodParams[gX]);
 
-            if (context.gamepad1.y && deviceMethods[gY] != null && methodParams[gY] != 0)
+            if (context.gamepad1.y && deviceMethods[gY] != null && !Float.isNaN(methodParams[gY]))
                 deviceMethods[gY].invoke(cm, methodParams[gY]);
 
             if (context.gamepad1.right_bumper && deviceMethods[gright_bumper] != null && methodParams[gright_bumper] != 0)
@@ -359,36 +360,36 @@ public class ReadConfig {
             if (deviceMethods[gleft_stick_x] != null)
                 deviceMethods[gleft_stick_x].invoke(cm, context.gamepad1.left_stick_x);
 
-            if (context.gamepad1.dpad_right && deviceMethods[gdpad_right] != null && methodParams[gdpad_right] != 0)
+            if (context.gamepad1.dpad_right && deviceMethods[gdpad_right] != null && !Float.isNaN(methodParams[gdpad_right]))
                 deviceMethods[gdpad_right].invoke(cm, methodParams[gdpad_right]);
 
-            if (context.gamepad1.dpad_left && deviceMethods[gdpad_left] != null && methodParams[gdpad_left] != 0)
+            if (context.gamepad1.dpad_left && deviceMethods[gdpad_left] != null && !Float.isNaN(methodParams[gdpad_left]))
                 deviceMethods[gdpad_left].invoke(cm, methodParams[gdpad_left]);
 
-            if (context.gamepad1.dpad_up && deviceMethods[gdpad_up] != null && methodParams[gdpad_up] != 0)
+            if (context.gamepad1.dpad_up && deviceMethods[gdpad_up] != null && !Float.isNaN(methodParams[gdpad_up]))
                 deviceMethods[gdpad_up].invoke(cm, methodParams[gdpad_up]);
 
-            if (context.gamepad1.dpad_down && deviceMethods[gdpad_down] != null && methodParams[gdpad_down] != 0)
+            if (context.gamepad1.dpad_down && deviceMethods[gdpad_down] != null && !Float.isNaN(methodParams[gdpad_down]))
                 deviceMethods[gdpad_down].invoke(cm, methodParams[gdpad_down]);
 
 
             //controller gamepad2
-            if (context.gamepad2.a && deviceMethods[gA + 16] != null)
+            if (context.gamepad2.a && deviceMethods[gA + 16] != null && !Float.isNaN(methodParams[gA + 16]))
                 deviceMethods[gA + 16].invoke(cm);
 
-            if (context.gamepad2.b && deviceMethods[gB + 16] != null)
+            if (context.gamepad2.b && deviceMethods[gB + 16] != null && !Float.isNaN(methodParams[gB + 16]))
                 deviceMethods[gB + 16].invoke(cm);
 
-            if (context.gamepad2.x && deviceMethods[gX + 16] != null)
+            if (context.gamepad2.x && deviceMethods[gX + 16] != null&& !Float.isNaN(methodParams[gX + 16]))
                 deviceMethods[gX + 16].invoke(cm);
 
-            if (context.gamepad2.y && deviceMethods[gY + 16] != null)
+            if (context.gamepad2.y && deviceMethods[gY + 16] != null && !Float.isNaN(methodParams[gY + 16]))
                 deviceMethods[gY + 16].invoke(cm);
 
-            if (context.gamepad2.right_bumper && deviceMethods[gright_bumper + 16] != null)
+            if (context.gamepad2.right_bumper && deviceMethods[gright_bumper + 16] != null && !Float.isNaN(methodParams[gright_bumper + 16]))
                 deviceMethods[gright_bumper + 16].invoke(cm);
 
-            if (context.gamepad2.left_bumper && deviceMethods[gleft_bumper + 16] != null)
+            if (context.gamepad2.left_bumper && deviceMethods[gleft_bumper + 16] != null && !Float.isNaN(methodParams[gleft_bumper + 16]))
                 deviceMethods[gleft_bumper + 16].invoke(cm);
 
             if (deviceMethods[gright_trigger + 16] != null)
@@ -409,16 +410,16 @@ public class ReadConfig {
             if (deviceMethods[gleft_stick_x + 16] != null)
                 deviceMethods[gleft_stick_x + 16].invoke(cm, context.gamepad2.left_stick_x);
 
-            if (context.gamepad2.dpad_right && deviceMethods[gdpad_right + 16] != null)
-                deviceMethods[gdpad_right + 16].invoke(cm);
+            if (context.gamepad2.dpad_right && deviceMethods[gdpad_right + 16] != null && !Float.isNaN(methodParams[gdpad_right + 16]))
+            deviceMethods[gdpad_right + 16].invoke(cm);
 
-            if (context.gamepad2.dpad_left && deviceMethods[gdpad_left + 16] != null)
+            if (context.gamepad2.dpad_left && deviceMethods[gdpad_left + 16] != null && !Float.isNaN(methodParams[gdpad_left + 16]))
                 deviceMethods[gdpad_left + 16].invoke(cm);
 
-            if (context.gamepad2.dpad_up && deviceMethods[gdpad_up + 16] != null)
+            if (context.gamepad2.dpad_up && deviceMethods[gdpad_up + 16] != null && !Float.isNaN(methodParams[gdpad_up + 16]))
                 deviceMethods[gdpad_up + 16].invoke(cm);
 
-            if (context.gamepad2.dpad_down && deviceMethods[gdpad_down + 16] != null)
+            if (context.gamepad2.dpad_down && deviceMethods[gdpad_down + 16] != null && !Float.isNaN(methodParams[gdpad_down + 16]))
                 deviceMethods[gdpad_down + 16].invoke(cm);
 
         } catch (IllegalAccessException | InvocationTargetException e) { //absolutely should NEVER happen

@@ -53,6 +53,8 @@ public class TestRotation extends LinearOpMode {
 
     private LaunchPosition launchPosition = LaunchPosition.NULL;
 
+    public double driveSpeed = 1; // dictates the total drive speed.
+
     @Override
     public void runOpMode() {
 
@@ -65,7 +67,8 @@ public class TestRotation extends LinearOpMode {
         while (!hardware.imu.isGyroCalibrated())
             idle();
 
-        console.Status("imu inited, waiting for launch position.");
+        console.Status("imu inited, waiting for launch position. Drive Speed: " + driveSpeed);
+
 
 
         // waits until the program is started
@@ -85,6 +88,7 @@ public class TestRotation extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
+            robot.setMineralKickerPostion(0);
             switch (launchPosition){
                 case CRATER:
                     if(gamepad1.dpad_left){ // mineral left position.
@@ -93,9 +97,11 @@ public class TestRotation extends LinearOpMode {
                         sleep(100);
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
                         robot.setZeroPowerBehavior();
-                        robot.drive(0.20, 1000); // drives into it.
+                        robot.drive(0.20 * driveSpeed, 1000 / driveSpeed); // drives into it.
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
                         robot.setZeroPowerBehavior();
+                        robot.setMineralKickerPostion(30);
+
 
 
                     } else if( gamepad1.dpad_up){ // mineral middle position.
@@ -104,7 +110,7 @@ public class TestRotation extends LinearOpMode {
                         sleep(100);
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
                         robot.setZeroPowerBehavior();
-                        robot.drive(0.20, 1000); //drives into it.
+                        robot.drive(0.20 * driveSpeed, 1000 / driveSpeed); //drives into it.
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
                         robot.setZeroPowerBehavior();
 
@@ -113,21 +119,21 @@ public class TestRotation extends LinearOpMode {
 
                         robot.rotate(-80, 0.2, 0.90); //turns all the way around.
                         sleep(100);
-                        robot.drive(0.5,100); // moves out a little bit.
+                        robot.drive(0.05 * driveSpeed,100 / driveSpeed); // moves out a little bit.
                         sleep(100);
                         robot.rotate(-25, 0.15, 0.85); //turns toward right mineral.
                         sleep(100);
-                        robot.drive(0.20, 900); // drives into mineral.
+                        robot.drive(0.05 * driveSpeed, 900 / driveSpeed); // drives into mineral.
                         sleep(100);
                         robot.rotate(-45, 0.2, 0.90); // rotates toward wall.
                         sleep(100);
-                        robot.drive(0.2, 600); // drives toward wall.
+                        robot.drive(0.05 * driveSpeed, 700 / driveSpeed); // drives toward wall.
                         sleep(100);
                         robot.rotate(-30,0.2, 0.90); // rotates toward depo.
                         sleep(100);
-                        robot.drive(0.30, 1000); // drives into depo.
+                        robot.drive(0.05 * driveSpeed, 1000 / driveSpeed); // drives into depo.
                         sleep(100);
-                        robot.drive(-0.3, 1200); // reverses into crater.
+                        robot.drive(-0.05 * driveSpeed, 1200 / driveSpeed); // reverses into crater.
                     }
                     break;
 
@@ -136,9 +142,17 @@ public class TestRotation extends LinearOpMode {
 
                         robot.rotate(-45, 0.2, 0.90); // turns toward left mineral.
                         sleep(100);
+                        robot.drive(0.05 * driveSpeed, 2000 / driveSpeed); // drives into it and into depo.
+                        sleep(100);
+                        robot.rotate(-30, 0.2, 0.9); // turns slightly toward the wall.
+                        sleep(100);
+                        robot.drive(0.05 * driveSpeed, 400 / driveSpeed); // drives across edge of depo.
+                        sleep(100);
+                        robot.rotate(35, 0.2, 0.9); // turns toward crater.
+                        sleep(100);
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
                         robot.setZeroPowerBehavior();
-                        robot.drive(0.20, 1000); // drives into it.
+                        robot.drive(0.10 * driveSpeed, 4000 / driveSpeed); // drives into it.
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
                         robot.setZeroPowerBehavior();
 
@@ -147,9 +161,15 @@ public class TestRotation extends LinearOpMode {
 
                         robot.rotate(-73, 0.2, 0.90); //turns towards middle mineral.
                         sleep(100);
+                        robot.drive(0.05 * driveSpeed, 2000 / driveSpeed); // drives into mineral and in front of depo.
+                        sleep(100);
+                        robot.drive(-0.05 * driveSpeed, 1400 / driveSpeed); //drives backward to original position.
+                        sleep(100);
+                        robot.rotate(-80, 0.2, 0.90); // turns toward crater.
+                        sleep(100);
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
                         robot.setZeroPowerBehavior();
-                        robot.drive(0.20, 1000); //drives into it.
+                        robot.drive(0.05 * driveSpeed, 2800 / driveSpeed); //drives into crater.
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
                         robot.setZeroPowerBehavior();
 
@@ -158,11 +178,11 @@ public class TestRotation extends LinearOpMode {
 
                         robot.rotate(-80, 0.2, 0.90); //turns all the way around.
                         sleep(100);
-                        robot.drive(0.5,100); // moves out a little bit.
+                        robot.drive(0.5 * driveSpeed,100 / driveSpeed); // moves out a little bit.
                         sleep(100);
                         robot.rotate(-25, 0.15, 0.85); //turns toward right mineral.
                         sleep(100);
-                        robot.drive(0.20, 1000); // drives into mineral.
+                        robot.drive(0.20 * driveSpeed, 1000 / driveSpeed); // drives into mineral.
 
                     }
             }

@@ -79,10 +79,11 @@ public class teleop extends LinearOpMode {
 
             rc.updateControls();
 
-            console.Log("FastMode", robot.fastMode);
-            console.Log("Mineral Kicker 1 pos: ", hardware.mineral_kicker_1.getDirection());
-            console.Log("Mineral Kicker 2 pos: ", hardware.mineral_kicker_2.getDirection());
-
+            console.Log("Encoders", "");
+            console.Log("back right", hardware.back_right_motor.getCurrentPosition());
+            console.Log("back left", hardware.back_left_motor.getCurrentPosition());
+            console.Log("front right", hardware.front_right_motor.getCurrentPosition());
+            console.Log("front left", hardware.front_left_motor.getCurrentPosition());
 
             console.Update();
 

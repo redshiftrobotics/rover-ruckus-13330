@@ -31,49 +31,37 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
 
 public class Hardware { // Here we get the DcMotors from the REV hub and assign their names.
 
-
-    public DcMotor front_right_motor; // motor initialization
+    public DcMotor front_right_motor;
     public DcMotor front_left_motor;
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
-
-
-    public DcMotor lowerArm;
-    public DcMotor upperArm;
     public DcMotor collector;
 
     public Servo mineral_kicker_1;
     public Servo mineral_kicker_2;
-
+    public Servo wrist_1;
+    public Servo wrist_2;
 
     public BNO055IMU imu;
-
-
-    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
-    public Orientation oldAngle = new Orientation();
-    public Orientation angles = new Orientation();
-
+    public CameraName webcam;
 
     public double globalAngle;
     public double correction;
 
-    public int[] lowerArmValues = {0,1,2};
-    public int currentLowerArmValue = lowerArmValues[0];
+    public Orientation oldAngle = new Orientation();
+    public Orientation angles = new Orientation();
 
-    public int[] upperArmValues = {0,1,2};
-    public int currentUpperArmValue = upperArmValues[0];
+    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
 
     public boolean topSpeed = false;
@@ -81,15 +69,10 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public double minSpeed = 0.3;
     public double speed = minSpeed;
 
-    //encoders!
-
-    public double WHEEL_DIAMETER = 4;
-    public double COLOR_SENSOR_DISTANCE = 3.5;
-    double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
-
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
-        imu = context.hardwareMap.get(BNO055IMU.class, "imu");
+        //region IMU
+        imu = context.hardwareMap.get(BNO055IMU.class, "imu 1");
 
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
 
@@ -100,46 +83,54 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         imu.initialize(imuParameters);
 
+        //endregion
 
-
-
-        lowerArm = context.hardwareMap.dcMotor.get("lowerArm");
-        upperArm = context.hardwareMap.dcMotor.get("upperArm");
+        /*
+        //region servos
         mineral_kicker_1 = context.hardwareMap.servo.get("mineral_kicker_1");
         mineral_kicker_2 = context.hardwareMap.servo.get("mineral_kicker_2");
-        collector = context.hardwareMap.dcMotor.get("collector");
 
+        wrist_1 = context.hardwareMap.servo.get("wrist_1");
+        wrist_2 = context.hardwareMap.servo.get("wrist_2");
+        //endregion
+        */
+
+        //region motors
+
+        //collector = context.hardwareMap.dcMotor.get("collector");
+
+        //region front_left_motor
         front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
-        back_left_motor = context.hardwareMap.dcMotor.get("back_left_motor");
-
-        front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
-        back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
-
-        front_right_motor.setDirection(DcMotor.Direction.FORWARD);
-        back_right_motor.setDirection(DcMotor.Direction.FORWARD);
-
         front_left_motor.setDirection(DcMotor.Direction.REVERSE);
-        back_left_motor.setDirection(DcMotor.Direction.REVERSE);
-
-        back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         front_left_motor.setZeroPowerBehavior(zeroPowerBehavior);
+        //endregion
+
+        //region back_left_motor
+        back_left_motor = context.hardwareMap.dcMotor.get("back_left_motor");
+        back_left_motor.setDirection(DcMotor.Direction.REVERSE);
+        back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_left_motor.setZeroPowerBehavior(zeroPowerBehavior);
+        //endregion
 
+        //region front_right_motor
+        front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
+        front_right_motor.setDirection(DcMotor.Direction.FORWARD);
+        front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
+        //endregion
+
+        //region back_right_motor
+        back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
+        back_right_motor.setDirection(DcMotor.Direction.FORWARD);
+        back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
+        //endregion
 
+        //endregion
 
-        lowerArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        upperArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        lowerArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        upperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
+        //region other
+        //webcam = context.hardwareMap.get(WebcamName.class, "Webcam 1");
+        //endregion
     }
 }

@@ -63,6 +63,8 @@ public class TestRotation extends LinearOpMode {
         this.robot = new Robot(this.hardware, this);
         this.console = new Console(this.hardware, this.robot, this);
 
+        robot.setMineralKickerPosition(0.37);
+
         //wait for the IMU to be initiated
         while (!hardware.imu.isGyroCalibrated())
             idle();
@@ -88,101 +90,105 @@ public class TestRotation extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            robot.setMineralKickerPostion(0);
             switch (launchPosition){
                 case CRATER:
                     if(gamepad1.dpad_left){ // mineral left position.
-
-                        robot.rotate(-45, 0.2, 0.90); // turns toward left mineral.
+                        robot.setMineralKickerPosition(0);
+                        robot.rotate(-45, 1, 0.90); // turns toward left mineral.
                         sleep(100);
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
+
                         robot.setZeroPowerBehavior();
-                        robot.drive(0.20 * driveSpeed, 1000 / driveSpeed); // drives into it.
+                        robot.drive(0.4 , 1000 ); // drives into it.
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
                         robot.setZeroPowerBehavior();
-                        robot.setMineralKickerPostion(30);
+                        robot.setMineralKickerPosition(0.37);
 
 
 
                     } else if( gamepad1.dpad_up){ // mineral middle position.
-
-                        robot.rotate(-73, 0.2, 0.90); //turns towards middle mineral.
+                        robot.setMineralKickerPosition(0);
+                        robot.rotate(-85, 1, 0.90); //turns towards middle mineral.
                         sleep(100);
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
                         robot.setZeroPowerBehavior();
-                        robot.drive(0.20 * driveSpeed, 1000 / driveSpeed); //drives into it.
+                        robot.drive(0.4 , 1000 ); //drives into it.
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
                         robot.setZeroPowerBehavior();
+                        robot.setMineralKickerPosition(0.37);
+
+
 
 
                     } else if( gamepad1.dpad_right){// mineral right position.
+                        robot.setMineralKickerPosition(0);
+                        robot.rotate(-80, 1, 0.90); //turns all the way around.
+                        sleep(100);
+                        robot.drive(0.4 ,100 ); // moves out a little bit.
+                        sleep(100);
+                        robot.rotate(-25, 1, 0.85); //turns toward right mineral.
+                        sleep(100);
+                        robot.drive(0.4 , 900 ); // drives into mineral.
+                        robot.setMineralKickerPosition(0.37);
 
-                        robot.rotate(-80, 0.2, 0.90); //turns all the way around.
-                        sleep(100);
-                        robot.drive(0.05 * driveSpeed,100 / driveSpeed); // moves out a little bit.
-                        sleep(100);
-                        robot.rotate(-25, 0.15, 0.85); //turns toward right mineral.
-                        sleep(100);
-                        robot.drive(0.05 * driveSpeed, 900 / driveSpeed); // drives into mineral.
-                        sleep(100);
-                        robot.rotate(-45, 0.2, 0.90); // rotates toward wall.
-                        sleep(100);
-                        robot.drive(0.05 * driveSpeed, 700 / driveSpeed); // drives toward wall.
-                        sleep(100);
-                        robot.rotate(-30,0.2, 0.90); // rotates toward depo.
-                        sleep(100);
-                        robot.drive(0.05 * driveSpeed, 1000 / driveSpeed); // drives into depo.
-                        sleep(100);
-                        robot.drive(-0.05 * driveSpeed, 1200 / driveSpeed); // reverses into crater.
                     }
                     break;
 
                 case DEPO:
                     if(gamepad1.dpad_left){ // mineral left position.
-
-                        robot.rotate(-45, 0.2, 0.90); // turns toward left mineral.
+                        robot.setMineralKickerPosition(0);
+                        robot.rotate(-38, 1, 0.90); // turns toward left mineral.
                         sleep(100);
-                        robot.drive(0.05 * driveSpeed, 2000 / driveSpeed); // drives into it and into depo.
+                        robot.drive(0.4 , 3000); // drives into it and into depo.
+                        robot.setMineralKickerPosition(0.37);
                         sleep(100);
-                        robot.rotate(-30, 0.2, 0.9); // turns slightly toward the wall.
+                        robot.rotate(-30, 1, 0.9); // turns slightly toward the wall.
                         sleep(100);
-                        robot.drive(0.05 * driveSpeed, 400 / driveSpeed); // drives across edge of depo.
+                        robot.drive(0.4 , 2200 ); // drives across edge of depo.
                         sleep(100);
-                        robot.rotate(35, 0.2, 0.9); // turns toward crater.
+                        robot.rotate(-80, 1, 0.9); // turns toward crater.
                         sleep(100);
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
                         robot.setZeroPowerBehavior();
-                        robot.drive(0.10 * driveSpeed, 4000 / driveSpeed); // drives into it.
+                        robot.drive(0.6 , 4000 ); // drives into it.
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
                         robot.setZeroPowerBehavior();
 
 
                     } else if( gamepad1.dpad_up){ // mineral middle position.
-
-                        robot.rotate(-73, 0.2, 0.90); //turns towards middle mineral.
+                        robot.setMineralKickerPosition(0);
+                        robot.rotate(-75, 1, 0.9); //turns towards middle mineral.
                         sleep(100);
-                        robot.drive(0.05 * driveSpeed, 2000 / driveSpeed); // drives into mineral and in front of depo.
+                        robot.drive(0.4 , 1000); // drives into mineral and in front of depo.
                         sleep(100);
-                        robot.drive(-0.05 * driveSpeed, 1400 / driveSpeed); //drives backward to original position.
+                        robot.setMineralKickerPosition(0.37);
+                        robot.drive(-0.4 , 2100); //drives backward to original position.
                         sleep(100);
-                        robot.rotate(-80, 0.2, 0.90); // turns toward crater.
+                        robot.rotate(-75, 1, 0.90); // turns toward crater.
                         sleep(100);
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
                         robot.setZeroPowerBehavior();
-                        robot.drive(0.05 * driveSpeed, 2800 / driveSpeed); //drives into crater.
+                        robot.drive(0.4 , 5000 ); //drives into crater.
                         hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
                         robot.setZeroPowerBehavior();
 
 
                     } else if( gamepad1.dpad_right){// mineral right position.
-
-                        robot.rotate(-80, 0.2, 0.90); //turns all the way around.
+                        robot.setMineralKickerPosition(0);
+                        robot.rotate(-90, 0.5, 0.90); //turns all the way around.
                         sleep(100);
-                        robot.drive(0.5 * driveSpeed,100 / driveSpeed); // moves out a little bit.
+                        robot.drive(0.5 ,100); // moves out a little bit.
                         sleep(100);
-                        robot.rotate(-25, 0.15, 0.85); //turns toward right mineral.
+                        robot.rotate(-20, 1, 0.85); //turns toward right mineral.
                         sleep(100);
-                        robot.drive(0.20 * driveSpeed, 1000 / driveSpeed); // drives into mineral.
+                        robot.drive(0.5, 2000); // drives into mineral.
+                        sleep(100);
+                        robot.setMineralKickerPosition(0.37);
+                        robot.rotate(75, 0.5, 0.90);
+                        sleep(100);
+                        robot.drive(0.05, 3000);
+                        sleep(100);
+                        robot.drive(-0.08, 2000);
 
                     }
             }

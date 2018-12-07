@@ -62,9 +62,16 @@ public class ControllerMethods {
         console.Log("set arm position to ", position);
     }
 
-    public void setMineralKickerPos(float degrees){
-        robot.setMineralKickerPostion(degrees);
-        console.Status("Rotated!");
+    public void setMineralKickerPosition(float degrees){
+        robot.setMineralKickerPosition(degrees);
     }
 
+    public void setWristPosition(float degrees){
+        robot.setWristPosition(degrees);
+        console.Status("degrees: " + degrees);
+    }
+
+    public void setCollector(float power){
+        robot.collect(power);
+    }
 }

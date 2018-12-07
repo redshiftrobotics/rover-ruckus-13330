@@ -33,13 +33,11 @@ import android.graphics.Bitmap;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name = "Autonomous", group = "13330 Pulsar")
-public class auto extends LinearOpMode {
+@Autonomous(name = "Depo Autonomous", group = "13330 Pulsar")
+public class autoDepo extends LinearOpMode {
 
-    // ones = after which comp
-    // hundredths = which practice
-    public double version = 1.04;
 
     // instances of hardware, robot, and text
     private Hardware hardware;
@@ -49,8 +47,6 @@ public class auto extends LinearOpMode {
 
     public MineralPosition mineralPosition = null;
     public Bitmap sample = null;
-
-    private Integer POSITION = null;
 
     @Override
     public void runOpMode() {
@@ -73,34 +69,6 @@ public class auto extends LinearOpMode {
         while (!hardware.imu.isGyroCalibrated())
             idle();
 
-
-        console.Status("waiting for position");
-
-        //wait until POSITION is initialized
-        while (POSITION == null) {
-            if(gamepad1.dpad_left) {
-                POSITION = 0;
-                console.Log("Depo Position", "");
-                console.Update();
-            }
-            else if(gamepad1.dpad_right) {
-                POSITION = 1;
-                console.Log("Crater Position", "");
-                console.Update();
-            }
-            else if(gamepad1.dpad_down){
-                POSITION = 3;
-                console.Log("Test Mode Enabled", "");
-                console.Update();
-            }
-
-            idle();
-        }
-
-        // prints out various statistics for debugging
-        console.initStats(version, "Autonomous");
-        console.Update();
-
         //endregion
 
         // waits until the program is started
@@ -108,73 +76,49 @@ public class auto extends LinearOpMode {
 
         //region Autonomous
 
-        //attempts take photo
         try {
             sample = mineralDetection.getImage();
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             console.Log("Broke", "");
         }
 
-        Thread analyzePosition = new Thread(){
-            public void run() {
-                mineralPosition = mineralDetection.getPosition(sample);
-            }
-        };
+        mineralPosition = mineralDetection.getPosition(sample, 2);
 
-        analyzePosition.start(); // starts a simultaneous method to analyze position
-
-        // TODO lowering
-
-        // TODO stop lowering
-
-        try {
-            analyzePosition.join();
-        } catch (InterruptedException e){}
-
-        robot.rotate(90, 0.5, 0.98);
-        switch(mineralPosition){
+        switch (mineralPosition) {
             case RIGHT:
-
+                robot.setMineralKickerPosition(0);
+                robot.rotate(-90, 1, 0.90); //turns all the way around.
+                sleep(100);
+                robot.drive(0.5, 100); // moves out a little bit.
+                sleep(100);
+                robot.rotate(-20, 1, 0.85); //turns toward right mineral.
+                sleep(100);
+                robot.drive(0.5, 2000); // drives into mineral.
                 break;
             case CENTER:
-
+                robot.setMineralKickerPosition(0);
+                robot.rotate(-80, 1, 0.9); //turns towards middle mineral.
+                sleep(100);
+                robot.drive(0.4, 1400); // drives into mineral and in front of depo.
+                sleep(100);
+                robot.setMineralKickerPosition(0.37);
                 break;
             case LEFT:
-
+                robot.setMineralKickerPosition(0);
+                robot.rotate(-50, 1, 0.90); // turns toward left mineral.
+                sleep(100);
+                robot.drive(0.4, 1500); // drives into it and into depo.
+                robot.setMineralKickerPosition(0.37);
                 break;
             case NULL:
-
+                robot.setMineralKickerPosition(0);
+                robot.rotate(-75, 1, 0.9); //turns towards middle mineral.
+                sleep(100);
+                robot.drive(0.4, 1000); // drives into mineral and in front of depo.
                 break;
-        }
-
-
-        // runs different code depending on starting position
-        switch(POSITION) {
-
-            // depo position
-            case (0):
-
-                //code me...
-
-                break;
-
-
-            // crater position
-            case (1):
-
-                //code me...
-
-                break;
-
-
-            default:
-
-                //code me...
-
-                break;
-
         }
 
         //endregion
     }
+
 }

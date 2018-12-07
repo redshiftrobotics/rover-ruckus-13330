@@ -79,7 +79,7 @@ public class TestMineralDetect extends LinearOpMode {
             }
 
             if (gamepad1.start) { // analyzes images
-                mineralPosition = mineralDetection.getPosition(sample);
+                mineralPosition = mineralDetection.getPosition(sample, 2);
                 console.Log("mineral", mineralPosition);
             }
 

@@ -56,8 +56,6 @@ public class Robot { //parent class
     public double[] speeds = {0.33, 1};
     public double speed = speeds[0];
 
-
-
     //region Drive Methods
 
     public void setPowerLeft(double power) {
@@ -78,10 +76,22 @@ public class Robot { //parent class
         hardware.back_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
     }
 
-    public void setMineralKickerPostion(double position){
+    public void setMineralKickerPosition(double position){
         hardware.mineral_kicker_1.setPosition(position);
-        hardware.mineral_kicker_2.setPosition(position);
+        hardware.mineral_kicker_2.setPosition(1 - position);
     }
+
+
+    public void setWristPosition(double position){
+        hardware.wrist_1.setPosition(position);
+        hardware.wrist_2.setPosition(1 - position);
+    }
+
+    public void collect(double power){
+        hardware.collector.setPower(power);
+    }
+
+
 
     public void updateSpeed() {
         if (fastMode) {
@@ -93,11 +103,11 @@ public class Robot { //parent class
     }
 
     public void drive(double power, double time) {
-        hardware.back_right_motor.setPower(-power + hardware.correction);
-        hardware.front_right_motor.setPower(-power + hardware.correction);
-        hardware.back_left_motor.setPower(-power);
-        hardware.front_left_motor.setPower(-power);
-        context.sleep((long)time);
+            hardware.back_right_motor.setPower(-power - hardware.correction);
+            hardware.front_right_motor.setPower(-power - hardware.correction);
+            hardware.back_left_motor.setPower(-power);
+            hardware.front_left_motor.setPower(-power);
+        context.sleep((long) time);
         hardware.back_right_motor.setPower(0);
         hardware.front_right_motor.setPower(0);
         hardware.back_left_motor.setPower(0);
@@ -113,9 +123,6 @@ public class Robot { //parent class
 
         hardware.back_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hardware.front_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        hardware.lowerArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.upperArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void setTargetPosition(int position) {
@@ -226,14 +233,14 @@ public class Robot { //parent class
 
         while (context.opModeIsActive() && turnPercentage < stopThreashold) { // while the percentage of turn is less than threshold
 
-            console.Status(" " + turnPower * (1 - turnPercentage));
+            console.Status(" " + turnPower * (1 - turnPercentage * 2));
 
             if (degrees < 0) { // turn right
-                setPowerLeft(turnPower * (1 - turnPercentage ));
-                setPowerRight(-turnPower * (1 - turnPercentage));
+                setPowerLeft(turnPower );//* (1 - turnPercentage * 2));
+                setPowerRight(-turnPower);// * (1 - turnPercentage * 2));
             } else { // turn left
-                setPowerLeft(-turnPower * (1 - turnPercentage));
-                setPowerRight(turnPower * (1 - turnPercentage));
+                setPowerLeft(-turnPower);// * (1 - turnPercentage * 2));
+                setPowerRight(turnPower);// * (1 - turnPercentage * 2));
             }
 
 

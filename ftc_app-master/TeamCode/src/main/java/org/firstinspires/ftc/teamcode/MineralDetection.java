@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Environment;
 import android.util.Log;
 
@@ -52,6 +53,7 @@ import java.io.FileOutputStream;
 public class MineralDetection {
     private VuforiaLocalizerImpl vuforiaLocalizer;
     private LinearOpMode context;
+    private Hardware hardware;
 
     public MineralDetection(LinearOpMode context){
         this.context = context;
@@ -59,7 +61,8 @@ public class MineralDetection {
 
     public void vuforiaInit() {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraName = hardware.webcam;
         parameters.vuforiaLicenseKey = "Aa/SijD/////AAABmX2lVWyTR0kWqVSis8F3WSlL9qlOXlUv0WKOxOP54vVEggfrNmqvmKRwczbGHArzVWlLJdWac1BNz3PCYEH8JSpkeJRjxWWj3be7l+Ingj+/RVpMhiQWC4XMTqNoB44IlsIiD6zyiPHU3xanV/nUTMJNbO+nM8LeT6V8fId3S1yL5WYITwy5ifPBsQMw/2awofitlWikiCKwV6y+Nx2vITJxipVyOPNQG/TVME1iK9Nx+bg5DisuXZ5WGgBDHSZzSE6O4TzJHAg2skI0Go/TRPgF1j2kwUHO5ubIPSj3oICokrNtK21220HUdedKA5JhcSZgyC0n0hIGGNIpWIJyfMlpZSvyjzUBTA+IZF4z5LRe";
         vuforiaLocalizer = new VuforiaLocalizerImpl(parameters);
         vuforiaLocalizer.setFrameQueueCapacity(1);
@@ -68,7 +71,6 @@ public class MineralDetection {
 
 
     public Bitmap getImage() throws InterruptedException {
-
 
         Image image = null;
 
@@ -90,24 +92,28 @@ public class MineralDetection {
         return bm_img;
     }
 
-    public MineralPosition getPosition(Bitmap bm_img) {
+    public MineralPosition getPosition(Bitmap bm_img, int numSplits) {
         int centerWidth = bm_img.getWidth();
-        int centerHeight = (bm_img.getHeight()/2) + 100;
-        int heightOffset = 500;
-        int scaleFactor = 24;
+        int centerHeight = (bm_img.getHeight()/2);
+        int heightOffset = 100;
+        int scaleFactor = 22;
 
-        Bitmap[] thirds = new Bitmap[3];
+        Bitmap[] splits = new Bitmap[2];
         int[] numYellow = new int[3];
+        Matrix matrix = new Matrix();
+        matrix.postScale(-1,-1);
 
-        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, bm_img.getHeight() / 2, bm_img.getWidth(), bm_img.getHeight() / 2);
+        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, centerHeight - heightOffset, centerWidth, heightOffset * 2, matrix, false);
         Bitmap scaledCroppedBitmap = Bitmap.createScaledBitmap(croppedBitmap, croppedBitmap.getWidth() / scaleFactor, croppedBitmap.getHeight() / scaleFactor, false);
 
         Bitmap visualYellow = Bitmap.createScaledBitmap(bm_img, bm_img.getWidth() / scaleFactor, bm_img.getHeight() / scaleFactor, false);
 
-        thirds[0] = Bitmap.createBitmap(scaledCroppedBitmap, 0, 0, scaledCroppedBitmap.getWidth() / 3, scaledCroppedBitmap.getHeight());
-        thirds[1] = Bitmap.createBitmap(scaledCroppedBitmap, scaledCroppedBitmap.getWidth() / 3, 0, scaledCroppedBitmap.getWidth() / 3, scaledCroppedBitmap.getHeight());
-        thirds[2] = Bitmap.createBitmap(scaledCroppedBitmap, scaledCroppedBitmap.getWidth() / 3 * 2, 0, scaledCroppedBitmap.getWidth() / 3, scaledCroppedBitmap.getHeight());
+        for(int i = 0; i < numSplits; i++) {
+            splits[i] = Bitmap.createBitmap(scaledCroppedBitmap, 0, i * (scaledCroppedBitmap.getWidth() / numSplits),
+                    scaledCroppedBitmap.getWidth() / numSplits, scaledCroppedBitmap.getHeight());
 
+            saveImage(splits[i], "split" + i);
+        }
 
         for (int y = 0; y < visualYellow.getHeight(); y++) {
             //for each x pixel
@@ -125,20 +131,18 @@ public class MineralDetection {
 
         saveImage(scaledCroppedBitmap, "Cropped");
         saveImage(visualYellow, "Colored");
-        saveImage(thirds[0], "left");
-        saveImage(thirds[1], "center");
-        saveImage(thirds[2], "right");
+
 
         //for each third
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < splits.length; i++) {
             //makes array zero as initialization
             numYellow[i] = 0;
             //for each y pixel
-            for (int y = 0; y < thirds[i].getHeight(); y++) {
+            for (int y = 0; y < splits[i].getHeight(); y++) {
                 //for each x pixel
-                for (int x = 0; x < thirds[i].getWidth(); x++) {
+                for (int x = 0; x < splits[i].getWidth(); x++) {
                     //gets color for every pixel
-                    int color = thirds[i].getPixel(x, y);
+                    int color = splits[i].getPixel(x, y);
 
                     //converts color to cmyk
                     int[] rgb = {Color.red(color), Color.green(color), Color.blue(color)};
@@ -150,12 +154,15 @@ public class MineralDetection {
             }
         }
 
+        context.telemetry.addData("", numYellow[0] + " , " + numYellow[1]  + " , " + numYellow[2]);
+        context.telemetry.update();
+        context.sleep(1000);
 
         if (numYellow[0] > numYellow[1] && numYellow[0] > numYellow[2]) {
             return MineralPosition.LEFT;
         } else if (numYellow[1] > numYellow[0] && numYellow[1] > numYellow[2]) {
             return MineralPosition.CENTER;
-        } else if (numYellow[2] > numYellow[0] && numYellow[2] > numYellow[1]) {
+        } else if (numYellow[0] == 0 && numYellow[1] == 0) {
             return MineralPosition.RIGHT;
         } else {
             return MineralPosition.NULL;

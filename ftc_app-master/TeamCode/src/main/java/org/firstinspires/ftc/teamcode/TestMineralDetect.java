@@ -38,19 +38,21 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.io.IOException;
 
-@TeleOp(name = "testMineral", group = "13330 Pulsar")
+@TeleOp(name = "testMineralDetect", group = "13330 Pulsar")
 public class TestMineralDetect extends LinearOpMode {
 
     private MineralDetection mineralDetection;
     private Console console;
+    private Hardware hardware;
 
     @Override
     public void runOpMode() {
 
         this.console = new Console(this); // initialization of Console class
         mineralDetection = new MineralDetection(this); // initialization of Mineral Detection class
+        hardware = new Hardware(this);
 
-        mineralDetection.vuforiaInit(); // initialization of vuforia
+        mineralDetection.vuforiaInit(hardwareMap); // initialization of vuforia
 
         AssetManager am = hardwareMap.appContext.getAssets(); // gets android assets [FtcRobotController>Assets]
         MineralPosition mineralPosition = null;

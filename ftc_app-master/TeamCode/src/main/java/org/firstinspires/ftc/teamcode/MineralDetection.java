@@ -36,6 +36,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.vuforia.Frame;
 import com.vuforia.Image;
@@ -43,6 +44,7 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.State;
 import com.vuforia.Vuforia;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 
@@ -59,10 +61,10 @@ public class MineralDetection {
         this.context = context;
     }
 
-    public void vuforiaInit() {
+    public void vuforiaInit(HardwareMap hwm) {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-        parameters.cameraName = hardware.webcam;
+        parameters.cameraName = hwm.get(WebcamName.class, "Webcam 1");;
         parameters.vuforiaLicenseKey = "Aa/SijD/////AAABmX2lVWyTR0kWqVSis8F3WSlL9qlOXlUv0WKOxOP54vVEggfrNmqvmKRwczbGHArzVWlLJdWac1BNz3PCYEH8JSpkeJRjxWWj3be7l+Ingj+/RVpMhiQWC4XMTqNoB44IlsIiD6zyiPHU3xanV/nUTMJNbO+nM8LeT6V8fId3S1yL5WYITwy5ifPBsQMw/2awofitlWikiCKwV6y+Nx2vITJxipVyOPNQG/TVME1iK9Nx+bg5DisuXZ5WGgBDHSZzSE6O4TzJHAg2skI0Go/TRPgF1j2kwUHO5ubIPSj3oICokrNtK21220HUdedKA5JhcSZgyC0n0hIGGNIpWIJyfMlpZSvyjzUBTA+IZF4z5LRe";
         vuforiaLocalizer = new VuforiaLocalizerImpl(parameters);
         vuforiaLocalizer.setFrameQueueCapacity(1);
@@ -96,20 +98,20 @@ public class MineralDetection {
         int centerWidth = bm_img.getWidth();
         int centerHeight = (bm_img.getHeight()/2);
         int heightOffset = 100;
-        int scaleFactor = 22;
+        int scaleFactor = 18;
 
         Bitmap[] splits = new Bitmap[2];
         int[] numYellow = new int[3];
         Matrix matrix = new Matrix();
         matrix.postScale(-1,-1);
 
-        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, centerHeight - heightOffset, centerWidth, heightOffset * 2, matrix, false);
+        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, centerHeight - heightOffset, centerWidth, heightOffset * 2);
         Bitmap scaledCroppedBitmap = Bitmap.createScaledBitmap(croppedBitmap, croppedBitmap.getWidth() / scaleFactor, croppedBitmap.getHeight() / scaleFactor, false);
 
         Bitmap visualYellow = Bitmap.createScaledBitmap(bm_img, bm_img.getWidth() / scaleFactor, bm_img.getHeight() / scaleFactor, false);
 
         for(int i = 0; i < numSplits; i++) {
-            splits[i] = Bitmap.createBitmap(scaledCroppedBitmap, 0, i * (scaledCroppedBitmap.getWidth() / numSplits),
+            splits[i] = Bitmap.createBitmap(scaledCroppedBitmap, i * (scaledCroppedBitmap.getWidth() / numSplits), 0,
                     scaledCroppedBitmap.getWidth() / numSplits, scaledCroppedBitmap.getHeight());
 
             saveImage(splits[i], "split" + i);

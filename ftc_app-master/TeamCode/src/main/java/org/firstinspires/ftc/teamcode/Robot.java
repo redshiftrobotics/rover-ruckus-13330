@@ -53,7 +53,7 @@ public class Robot { //parent class
     }
 
     public boolean fastMode = false;
-    public double[] speeds = {0.33, 1};
+    public double[] speeds = {0.3, 0.8};
     public double speed = speeds[0];
 
     //region Drive Methods

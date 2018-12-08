@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -63,11 +65,6 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
-
-    public boolean topSpeed = false;
-    public double maxSpeed = 1;
-    public double minSpeed = 0.3;
-    public double speed = minSpeed;
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
@@ -130,7 +127,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         //endregion
 
         //region other
-        //webcam = context.hardwareMap.get(WebcamName.class, "Webcam 1");
+        webcam = context.hardwareMap.get(CameraName.class, "Webcam 1");
         //endregion
     }
 }

@@ -58,7 +58,7 @@ public class autoDepo extends LinearOpMode {
         this.mineralDetection = new MineralDetection(this);
 
         //initializes vuforia
-        mineralDetection.vuforiaInit();
+        mineralDetection.vuforiaInit(hardwareMap);
 
 
         //region Initialization

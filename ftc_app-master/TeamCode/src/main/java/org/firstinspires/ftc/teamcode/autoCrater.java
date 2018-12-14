@@ -48,6 +48,10 @@ public class autoCrater extends LinearOpMode {
     private Console console;
     public MineralDetection mineralDetection;
 
+    public double drivePower = 0.2;
+    public double turnThreashold = 0.9;
+    public double sleepTime = 50;
+
     public MineralPosition mineralPosition = null;
     public Bitmap sample = null;
 
@@ -83,6 +87,42 @@ public class autoCrater extends LinearOpMode {
         // waits until the program is started
         waitForStart();
 
+        /*
+        Crater
+	Center
+		F 3250 0.2
+		F 1000 -0.21304
+		R 82 0.9
+		F 3800 0.2
+		R 40 0.9
+		F 4000 0.2
+		R 80 0.9
+		R -80 0.9
+		F 8000 -0.201
+	Right
+		R -15 0.9
+		F 3000 0.2
+		F 1250 -0.2
+		R 105 0.9
+		F 4800 0.2
+		R 30 0.9
+		F 4500 0.2
+		R 80 0.9
+		R -78 0.9
+		F 6300 0.2
+	Left
+		R 15 0.9
+		F 3100 0.2
+		F 1300 -0.2
+		R 50 0.9
+		F 3000 0.2
+		R 40 0.9
+		F 4500 0.2
+		R 80 0.9
+		R -80 0.9
+		F 6300 -0.2
+         */
+
         //region Autonomous
 
         //attempts take photo
@@ -96,40 +136,59 @@ public class autoCrater extends LinearOpMode {
 
         switch (mineralPosition) {
             case RIGHT:
-                robot.setMineralKickerPosition(0);
-                robot.rotate(-80, 1, 0.90); //turns all the way around.
-                sleep(100);
-                robot.drive(0.4, 100); // moves out a little bit.
-                sleep(100);
-                robot.rotate(-25, 1, 0.85); //turns toward right mineral.
-                sleep(100);
-                robot.drive(0.4, 1300); // drives into mineral.
-                robot.setMineralKickerPosition(0.37);
+                rotate(-15);
+                drive(3000, true);
+                drive(1250, false);
+                rotate(105);
+                drive(4800, true);
+                rotate(30);
+                drive(4500, true);
+                rotate(80);
+                //TODO deposit mineral
+                rotate(78);
                 break;
             case CENTER:
-                robot.setMineralKickerPosition(0);
-                robot.rotate(-85, 1, 0.90); //turns towards middle mineral.
-                sleep(100);
-                hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
-                robot.setZeroPowerBehavior();
-                robot.drive(0.4, 1800); //drives into it.
-                hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
-                robot.setZeroPowerBehavior();
-                robot.setMineralKickerPosition(0.37);
+                drive(3250, true);
+                drive(1000, false);
+                rotate(82);
+                drive(3800, true);
+                rotate(40);
+                drive(4000, true);
+                rotate(80);
+                //TODO deposit mineral
+                rotate(-78);
+                drive(6300, false);
                 break;
             case LEFT:
-                robot.setMineralKickerPosition(0);
-                robot.rotate(-45, 1, 0.90); // turns toward left mineral.
-                sleep(100);
-                hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
-                robot.setZeroPowerBehavior();
-                robot.drive(0.4, 1600); // drives into it.
-                hardware.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
-                robot.setZeroPowerBehavior();
-                robot.setMineralKickerPosition(0.37);
+                rotate(15);
+                drive(3100, true);
+                drive(1300, false);
+                rotate(50);
+                drive(3000, true);
+                rotate(40);
+                drive(4500, true);
+                rotate(80);
+                //TODO deposit mineral
+                rotate(-80);
+                drive(6300, false);
                 break;
         }
     }
     //endregion
+
+    public void drive(double time, boolean forward){
+        if(forward)
+            robot.drive(drivePower, time);
+        else
+            robot.drive(-drivePower, time);
+
+        sleep(50);
+
+    }
+
+    public void rotate(int degrees){
+        robot.rotate(degrees, 0.7, turnThreashold);
+        sleep(50);
+    }
 }
 

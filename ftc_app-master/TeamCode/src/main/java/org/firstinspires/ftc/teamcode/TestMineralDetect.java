@@ -58,6 +58,9 @@ public class TestMineralDetect extends LinearOpMode {
         MineralPosition mineralPosition = null;
         Bitmap sample = null;
 
+        while (!hardware.imu.isGyroCalibrated())
+            idle();
+
         waitForStart(); // waits until play is pressed
 
         while(opModeIsActive()) {

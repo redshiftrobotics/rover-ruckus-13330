@@ -45,11 +45,13 @@ public class DistancePowerTester extends LinearOpMode{
             else if(gamepad1.dpad_right)
                 scale = 1;
 
-            timeThreashold += (gamepad1.left_stick_y * 0.0005 * scale);
-            powerDegrees += (gamepad1.right_stick_y * 0.0005 * scale);
+            timeThreashold += (scale * Math.round(gamepad1.left_stick_y));
+            powerDegrees += (scale * Math.round(gamepad1.right_stick_y));
 
-            if(gamepad1.start)
+            if(gamepad1.right_bumper)
                 powerDegrees = 0.2;
+            if(gamepad1.left_bumper)
+                powerDegrees = -0.2;
 
             telemetry.addData("time/threashold", timeThreashold);
             telemetry.addData("power/degrees", powerDegrees);
@@ -70,6 +72,7 @@ public class DistancePowerTester extends LinearOpMode{
             if(gamepad1.y)
                 robot.rotate((int) -powerDegrees, 0.7, timeThreashold);
 
+            sleep(100);
             idle();
         }
     }

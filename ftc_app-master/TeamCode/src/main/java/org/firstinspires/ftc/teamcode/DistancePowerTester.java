@@ -19,6 +19,7 @@ public class DistancePowerTester extends LinearOpMode{
 
     private Robot robot;
     private Hardware hardware;
+    private Input input;
 
 
     @Override
@@ -27,6 +28,7 @@ public class DistancePowerTester extends LinearOpMode{
 
         this.hardware = new Hardware(this);
         this.robot = new Robot(this.hardware, this);
+        this.input = new Input(this);
 
         waitForStart();
 
@@ -45,32 +47,31 @@ public class DistancePowerTester extends LinearOpMode{
             else if(gamepad1.dpad_right)
                 scale = 1;
 
-            timeThreashold += (scale * Math.round(gamepad1.left_stick_y));
-            powerDegrees += (scale * Math.round(gamepad1.right_stick_y));
+            double[] answers = input.form(new String[]{"Time/Threshold", "Power/Degrees"});
+
+            telemetry.addData("running command.", "");
+            timeThreashold += answers[0];
+            powerDegrees += answers[1];
 
             if(gamepad1.right_bumper)
                 powerDegrees = 0.2;
             if(gamepad1.left_bumper)
                 powerDegrees = -0.2;
 
-            telemetry.addData("time/threashold", timeThreashold);
-            telemetry.addData("power/degrees", powerDegrees);
-            telemetry.addData("scale", scale);
-            telemetry.update();
-
-            if(gamepad1.a){
+            if(input.question(new String[]{"Transform", "Rotate"}) == "Transform"){
                 robot.drive(powerDegrees, timeThreashold);
+                if(input.question(new String[]{"Undo", "No"}) == "Undo")
+                    robot.drive(-powerDegrees, timeThreashold);
+            } else {
+                robot.rotate((int) powerDegrees, 0.7, timeThreashold);
+                if(input.question(new String[]{"Undo", "No"}) == "Undo")
+                    robot.rotate((int) -powerDegrees, 0.7, timeThreashold);
             }
 
-            if(gamepad1.b){
-                robot.rotate((int) powerDegrees, 0.7, timeThreashold);
-            }
 
             if(gamepad1.x)
-                robot.drive(-powerDegrees, timeThreashold);
 
             if(gamepad1.y)
-                robot.rotate((int) -powerDegrees, 0.7, timeThreashold);
 
             sleep(100);
             idle();

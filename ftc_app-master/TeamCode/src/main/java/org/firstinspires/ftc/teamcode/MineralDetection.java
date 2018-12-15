@@ -91,6 +91,8 @@ public class MineralDetection {
         Bitmap bm_img = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
         bm_img.copyPixelsFromBuffer(image.getPixels());
 
+        saveImage(bm_img, "default");
+
         return bm_img;
     }
 

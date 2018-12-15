@@ -48,11 +48,14 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor back_right_motor;
     public DcMotor back_left_motor;
     public DcMotor collector;
+    public DcMotor lifter;
+    public DcMotor arm1;
 
-    public Servo mineral_kicker_1;
-    public Servo mineral_kicker_2;
-    public Servo wrist_1;
-    public Servo wrist_2;
+    public Servo mineralKicker1;
+    public Servo mineralKicker2;
+    public Servo arm2;
+    public Servo depositor;
+
 
     public BNO055IMU imu;
     public CameraName webcam;
@@ -82,19 +85,17 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         //endregion
 
-        /*
         //region servos
-        mineral_kicker_1 = context.hardwareMap.servo.get("mineral_kicker_1");
-        mineral_kicker_2 = context.hardwareMap.servo.get("mineral_kicker_2");
+        mineralKicker1 = context.hardwareMap.servo.get("mineralKicker1");
+        mineralKicker2 = context.hardwareMap.servo.get("mineralKicker2");
 
-        wrist_1 = context.hardwareMap.servo.get("wrist_1");
-        wrist_2 = context.hardwareMap.servo.get("wrist_2");
+        arm2 = context.hardwareMap.servo.get("arm2");
+        depositor = context.hardwareMap.servo.get("depositor");
         //endregion
-        */
 
         //region motors
 
-        //collector = context.hardwareMap.dcMotor.get("collector");
+        arm1 = context.hardwareMap.dcMotor.get("arm1");
 
         //region front_left_motor
         front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
@@ -124,10 +125,18 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         back_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
         //endregion
 
+        lifter = context.hardwareMap.dcMotor.get("lifter");
+        lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         //endregion
 
         //region other
         webcam = context.hardwareMap.get(CameraName.class, "Webcam 1");
         //endregion
+
+
     }
 }

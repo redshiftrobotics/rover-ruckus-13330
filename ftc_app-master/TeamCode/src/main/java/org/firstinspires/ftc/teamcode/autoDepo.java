@@ -86,39 +86,51 @@ public class autoDepo extends LinearOpMode {
 
         switch (mineralPosition) {
             case RIGHT:
-                robot.setMineralKickerPosition(0);
-                robot.rotate(-90, 1, 0.90); //turns all the way around.
-                sleep(100);
-                robot.drive(0.5, 100); // moves out a little bit.
-                sleep(100);
-                robot.rotate(-20, 1, 0.85); //turns toward right mineral.
-                sleep(100);
-                robot.drive(0.5, 2000); // drives into mineral.
+                rotate(-18);
+                drive(4500, true);
+                rotate(80);
+                drive(1900, true);
+                rotate(13);
+                //TODO deposit mineral
+                drive(1450, true);
+                rotate(25);
+                drive(8000, true);
                 break;
             case CENTER:
-                robot.setMineralKickerPosition(0);
-                robot.rotate(-80, 1, 0.9); //turns towards middle mineral.
-                sleep(100);
-                robot.drive(0.4, 1400); // drives into mineral and in front of depo.
-                sleep(100);
-                robot.setMineralKickerPosition(0.37);
+                drive(5000, true);
+                rotate(80);
+                //TODO deposit mineral
+                drive(1500, true);
+                rotate(25);
+                drive(7000, true);
                 break;
             case LEFT:
-                robot.setMineralKickerPosition(0);
-                robot.rotate(-50, 1, 0.90); // turns toward left mineral.
-                sleep(100);
-                robot.drive(0.4, 1500); // drives into it and into depo.
-                robot.setMineralKickerPosition(0.37);
-                break;
-            case NULL:
-                robot.setMineralKickerPosition(0);
-                robot.rotate(-75, 1, 0.9); //turns towards middle mineral.
-                sleep(100);
-                robot.drive(0.4, 1000); // drives into mineral and in front of depo.
+                rotate(18);
+                drive(4500, true);
+                rotate(-50);
+                drive(1500, true);
+                rotate(80);
+                //TODO deposit mineral
+                rotate(-80);
+                drive(8000, false);
                 break;
         }
 
         //endregion
     }
+    public void drive(double time, boolean forward){
+        if(forward)
+            robot.drive(robot.drivePower, time);
+        else
+            robot.drive(-robot.drivePower, time);
 
+        sleep((long)robot.sleepTime);
+
+    }
+
+    public void rotate(int degrees){
+        robot.rotate(degrees, 0.7, robot.turnThreashold);
+        sleep((long)robot.sleepTime);
+
+    }
 }

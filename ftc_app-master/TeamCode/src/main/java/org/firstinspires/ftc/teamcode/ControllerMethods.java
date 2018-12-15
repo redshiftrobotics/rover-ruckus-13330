@@ -46,8 +46,12 @@ public class ControllerMethods {
         this.console = new Console(hardware, this.robot, context);
     }
 
-    public void speedToggle(float nothing){
-        robot.fastMode = !robot.fastMode;
+    public void speedToggleFast(float nothing){
+        robot.fastMode = true;
+    }
+
+    public void speedToggleSlow(float nothing){
+        robot.fastMode = false;
     }
 
     public void rightDrivePower(float power){
@@ -64,11 +68,6 @@ public class ControllerMethods {
 
     public void setMineralKickerPosition(float degrees){
         robot.setMineralKickerPosition(degrees);
-    }
-
-    public void setWristPosition(float degrees){
-        robot.setWristPosition(degrees);
-        console.Status("degrees: " + degrees);
     }
 
     public void setCollector(float power){

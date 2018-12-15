@@ -48,10 +48,6 @@ public class autoCrater extends LinearOpMode {
     private Console console;
     public MineralDetection mineralDetection;
 
-    public double drivePower = 0.2;
-    public double turnThreashold = 0.9;
-    public double sleepTime = 50;
-
     public MineralPosition mineralPosition = null;
     public Bitmap sample = null;
 
@@ -87,45 +83,8 @@ public class autoCrater extends LinearOpMode {
         // waits until the program is started
         waitForStart();
 
-        /*
-        Crater
-	Center
-		F 3250 0.2
-		F 1000 -0.21304
-		R 82 0.9
-		F 3800 0.2
-		R 40 0.9
-		F 4000 0.2
-		R 80 0.9
-		R -80 0.9
-		F 8000 -0.201
-	Right
-		R -15 0.9
-		F 3000 0.2
-		F 1250 -0.2
-		R 105 0.9
-		F 4800 0.2
-		R 30 0.9
-		F 4500 0.2
-		R 80 0.9
-		R -78 0.9
-		F 6300 0.2
-	Left
-		R 15 0.9
-		F 3100 0.2
-		F 1300 -0.2
-		R 50 0.9
-		F 3000 0.2
-		R 40 0.9
-		F 4500 0.2
-		R 80 0.9
-		R -80 0.9
-		F 6300 -0.2
-         */
-
         //region Autonomous
 
-        //attempts take photo
         try {
             sample = mineralDetection.getImage();
         } catch (InterruptedException e) {
@@ -146,6 +105,7 @@ public class autoCrater extends LinearOpMode {
                 rotate(80);
                 //TODO deposit mineral
                 rotate(78);
+                drive( 6300, true);
                 break;
             case CENTER:
                 drive(3250, true);
@@ -173,22 +133,22 @@ public class autoCrater extends LinearOpMode {
                 drive(6300, false);
                 break;
         }
+        //endregion
     }
-    //endregion
-
     public void drive(double time, boolean forward){
         if(forward)
-            robot.drive(drivePower, time);
+            robot.drive(robot.drivePower, time);
         else
-            robot.drive(-drivePower, time);
+            robot.drive(-robot.drivePower, time);
 
-        sleep(50);
+        sleep((long)robot.sleepTime);
 
     }
 
     public void rotate(int degrees){
-        robot.rotate(degrees, 0.7, turnThreashold);
-        sleep(50);
+        robot.rotate(degrees, 0.7, robot.turnThreashold);
+        sleep((long)robot.sleepTime);
+
     }
 }
 

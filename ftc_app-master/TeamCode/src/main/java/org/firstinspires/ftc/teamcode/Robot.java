@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -54,7 +53,14 @@ public class Robot { //parent class
 
     public boolean fastMode = false;
     public double[] speeds = {0.3, 0.8};
+    public int[] lifterPositions = {0,-28525,-29201,-22780,-5375};
+    public int currentLifterPosition = 0;
     public double speed = speeds[0];
+
+    public double drivePower = 0.2;
+    public double timeMultiplier = 1.0;
+    public double turnThreashold = 0.9;
+    public double sleepTime = 50;
 
     //region Drive Methods
 
@@ -77,21 +83,28 @@ public class Robot { //parent class
     }
 
     public void setMineralKickerPosition(double position){
-        hardware.mineral_kicker_1.setPosition(position);
-        hardware.mineral_kicker_2.setPosition(1 - position);
-    }
-
-
-    public void setWristPosition(double position){
-        hardware.wrist_1.setPosition(position);
-        hardware.wrist_2.setPosition(1 - position);
+        hardware.mineralKicker1.setPosition(position);
+        hardware.mineralKicker2.setPosition(1 - position);
     }
 
     public void collect(double power){
         hardware.collector.setPower(power);
     }
 
+    public void setLifterPositions(int position, double power){
+        hardware.lifter.setTargetPosition(position);
+        hardware.lifter.setPower(power);
+    }
 
+    public void depositMineral(){
+        hardware.depositor.setPosition(1);
+        context.sleep(500);
+        hardware.depositor.setPosition(0);
+    }
+
+    public void setLifterMode(DcMotor.RunMode runMode){
+        hardware.lifter.setMode(runMode);
+    }
 
     public void updateSpeed() {
         if (fastMode) {

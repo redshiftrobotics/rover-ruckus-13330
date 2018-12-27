@@ -79,6 +79,7 @@ public class autoCrater extends LinearOpMode {
         console.Update();
 
         //endregion
+        hardware.depositor.setPosition(0);
 
         // waits until the program is started
         waitForStart();
@@ -95,42 +96,65 @@ public class autoCrater extends LinearOpMode {
 
         switch (mineralPosition) {
             case RIGHT:
+                hardware.lifter.setPower(-1);
+                sleep(12000);
+
+                hardware.lifter.setPower(0);
+
+
                 rotate(-15);
+                robot.setMineralKickerPosition(1);
                 drive(3000, true);
+                robot.setMineralKickerPosition(0);
                 drive(1250, false);
                 rotate(105);
-                drive(4800, true);
-                rotate(30);
-                drive(4500, true);
-                rotate(80);
-                //TODO deposit mineral
-                rotate(78);
-                drive( 6300, true);
-                break;
-            case CENTER:
-                drive(3250, true);
-                drive(1000, false);
-                rotate(82);
-                drive(3800, true);
-                rotate(40);
+                drive(2000, true, 0.5);
+                rotate(42);
                 drive(4000, true);
                 rotate(80);
-                //TODO deposit mineral
-                rotate(-78);
-                drive(6300, false);
+                robot.depositMineral();
+                rotate(-80);
+                drive( 2700, false, 0.5);
+                break;
+            case CENTER:
+                hardware.lifter.setPower(-1);
+
+                sleep(12000);
+                robot.setMineralKickerPosition(1);
+                hardware.lifter.setPower(0);
+
+                drive(3150, true);
+                robot.setMineralKickerPosition(0);
+                drive(1500, false);
+                rotate(85);
+                drive(2000, true, 0.5);
+                rotate(42);
+                drive(4000, true);
+                rotate(80);
+                robot.depositMineral();
+                rotate(-80);
+                drive(2700, false, 0.5);
                 break;
             case LEFT:
-                rotate(15);
-                drive(3100, true);
-                drive(1300, false);
-                rotate(50);
+                hardware.lifter.setPower(-1);
+
+                sleep(12000);
+
+                hardware.lifter.setPower(0);
+
+                rotate(18);
+                robot.setMineralKickerPosition(1);
                 drive(3000, true);
+                robot.setMineralKickerPosition(0);
+                drive(1250, false);
                 rotate(40);
+                drive(1300, true, 0.5);
+                rotate(50);
                 drive(4500, true);
                 rotate(80);
-                //TODO deposit mineral
+                robot.depositMineral();
                 rotate(-80);
-                drive(6300, false);
+                drive( 2700, false, 0.5);
                 break;
         }
         //endregion
@@ -144,6 +168,16 @@ public class autoCrater extends LinearOpMode {
         sleep((long)robot.sleepTime);
 
     }
+    public void drive(double time, boolean forward, double speed){
+        if(forward)
+            robot.drive(speed, time * robot.timeMultiplier);
+        else
+            robot.drive(-speed, time * robot.timeMultiplier);
+
+        sleep((long)robot.sleepTime);
+
+    }
+
 
     public void rotate(int degrees){
         robot.rotate(degrees, 0.7, robot.turnThreashold);

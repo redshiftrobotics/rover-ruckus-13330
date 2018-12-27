@@ -1,14 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
-/**
- * Created by julian on 12/14/18.
- */
 
 public class Input {
     private Hardware hardware;
@@ -60,7 +52,8 @@ public class Input {
 
         while(!context.gamepad1.start) {
 
-            currentQuestion += getNext(context);
+            currentQuestion -= getStickNext(context);
+            currentQuestion %= questions.length;
 
             for (int i = 0; i < questions.length; i++) {
                 if(i == currentQuestion){
@@ -80,6 +73,31 @@ public class Input {
             context.idle();
         }
 
+        return answer;
+    }
+
+    public boolean yesOrNo(String question) {
+        boolean answer = false;
+        int current = 0;
+
+        context.telemetry.addData(question, "");
+
+        while (!context.gamepad1.start) {
+
+            current -= getStickNext(context);
+
+            if (current % 2 == 0) {
+                context.telemetry.addData("-[*]", "Yes");
+                context.telemetry.addData("-[ ]", "No");
+                answer = true;
+            } else {
+                context.telemetry.addData("-[ ]", "Yes");
+                context.telemetry.addData("-[*]", "No");
+                answer = false;
+            }
+
+            context.telemetry.update();
+        }
         return answer;
     }
 
@@ -104,4 +122,14 @@ public class Input {
         } else
             return 0;
     }
+
+    public int getStickNext(LinearOpMode context){
+        if(context.gamepad1.left_stick_y > 0.5){
+            return 1;
+        } else if(context.gamepad1.left_stick_y < -0.5){
+            return -1;
+        } else
+            return 0;
+    }
+
 }

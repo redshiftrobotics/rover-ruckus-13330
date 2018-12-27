@@ -70,6 +70,8 @@ public class autoDepo extends LinearOpMode {
             idle();
 
         //endregion
+        hardware.depositor.setPosition(0);
+
 
         // waits until the program is started
         waitForStart();
@@ -86,33 +88,48 @@ public class autoDepo extends LinearOpMode {
 
         switch (mineralPosition) {
             case RIGHT:
-                rotate(-18);
-                drive(4500, true);
-                rotate(80);
-                drive(1900, true);
-                rotate(13);
-                //TODO deposit mineral
-                drive(1450, true);
-                rotate(25);
-                drive(8000, true);
+                hardware.lifter.setPower(-1);
+                sleep(12000);
+                hardware.lifter.setPower(0);
+                //rotate(-15);
+                //robot.setMineralKickerPosition(1);
+                //drive(4500, true);
+                //robot.setMineralKickerPosition(0);
+                //rotate(80);
+                //drive(1900, true);
+                //rotate(13);
+                //robot.depositMineral();
+                //drive(1450, true);
+                //rotate(40);
+                //drive(2500, true, 0.8);
                 break;
             case CENTER:
-                drive(5000, true);
-                rotate(80);
-                //TODO deposit mineral
-                drive(1500, true);
-                rotate(25);
-                drive(7000, true);
+                hardware.lifter.setPower(-1);
+                sleep(12000);
+                hardware.lifter.setPower(0);
+//                robot.setMineralKickerPosition(1);
+//                drive(5000, true);
+//                robot.setMineralKickerPosition(0);
+//                rotate(80);
+//                robot.depositMineral();
+//                drive(1500, true);
+//                rotate(40);
+//                drive(2500, true, 0.8);
                 break;
             case LEFT:
-                rotate(18);
-                drive(4500, true);
-                rotate(-50);
-                drive(1500, true);
-                rotate(80);
-                //TODO deposit mineral
-                rotate(-80);
-                drive(8000, false);
+                hardware.lifter.setPower(-1);
+                sleep(12000);
+                hardware.lifter.setPower(0);
+//                rotate(18);
+//                robot.setMineralKickerPosition(1);
+//                drive(4800, true);
+//                robot.setMineralKickerPosition(0);
+//                rotate(-60);
+//                drive(1500, true);
+//                rotate(80);
+//                robot.depositMineral();
+//                rotate(-83);
+//                drive(2500, false, 0.8);
                 break;
         }
 
@@ -127,6 +144,16 @@ public class autoDepo extends LinearOpMode {
         sleep((long)robot.sleepTime);
 
     }
+    public void drive(double time, boolean forward, double speed){
+        if(forward)
+            robot.drive(speed, time * robot.timeMultiplier);
+        else
+            robot.drive(-speed, time * robot.timeMultiplier);
+
+        sleep((long)robot.sleepTime);
+
+    }
+
 
     public void rotate(int degrees){
         robot.rotate(degrees, 0.7, robot.turnThreashold);

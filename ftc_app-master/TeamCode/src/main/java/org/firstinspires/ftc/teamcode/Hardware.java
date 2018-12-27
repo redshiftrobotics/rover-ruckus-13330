@@ -32,9 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -43,10 +41,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hardware { // Here we get the DcMotors from the REV hub and assign their names.
 
-    public DcMotor front_right_motor;
-    public DcMotor front_left_motor;
-    public DcMotor back_right_motor;
-    public DcMotor back_left_motor;
+    public DcMotor frontRightMotor;
+    public DcMotor frontLeftMotor;
+    public DcMotor backRightMotor;
+    public DcMotor backLeftMotor;
     public DcMotor collector;
     public DcMotor lifter;
     public DcMotor arm1;
@@ -96,38 +94,16 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         //region motors
 
         arm1 = context.hardwareMap.dcMotor.get("arm1");
+        arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //region front_left_motor
-        front_left_motor = context.hardwareMap.dcMotor.get("front_left_motor");
-        front_left_motor.setDirection(DcMotor.Direction.REVERSE);
-        front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        front_left_motor.setZeroPowerBehavior(zeroPowerBehavior);
-        //endregion
-
-        //region back_left_motor
-        back_left_motor = context.hardwareMap.dcMotor.get("back_left_motor");
-        back_left_motor.setDirection(DcMotor.Direction.REVERSE);
-        back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_left_motor.setZeroPowerBehavior(zeroPowerBehavior);
-        //endregion
-
-        //region front_right_motor
-        front_right_motor = context.hardwareMap.dcMotor.get("front_right_motor");
-        front_right_motor.setDirection(DcMotor.Direction.FORWARD);
-        front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        front_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
-        //endregion
-
-        //region back_right_motor
-        back_right_motor = context.hardwareMap.dcMotor.get("back_right_motor");
-        back_right_motor.setDirection(DcMotor.Direction.FORWARD);
-        back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_right_motor.setZeroPowerBehavior(zeroPowerBehavior);
-        //endregion
 
         lifter = context.hardwareMap.dcMotor.get("lifter");
         lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lifter.setDirection(DcMotor.Direction.FORWARD);
+
+        lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 

@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -53,8 +54,10 @@ public class Robot { //parent class
 
     public boolean fastMode = false;
     public double[] speeds = {0.3, 0.8};
-    public int[] lifterPositions = {0,-28525,-29201,-22780,-5375};
+    public int[] lifterPositions = {0,-28525,-28495,-22780,-5375};
     public int currentLifterPosition = 0;
+    public int[] armPositions = {0,-28525,-29201,-22780,-5375};
+
     public double speed = speeds[0];
 
     public double drivePower = 0.2;
@@ -65,21 +68,21 @@ public class Robot { //parent class
     //region Drive Methods
 
     public void setPowerLeft(double power) {
-        hardware.back_left_motor.setPower(-power * speed);
-        hardware.front_left_motor.setPower(-power * speed);
+        hardware.backLeftMotor.setPower(-power * speed);
+        hardware.frontLeftMotor.setPower(-power * speed);
     }
 
     public void setPowerRight(double power) {
-        hardware.back_right_motor.setPower(-power * speed);
-        hardware.front_right_motor.setPower(-power * speed);
+        hardware.backRightMotor.setPower(-power * speed);
+        hardware.frontRightMotor.setPower(-power * speed);
     }
 
     public void setZeroPowerBehavior() {
-        hardware.front_left_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
-        hardware.back_left_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
+        hardware.frontLeftMotor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
+        hardware.backLeftMotor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
 
-        hardware.front_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
-        hardware.back_right_motor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
+        hardware.frontRightMotor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
+        hardware.backRightMotor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
     }
 
     public void setMineralKickerPosition(double position){
@@ -94,6 +97,10 @@ public class Robot { //parent class
     public void setLifterPositions(int position, double power){
         hardware.lifter.setTargetPosition(position);
         hardware.lifter.setPower(power);
+    }
+
+    public void waitForMotor(DcMotor motor){
+        while(motor.isBusy() && context.opModeIsActive()){context.idle();}
     }
 
     public void depositMineral(){
@@ -116,42 +123,43 @@ public class Robot { //parent class
     }
 
     public void drive(double power, double time) {
-            hardware.back_right_motor.setPower(-power - hardware.correction);
-            hardware.front_right_motor.setPower(-power - hardware.correction);
-            hardware.back_left_motor.setPower(-power);
-            hardware.front_left_motor.setPower(-power);
+        hardware.backRightMotor.setPower(-power - hardware.correction);
+        hardware.frontRightMotor.setPower(-power - hardware.correction);
+        hardware.backLeftMotor.setPower(-power);
+        hardware.frontLeftMotor.setPower(-power);
         context.sleep((long) time);
-        hardware.back_right_motor.setPower(0);
-        hardware.front_right_motor.setPower(0);
-        hardware.back_left_motor.setPower(0);
-        hardware.front_left_motor.setPower(0);
+        hardware.backRightMotor.setPower(0);
+        hardware.frontRightMotor.setPower(0);
+        hardware.backLeftMotor.setPower(0);
+        hardware.frontLeftMotor.setPower(0);
     }
+
     //endregion
 
     //region Encoders
 
     public void resetEncoders() {
-        hardware.back_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.front_left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        hardware.back_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.front_right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void setTargetPosition(int position) {
-        hardware.back_left_motor.setTargetPosition(position);
-        hardware.front_left_motor.setTargetPosition(position);
+        hardware.backLeftMotor.setTargetPosition(position);
+        hardware.frontLeftMotor.setTargetPosition(position);
 
-        hardware.back_right_motor.setTargetPosition(position);
-        hardware.front_right_motor.setTargetPosition(position);
+        hardware.backRightMotor.setTargetPosition(position);
+        hardware.frontRightMotor.setTargetPosition(position);
     }
 
     public void setRunMode(DcMotor.RunMode runMode) {
-        hardware.back_left_motor.setMode(runMode);
-        hardware.front_left_motor.setMode(runMode);
+        hardware.backLeftMotor.setMode(runMode);
+        hardware.frontLeftMotor.setMode(runMode);
 
-        hardware.back_right_motor.setMode(runMode);
-        hardware.front_right_motor.setMode(runMode);
+        hardware.backRightMotor.setMode(runMode);
+        hardware.frontRightMotor.setMode(runMode);
     }
     //endregion
 
@@ -279,6 +287,29 @@ public class Robot { //parent class
         return Math.pow(Math.cos((Math.PI / 2) * (x / toTurnDegrees)), 0.6);
     }
 
+    public void openArm(){
+        hardware.arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.arm1.setTargetPosition(53);
+        hardware.arm1.setPower(1);
+        hardware.arm2.setPosition(0.2);
+        hardware.arm1.setTargetPosition(100);
+    }
+
+    public void initArm(){
+        hardware.arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.arm1.setTargetPosition(100);
+        hardware.arm1.setPower(1);
+    }
+
+    public void setArmPosition(double position){
+        hardware.arm2.setPosition(Range.clip(position, 0, 1));
+    }
+
+    public void setArmPower(int position){
+        hardware.arm1.setTargetPosition(armPositions[position]);
+        hardware.arm1.setPower(0.3);
+    }
+
     //endregion
 
     //region PID
@@ -302,8 +333,8 @@ public class Robot { //parent class
         context.telemetry.addData("porportional", proportional);
         context.telemetry.addData("intergral", integral);
         context.telemetry.addData("Angle", getAngle());
-        context.telemetry.addData("Left Power", hardware.back_left_motor.getPower());
-        context.telemetry.addData("Right Power", hardware.back_right_motor.getPower());
+        context.telemetry.addData("Left Power", hardware.backLeftMotor.getPower());
+        context.telemetry.addData("Right Power", hardware.backRightMotor.getPower());
         context.telemetry.update();
 
         return value;

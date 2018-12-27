@@ -98,7 +98,9 @@ public class AutoTesting extends LinearOpMode {
                         robot.setLifterPositions(-29201, 1);
                         sleep(11500);
                         rotate(18);
+                        robot.setMineralKickerPosition(1);
                         drive(3000, true);
+                        robot.setMineralKickerPosition(0);
                         drive(1250, false);
                         rotate(40);
                         drive(1300, true, 0.5);
@@ -112,7 +114,9 @@ public class AutoTesting extends LinearOpMode {
                     } else if( gamepad1.dpad_up){ // mineral middle position.
                         robot.setLifterPositions(-29201, 1);
                         sleep(11500);
+                        robot.setMineralKickerPosition(1);
                         drive(3150, true);
+                        robot.setMineralKickerPosition(0);
                         drive(1500, false);
                         rotate(85);
                         drive(1700, true, 0.5);
@@ -127,7 +131,9 @@ public class AutoTesting extends LinearOpMode {
                         robot.setLifterPositions(-29201, 1);
                         sleep(11500);
                         rotate(-15);
+                        robot.setMineralKickerPosition(1);
                         drive(3000, true);
+                        robot.setMineralKickerPosition(0);
                         drive(1250, false);
                         rotate(105);
                         drive(2000, true, 0.5);
@@ -146,60 +152,45 @@ public class AutoTesting extends LinearOpMode {
                         robot.setLifterPositions(robot.lifterPositions[2], 1);
                         sleep(11500);
                         rotate(18);
+                        robot.setMineralKickerPosition(1);
                         drive(4800, true);
+                        robot.setMineralKickerPosition(0);
                         rotate(-60);
                         drive(1500, true);
                         rotate(80);
                         robot.depositMineral();
                         rotate(-83);
-                        drive(7000, false);
+                        drive(2500, false, 0.5);
 
                     } else if( gamepad1.dpad_up){ // mineral middle position.
                         robot.setLifterPositions(robot.lifterPositions[2], 1);
                         sleep(11500);
+                        robot.setMineralKickerPosition(1);
                         drive(5000, true);
+                        robot.setMineralKickerPosition(0);
                         rotate(80);
                         robot.depositMineral();
                         drive(1500, true);
                         rotate(40);
-                        drive(7000, true);
+                        drive(2500, true, 0.5);
 
                     } else if( gamepad1.dpad_right){// mineral right position.
                         robot.setLifterPositions(robot.lifterPositions[2], 1);
                         sleep(11500);
                         rotate(-15);
+                        robot.setMineralKickerPosition(1);
                         drive(4500, true);
+                        robot.setMineralKickerPosition(0);
                         rotate(80);
                         drive(1900, true);
                         rotate(13);
                         robot.depositMineral();
                         drive(1450, true);
                         rotate(40);
-                        drive(7500, true);
+                        drive(2500, true, 0.5);
 
                     }
             }
-
-
-
-if(gamepad1.a)
-    robot.depositMineral();
-
-
-            if(gamepad2.left_bumper)
-                robot.setLifterMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            if(gamepad2.right_bumper)
-                robot.setLifterMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            if(hardware.lifter.getMode() == DcMotor.RunMode.RUN_USING_ENCODER){
-                hardware.lifter.setPower(gamepad2.left_stick_y);
-            } else
-                robot.setLifterPositions(robot.lifterPositions[robot.currentLifterPosition], 1);
-
-
-
-            console.Status(""+hardware.lifter.getCurrentPosition());
         }
 
         robot.setLifterPositions(0,1);

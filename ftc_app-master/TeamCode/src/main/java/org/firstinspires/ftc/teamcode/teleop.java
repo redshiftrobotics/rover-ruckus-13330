@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "TeleOp", group = "13330 Pulsar")
 public class teleop extends LinearOpMode {
@@ -55,11 +56,10 @@ public class teleop extends LinearOpMode {
         this.rc = new ReadConfig(this.hardware, this.robot, console, this);
 
 
-        console.Log("Action:", "waiting for IMU initialization");
+        console.Log("Action:", "waiting for the IMU initialization");
         console.Update();
 
         //reads config file
-        rc.readFile("RobotConfig.txt");
 
         //wait for the IMU to be initiated
         while (!hardware.imu.isGyroCalibrated())
@@ -67,6 +67,9 @@ public class teleop extends LinearOpMode {
 
         console.initStats(version, "TeleOp");
         console.Update();
+
+        hardware.depositor.setPosition(0);
+        robot.setMineralKickerPosition(1);
 
         waitForStart();
 
@@ -77,14 +80,30 @@ public class teleop extends LinearOpMode {
             robot.checkDirection();
             robot.setZeroPowerBehavior();
 
-            rc.updateControls();
+            robot.setPowerRight(-gamepad1.right_stick_y);
+            robot.setPowerLeft(-gamepad1.left_stick_y);
 
-            console.Log("Encoders", "");
-            console.Log("back right", hardware.back_right_motor.getCurrentPosition());
-            console.Log("back left", hardware.back_left_motor.getCurrentPosition());
-            console.Log("front right", hardware.front_right_motor.getCurrentPosition());
-            console.Log("front left", hardware.front_left_motor.getCurrentPosition());
+            if(gamepad1.a)
+                robot.fastMode = false;
+            else if (gamepad1.b)
+                robot.fastMode = true;
 
+            hardware.lifter.setPower(gamepad2.left_stick_y);
+
+            if(gamepad1.dpad_up)
+                robot.setLifterPositions(3, 1);
+            if(gamepad1.dpad_down)
+                robot.setLifterPositions(4, 1);
+            if(gamepad1.dpad_right)
+                robot.setLifterPositions(3, 1);
+            if(gamepad1.dpad_left)
+                robot.setLifterPositions(1, 1);
+
+            hardware.arm2.setPosition(((Range.clip(gamepad2.right_stick_x, 0,1))-0.5)*2);
+
+
+            console.Log("LIFT", hardware.lifter.getCurrentPosition());
+            console.Log("Power", hardware.lifter.getPower());
             console.Update();
 
             idle();

@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class ControllerMethods {
     private Hardware hardware;
@@ -46,12 +47,12 @@ public class ControllerMethods {
         this.console = new Console(hardware, this.robot, context);
     }
 
-    public void speedToggleFast(float nothing){
-        robot.fastMode = true;
-    }
-
-    public void speedToggleSlow(float nothing){
-        robot.fastMode = false;
+    public void speedToggle(float speed){
+        if(speed == 0){
+            robot.fastMode = true;
+        } else if (speed == 1){
+            robot.fastMode = false;
+        }
     }
 
     public void rightDrivePower(float power){
@@ -62,12 +63,38 @@ public class ControllerMethods {
         robot.setPowerLeft(-power);
     }
 
+    public void setArmPower(float position){
+        robot.setArmPower((int)position);
+    }
+
+    public void openArm(float nothing){
+        robot.openArm();
+    }
+
+    public void setArmPowerManual(float power){
+        hardware.arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.arm1.setPower(power * 0.2);
+
+    }
+
     public void setArmPosition(float position){
-        console.Log("set arm position to ", position);
+        robot.setArmPosition(position + 0.5);
     }
 
     public void setMineralKickerPosition(float degrees){
         robot.setMineralKickerPosition(degrees);
+    }
+
+    public void setLifterPosition(float position){
+        robot.setLifterPositions((int) position, 1);
+    }
+
+    public void setLifterPositionManual(float position){
+        hardware.lifter.setPower(position);
+    }
+
+    public void initArm(float nothing){
+        robot.initArm();
     }
 
     public void setCollector(float power){

@@ -43,6 +43,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+/**
+ * Outdated!
+ */
+
 public class ReadConfig {
     private Hardware hardware; // get the context of other classes to use
     private Robot robot;

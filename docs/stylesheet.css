@@ -104,7 +104,7 @@ Document title and Copyright styles
     color:#bb7a2a;
 }
 .tab {
-    background-color:#0066FF;
+    background-color:#ff0000;
     color:#ffffff;
     padding:8px;
     width:5em;
@@ -185,7 +185,7 @@ ul.subNavList li{
     text-transform:uppercase;
 }
 .navBarCell1Rev {
-    background-color:#F8981D;
+    background-color:#b70b0d;
     color:#253441;
     margin: auto 5px;
 }
@@ -400,7 +400,7 @@ Table styles
     padding-bottom:7px;
     display:inline-block;
     float:left;
-    background-color:#F8981D;
+    background-color:#b70b0d;
     border: none;
     height:16px;
 }
@@ -412,7 +412,7 @@ Table styles
     margin-right:3px;
     display:inline-block;
     float:left;
-    background-color:#F8981D;
+    background-color:#b70b0d;
     height:16px;
 }
 .memberSummary caption span.tableTab span {
@@ -440,7 +440,7 @@ Table styles
     width:5px;
     position:relative;
     float:left;
-    background-color:#F8981D;
+    background-color:#b70b0d;
 }
 .memberSummary .activeTableTab .tabEnd {
     display:none;
@@ -448,7 +448,7 @@ Table styles
     margin-right:3px;
     position:relative; 
     float:left;
-    background-color:#F8981D;
+    background-color:#b70b0d;
 }
 .memberSummary .tableTab .tabEnd {
     display:none;

@@ -1,5 +1,5 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
+/*
+ * Copyright (c) 2018. RED SHIFT ROBOTICS. All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
  * the following conditions are met:

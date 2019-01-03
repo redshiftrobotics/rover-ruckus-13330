@@ -1,31 +1,31 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without modification,
-* are permitted (subject to the limitations in the disclaimer below) provided that
-* the following conditions are met:
-*
-* Redistributions of source code must retain the above copyright notice, this list
-* of conditions and the following disclaimer.
-*
-* Redistributions in binary form must reproduce the above copyright notice, this
-* list of conditions and the following disclaimer in the documentation and/or
-* other materials provided with the distribution.
-*
-* Neither the name of FIRST nor the names of its contributors may be used to endorse or
-* promote products derived from this software without specific prior written permission.
-*
-* NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
-* LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
-* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+/*
+ * Copyright (c) 2018. RED SHIFT ROBOTICS. All rights reserved.
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted (subject to the limitations in the disclaimer below) provided that
+ * the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list
+ * of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice, this
+ * list of conditions and the following disclaimer in the documentation and/or
+ * other materials provided with the distribution.
+ *
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or
+ * promote products derived from this software without specific prior written permission.
+ *
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 package org.firstinspires.ftc.teamcode;
 
@@ -37,26 +37,27 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-
 public class Robot { //parent class
 
     private Hardware hardware;
     private LinearOpMode context;
     private Console console;
+    private Imu imu;
 
 
     //constructor that allows the Robot class to use opModes and hardware
     public Robot(Hardware hardware, LinearOpMode context) {
         this.hardware = hardware;
         this.context = context;
+        this.imu = new Imu(context);
         this.console = new Console(hardware, this, context);
     }
 
     public boolean fastMode = false;
     public double[] speeds = {0.3, 0.8};
-    public int[] lifterPositions = {0,-28525,-28495,-22780,-5375};
+    public int[] lifterPositions = {0, -28525, -28495, -22780, -5375};
     public int currentLifterPosition = 0;
-    public int[] armPositions = {0,-28525,-29201,-22780,-5375};
+    public int[] armPositions = {0, -28525, -29201, -22780, -5375};
 
     public double speed = speeds[0];
 
@@ -85,31 +86,33 @@ public class Robot { //parent class
         hardware.backRightMotor.setZeroPowerBehavior(hardware.zeroPowerBehavior);
     }
 
-    public void setMineralKickerPosition(double position){
+    public void setMineralKickerPosition(double position) {
         hardware.mineralKicker1.setPosition(position);
         hardware.mineralKicker2.setPosition(1 - position);
     }
 
-    public void collect(double power){
+    public void collect(double power) {
         hardware.collector.setPower(power);
     }
 
-    public void setLifterPositions(int position, double power){
+    public void setLifterPositions(int position, double power) {
         hardware.lifter.setTargetPosition(position);
         hardware.lifter.setPower(power);
     }
 
-    public void waitForMotor(DcMotor motor){
-        while(motor.isBusy() && context.opModeIsActive()){context.idle();}
+    public void waitForMotor(DcMotor motor) {
+        while (motor.isBusy() && context.opModeIsActive()) {
+            context.idle();
+        }
     }
 
-    public void depositMineral(){
+    public void depositMineral() {
         hardware.depositor.setPosition(1);
         context.sleep(500);
         hardware.depositor.setPosition(0);
     }
 
-    public void setLifterMode(DcMotor.RunMode runMode){
+    public void setLifterMode(DcMotor.RunMode runMode) {
         hardware.lifter.setMode(runMode);
     }
 
@@ -120,18 +123,6 @@ public class Robot { //parent class
             speed = speeds[0];
         }
 
-    }
-
-    public void drive(double power, double time) {
-        hardware.backRightMotor.setPower(-power - hardware.correction);
-        hardware.frontRightMotor.setPower(-power - hardware.correction);
-        hardware.backLeftMotor.setPower(-power);
-        hardware.frontLeftMotor.setPower(-power);
-        context.sleep((long) time);
-        hardware.backRightMotor.setPower(0);
-        hardware.frontRightMotor.setPower(0);
-        hardware.backLeftMotor.setPower(0);
-        hardware.frontLeftMotor.setPower(0);
     }
 
     //endregion
@@ -165,45 +156,6 @@ public class Robot { //parent class
 
     //region Super Functions
 
-    public void resetAngle() {
-        hardware.oldAngle = hardware.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-        hardware.globalAngle = 0;
-    }
-
-    public double getAngle() {
-
-        //we determined that imu angles works in euler angles so
-        hardware.angles = hardware.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-        double differenceAngle = hardware.angles.firstAngle - hardware.oldAngle.firstAngle;
-
-        if (differenceAngle < -180)
-            differenceAngle += 360;
-        else if (differenceAngle > 180)
-            differenceAngle -= 360;
-
-        hardware.globalAngle += differenceAngle;
-
-        hardware.oldAngle = hardware.angles;
-
-        return hardware.globalAngle;
-    }
-
-    public double checkDirection() {
-        double correction, angle, gain = .10;
-
-        angle = getAngle();
-
-        if (angle == 0)
-            correction = 0;             //no adjustment.
-        else
-            correction = -angle;        //reverse sign of angle for correction.
-
-        correction = correction * gain;
-
-        return correction;
-    }
 
     public void rotatePID(int degrees, double power, double stopThreashold) {
         double turnPower = 1;
@@ -218,12 +170,12 @@ public class Robot { //parent class
             degrees -= 360;
 
         //restart imu movement tracking
-        resetAngle();
+        imu.resetAngle();
 
         //turn right
         while (context.opModeIsActive() && Math.abs(turnPower) >= stopThreashold) {
 
-            turnPower = PIDSeek(degrees, getAngle(), 0.00002, 0.00000001, 0.000009);
+            turnPower = PIDSeek(degrees, imu.getAngle(), 0.00002, 0.00000001, 0.000009);
 
             setPowerLeft(turnPower * 100 * power);
             setPowerRight(-turnPower * 100 * power);
@@ -232,7 +184,7 @@ public class Robot { //parent class
         setPowerRight(0);
 
         //reset angle
-        resetAngle();
+        imu.resetAngle();
     }
 
     public void rotate(int degrees, double power, double stopThreashold) {
@@ -248,7 +200,7 @@ public class Robot { //parent class
         else if (degrees > 180)
             degrees -= 360;
 
-        resetAngle(); // restart imu movement tracking
+        imu.resetAngle(); // restart imu movement tracking
         console.Log("BeforeLoop", turnPercentage);
 
 
@@ -257,7 +209,7 @@ public class Robot { //parent class
             console.Status(" " + turnPower * (1 - turnPercentage * 2));
 
             if (degrees < 0) { // turn right
-                setPowerLeft(turnPower );//* (1 - turnPercentage * 2));
+                setPowerLeft(turnPower);//* (1 - turnPercentage * 2));
                 setPowerRight(-turnPower);// * (1 - turnPercentage * 2));
             } else { // turn left
                 setPowerLeft(-turnPower);// * (1 - turnPercentage * 2));
@@ -265,7 +217,7 @@ public class Robot { //parent class
             }
 
 
-            turnPercentage = getAngle() / degrees; // sets turnPercentage
+            turnPercentage = imu.getAngle() / degrees; // sets turnPercentage
 
             context.idle();
         }
@@ -274,7 +226,7 @@ public class Robot { //parent class
         setPowerRight(0);
 
         //reset angle
-        resetAngle();
+        imu.resetAngle();
     }
 
     public static double clamp(double val, double min, double max) {
@@ -287,7 +239,7 @@ public class Robot { //parent class
         return Math.pow(Math.cos((Math.PI / 2) * (x / toTurnDegrees)), 0.6);
     }
 
-    public void openArm(){
+    public void openArm() {
         hardware.arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         hardware.arm1.setTargetPosition(53);
         hardware.arm1.setPower(1);
@@ -295,17 +247,17 @@ public class Robot { //parent class
         hardware.arm1.setTargetPosition(100);
     }
 
-    public void initArm(){
+    public void initArm() {
         hardware.arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         hardware.arm1.setTargetPosition(100);
         hardware.arm1.setPower(1);
     }
 
-    public void setArmPosition(double position){
+    public void setArmPosition(double position) {
         hardware.arm2.setPosition(Range.clip(position, 0, 1));
     }
 
-    public void setArmPower(int position){
+    public void setArmPower(int position) {
         hardware.arm1.setTargetPosition(armPositions[position]);
         hardware.arm1.setPower(0.3);
     }
@@ -332,7 +284,7 @@ public class Robot { //parent class
         context.telemetry.addData("PID Value", value);
         context.telemetry.addData("porportional", proportional);
         context.telemetry.addData("intergral", integral);
-        context.telemetry.addData("Angle", getAngle());
+        context.telemetry.addData("Angle", imu.getAngle());
         context.telemetry.addData("Left Power", hardware.backLeftMotor.getPower());
         context.telemetry.addData("Right Power", hardware.backRightMotor.getPower());
         context.telemetry.update();

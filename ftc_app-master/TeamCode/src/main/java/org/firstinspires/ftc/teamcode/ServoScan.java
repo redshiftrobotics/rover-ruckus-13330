@@ -33,6 +33,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ * Scans the servos from -90 to 90
+ */
+
 @TeleOp(name = "Servo Scan", group = "13330 Pulsar")
 public class ServoScan extends LinearOpMode {
 

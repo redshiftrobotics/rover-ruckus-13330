@@ -35,6 +35,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+/**
+ * Range sensor tester
+ */
+
 @TeleOp(name = "Sensor: MR range sensor", group = "Sensor")
 public class SensorMRRangeSensor extends LinearOpMode {
 

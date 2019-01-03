@@ -39,6 +39,10 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ * The non-chassis specific hardware
+ */
+
 public class Hardware { // Here we get the DcMotors from the REV hub and assign their names.
 
     public DcMotor frontRightMotor;

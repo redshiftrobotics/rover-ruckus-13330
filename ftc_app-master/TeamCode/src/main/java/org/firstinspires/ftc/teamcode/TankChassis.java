@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
- * Created by julian on 12/18/18.
+ * The initialization and drive methods for the tank type chassis
  */
 
 public class TankChassis {

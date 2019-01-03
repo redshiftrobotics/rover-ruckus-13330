@@ -29,6 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
+/**
+ * The three different positions of the mineral
+ */
+
 public enum MineralPosition {
     LEFT, CENTER, RIGHT, NULL
 }

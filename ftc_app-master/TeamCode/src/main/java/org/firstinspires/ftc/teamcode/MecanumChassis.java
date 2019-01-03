@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
- * Created by julian on 12/18/18.
+ * Initialization and functions for the mechanum type chassis
  */
 
 public class MecanumChassis {

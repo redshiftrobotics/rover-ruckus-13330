@@ -34,6 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ * Scans the motor power from 1 to -1 for testikng
+ */
 
 @TeleOp(name = "Motor Scan", group = "13330 Pulsar")
 public class MotorScan extends LinearOpMode {

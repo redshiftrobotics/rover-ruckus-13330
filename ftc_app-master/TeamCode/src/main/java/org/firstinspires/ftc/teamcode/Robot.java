@@ -37,6 +37,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+/**
+ * Various methods that we didn't want to organize
+ **/
+
 public class Robot { //parent class
 
     private Hardware hardware;

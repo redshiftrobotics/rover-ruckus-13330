@@ -51,6 +51,9 @@ import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 import java.io.File;
 import java.io.FileOutputStream;
 
+/**
+ * Used for taking photos from webcam, and pixel analysis
+ */
 
 public class MineralDetection {
     private VuforiaLocalizerImpl vuforiaLocalizer;

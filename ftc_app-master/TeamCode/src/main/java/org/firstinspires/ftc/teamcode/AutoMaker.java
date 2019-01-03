@@ -46,6 +46,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+/**
+ * A class that can help with coding an auto. Saves autos to files and can read them. Working on updating recording autos...
+ */
 
 @TeleOp(name = "Automaker")
 public class AutoMaker extends LinearOpMode {

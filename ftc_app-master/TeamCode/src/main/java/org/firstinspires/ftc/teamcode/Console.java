@@ -31,6 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+/**
+ * A class for debugging
+ */
+
 public class Console { // parent class
 
 

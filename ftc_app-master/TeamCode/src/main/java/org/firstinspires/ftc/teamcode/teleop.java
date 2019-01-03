@@ -33,6 +33,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
+/**
+ * Tests the webcam and mineral detection
+ */
+
 @TeleOp(name = "TeleOp", group = "13330 Pulsar")
 public class teleop extends LinearOpMode {
 

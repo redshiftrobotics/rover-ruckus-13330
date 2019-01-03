@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
- * Created by julian on 12/12/18.
+ * Can help with the steps for auto. Allows you to set the distance and run commands in reverse
  */
 
 @TeleOp(name = "DistancePowerTester", group = "13330 Pulsar")

@@ -31,6 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+/**
+ * A class for getting input from the user
+ */
+
 public class Input {
     private Hardware hardware;
     private Robot robot;

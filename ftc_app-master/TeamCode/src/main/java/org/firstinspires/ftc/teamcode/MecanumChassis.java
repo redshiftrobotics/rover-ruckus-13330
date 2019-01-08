@@ -40,15 +40,22 @@ public class MecanumChassis {
 
     private Imu imu;
 
-    public DcMotor frontRightMotor;
-    public DcMotor frontLeftMotor;
-    public DcMotor backRightMotor;
-    public DcMotor backLeftMotor;
+    private DcMotor frontRightMotor;
+    private DcMotor frontLeftMotor;
+    private DcMotor backRightMotor;
+    private DcMotor backLeftMotor;
 
-    double frontLeftPower;
-    double backLeftPower;
-    double frontRightPower;
-    double backRightPower;
+    private double frontLeftPower;
+    private double backLeftPower;
+    private double frontRightPower;
+    private double backRightPower;
+
+    /**
+     * Initialization constructor
+     *
+     * @param context The LinearOpMode context
+     * @param zeroPowerBehavior What to do if the controller or power is 0: FLOAT OR BRAKE
+     */
 
     public MecanumChassis(LinearOpMode context, DcMotor.ZeroPowerBehavior zeroPowerBehavior) { // creates the context in this class
         imu = new Imu(context);
@@ -82,7 +89,16 @@ public class MecanumChassis {
         //endregion
     }
 
+    /**
+     * Outdated drive function. Keeping it here for a trip down memory lane
+     *
+     * @param y The Y amount of power
+     * @param x The X amount of power
+     * @param rotate The rotate amount of power
+     */
+
     public void drive(double y, double x, double rotate) {
+        //I don't even know how to explain this
         frontLeftPower = y + x + rotate;
         backLeftPower = y - x + rotate;
         frontRightPower = y - x - rotate;
@@ -94,23 +110,95 @@ public class MecanumChassis {
         backRightMotor.setPower(backRightPower);
     }
 
-    public void drives(double y, double x, double rotate) {
+    /**
+     * Drive function for teleop
+     *
+     * @param y Motor power Y
+     * @param x Motor power X
+     * @param rotate Motor power rotate
+     */
+
+    public void driveS(double y, double x, double rotate) {
+        //gets the sqr of the horizontal
         double xSqr = Math.pow(x, 2);
+        //gets the sqr of the vertical
         double ySqr = Math.pow(y, 2);
 
+        //magnitude of both vectors
         double magnitude = Math.sqrt(xSqr + ySqr);
+        //angle of the joystick
         double angle = Math.atan2(y, x);
 
-        frontLeftPower = getPowerBlue(imu.getAngle() + angle) * magnitude + rotate;
-        backLeftPower = getPowerRed(imu.getAngle() + angle) * magnitude + rotate;
-        frontRightPower = getPowerRed(imu.getAngle() + angle) * magnitude + rotate;
-        backRightPower = getPowerBlue(imu.getAngle() + angle) * magnitude + rotate;
+        //mecanum drive train code
+        //the tires diagonal to each other will move the same direction
+        //I named the diagonals red and blue based on an artical I read online
+
+        //sets the power for red and blue
+        frontLeftPower = getPowerBlue(angle) * magnitude + rotate;
+        backLeftPower = getPowerRed(angle) * magnitude + rotate;
+        frontRightPower = getPowerRed(angle) * magnitude + rotate;
+        backRightPower = getPowerBlue(angle) * magnitude + rotate;
+
+        //sets the hardware motor power
+        frontLeftMotor.setPower(frontLeftPower);
+        backLeftMotor.setPower(backLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
 
     }
+
+    /**
+     * Drive function for autonomous
+     *
+     * @param angle The angle to drive at
+     * @param rotate The rotation to drive at
+     * @param speed The speed to drive at
+     */
+
+    public void driveS(long angle, double rotate, double speed) {
+
+        //sets the power for red and blue
+        frontLeftPower = getPowerBlue((double) angle) * speed + rotate;
+        backLeftPower = getPowerRed((double) angle) * speed + rotate;
+        frontRightPower = getPowerRed((double) angle) * speed + rotate;
+        backRightPower = getPowerBlue((double) angle) * speed + rotate;
+
+        //sets the hardware motor power
+        frontLeftMotor.setPower(frontLeftPower);
+        backLeftMotor.setPower(backLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
+
+    }
+
+    /**
+     * Stops all motors
+     */
+
+    public void stop(){
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+    }
+
+    /**
+     * Returns the red motor power for mecanum wheels
+     *
+     * @param degrees The desired angle of movement
+     * @return The outputted motor power
+     */
 
     public double getPowerRed(double degrees) {
         return Math.sin((degrees * Math.PI / 180) - Math.PI / 4);
     }
+
+    /**
+     * Returns the blue motor power for mecanum wheels
+     *
+     * @param degrees The desired angle of movement
+     * @return The outputted motor power
+     */
 
     public double getPowerBlue(double degrees) {
         return Math.sin((degrees * Math.PI / 180) + Math.PI / 4);

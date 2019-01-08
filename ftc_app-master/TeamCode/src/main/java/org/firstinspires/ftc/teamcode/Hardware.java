@@ -29,11 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
-
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;

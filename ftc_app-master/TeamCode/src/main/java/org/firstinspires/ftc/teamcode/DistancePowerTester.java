@@ -108,6 +108,7 @@ public class DistancePowerTester extends LinearOpMode {
         }
     }
 
+
     public static double roundToHalf(double d) {
         return Math.round(d * 4) / 4.0;
     }

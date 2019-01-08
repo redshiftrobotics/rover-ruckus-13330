@@ -34,22 +34,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 /**
- * Tests the webcam and mineral detection
+ * Code for the driver controlled portion of the match
  */
 
 @TeleOp(name = "TeleOp", group = "13330 Pulsar")
 public class teleop extends LinearOpMode {
 
-    // ones = after which comp
-    // hundredths = which practice
-    public double version = 1.04;
-
     // instances of hardware, robot, and text
     private Hardware hardware;
+    private MecanumChassis mecanumChassis;
     private Robot robot;
     private Console console;
-    private Imu imu;
-    private ReadConfig rc;
 
     @Override
     public void runOpMode() {
@@ -58,61 +53,17 @@ public class teleop extends LinearOpMode {
         this.hardware = new Hardware(this);
         this.robot = new Robot(this.hardware, this);
         this.console = new Console(this.hardware, this.robot, this);
-        this.rc = new ReadConfig(this.hardware, this.robot, console, this);
-
-
-        console.Log("Action:", "waiting for the IMU initialization");
-        console.Update();
-
-        //reads config file
-
-        //wait for the IMU to be initiated
-        while (!imu.imu.isGyroCalibrated())
-            idle();
-
-        console.Update();
-
-        hardware.depositor.setPosition(0);
-        robot.setMineralKickerPosition(1);
+        this.mecanumChassis = new MecanumChassis(this, hardware.zeroPowerBehavior);
 
         waitForStart();
 
-        //region Run Loop
         while (opModeIsActive()) {
 
-            robot.updateSpeed();
-            imu.checkDirection();
-            robot.setZeroPowerBehavior();
+            //yup
+            mecanumChassis.driveS(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
-            robot.setPowerRight(-gamepad1.right_stick_y);
-            robot.setPowerLeft(-gamepad1.left_stick_y);
-
-            if(gamepad1.a)
-                robot.fastMode = false;
-            else if (gamepad1.b)
-                robot.fastMode = true;
-
-            hardware.lifter.setPower(gamepad2.left_stick_y);
-
-            if(gamepad1.dpad_up)
-                robot.setLifterPositions(3, 1);
-            if(gamepad1.dpad_down)
-                robot.setLifterPositions(4, 1);
-            if(gamepad1.dpad_right)
-                robot.setLifterPositions(3, 1);
-            if(gamepad1.dpad_left)
-                robot.setLifterPositions(1, 1);
-
-            hardware.arm2.setPosition(((Range.clip(gamepad2.right_stick_x, 0,1))-0.5)*2);
-
-
-            console.Log("LIFT", hardware.lifter.getCurrentPosition());
-            console.Log("Power", hardware.lifter.getPower());
-            console.Update();
-
+            //helps robot performance (rids of unnecessary loops)
             idle();
         }
-
-        //endregion
     }
 }

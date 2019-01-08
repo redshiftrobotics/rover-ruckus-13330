@@ -29,9 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.content.res.AssetManager;
 import android.os.Environment;
-import android.widget.Toast;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -40,7 +38,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -51,55 +48,32 @@ import java.io.OutputStreamWriter;
  */
 
 @TeleOp(name = "Automaker")
-public class AutoMaker extends LinearOpMode {
+public class AutoMaker {
 
     private Input input;
     private Console console;
+    private LinearOpMode context;
+
+    private MecanumChassis mecanumChassis;
+    private MineralPosition mineralPosition;
+    private MineralDetection mineralDetection;
 
     private String craterFileName = "FOO";
     private String depoFileName = "FOO";
+    private double scale = 10000;
 
-    private BufferedReader br;
+    private DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
-    private MecanumChassis mecanumChassis;
-
-    private MineralDetection mineralDetection;
-    private MineralPosition mineralPosition;
-    private int mineralDetectionSplits = 3;
-
-    @Override
-    public void runOpMode() throws InterruptedException {
-
-        mecanumChassis = new MecanumChassis(this, DcMotor.ZeroPowerBehavior.BRAKE);
-
-        Object[][] craterCommands = new Object[100][];
-        Object[][] depoCommands = new Object[100][];
-
-        //crater auto
-        if (input.question(new String[]{"Crater", "Depo"}).equals("Crater")) {
-
-            //if open file
-            if (!input.yesOrNo("Create New?")) {
-                console.Display("Opening File", 100);
-                craterCommands = readToArray("craterAuto");
-
-                //depo auto
-            } else {
-                if (!input.yesOrNo("Create New?")) {
-                    console.Display("Opening File", 100);
-                    depoCommands = readToArray("depoAuto");
-                }
-            }
-        }
+    public AutoMaker(LinearOpMode context) {
+        this.context = context;
+        this.mecanumChassis = new MecanumChassis(context, zeroPowerBehavior);
     }
-
-    private int scanDepth = 0;
 
     /**
      * This reads a text file and converts it to an array.
      *
      * @param fileName The file name to read
-     * @return
+     * @return The built array
      */
 
     private Object[][] readToArray(String fileName) {
@@ -113,7 +87,7 @@ public class AutoMaker extends LinearOpMode {
             File file = new File(sdcard, fileName);
 
             //creates a buffered reader
-            br = new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new FileReader(file));
 
             //for each line
             String x;
@@ -159,10 +133,13 @@ public class AutoMaker extends LinearOpMode {
      * Runs an array as an auto script
      *
      * @param array The Array to read
-     * @param i The starting line of the array
+     * @param i     The starting line of the array
      */
 
     private void runArray(Object[][] array, int i) {
+        //the current depth of scanning (for case statements)
+        int scanDepth = 0;
+
         //for each line
         for (i = i; i < array.length; i++) {
             //case commands
@@ -174,15 +151,15 @@ public class AutoMaker extends LinearOpMode {
                         fault("motor control needs to have two tokens");
 
                     //finds the desired dc motor
-                    DcMotor motor = hardwareMap.dcMotor.get(array[i][1].toString());
+                    DcMotor motor = context.hardwareMap.dcMotor.get(array[i][1].toString());
 
                     motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //sets the mode to run to position
                     motor.setTargetPosition(Integer.parseInt(array[i][2].toString())); //sets the target position
                     motor.setPower(1); //sets the power
 
                     //waits for end
-                    while (motor.isBusy() && opModeIsActive()) {
-                        sleep(10);
+                    while (motor.isBusy() && context.opModeIsActive()) {
+                        context.sleep(10);
                     }
 
                     //switches the mode back to using power
@@ -195,17 +172,20 @@ public class AutoMaker extends LinearOpMode {
                     if (array[i].length > 4)
                         fault("drive needs to have four tokens");
 
-                    //drives with y,x,r from array
-                    mecanumChassis.drive(Double.parseDouble(array[i][1].toString()), Double.parseDouble(array[i][2].toString()), Double.parseDouble(array[i][3].toString()));
+                    //drives with angle, rotation, speed from array
+                    mecanumChassis.driveS(Double.parseDouble(array[i][1].toString()), Double.parseDouble(array[i][2].toString()), Double.parseDouble(array[i][3].toString()));
 
                     //if token 4 is LIM run limit switch wait loop
                     if ((array[i][4].toString()).equals("LIM")) {
                         //TODO add limit switch while loop
+
+                        //integral for limit switch scanning
+                        context.sleep(10);
                     }
 
                     //if its not using limit switch, then just wait until the time is up
                     else {
-                        sleep(Long.parseLong(array[i][4].toString()));
+                        context.sleep(Long.parseLong(array[i][4].toString()));
                     }
                     break;
                 //servo control
@@ -215,14 +195,14 @@ public class AutoMaker extends LinearOpMode {
                         fault("servo control needs to have 2 tokens");
 
                     //finds servo from array name
-                    Servo servo = hardwareMap.servo.get(array[i][1].toString());
+                    Servo servo = context.hardwareMap.servo.get(array[i][1].toString());
 
                     //sets the position to the array position
                     servo.setPosition(Double.parseDouble(array[i][2].toString()) / 180);
 
                     //waits for it to go
-                    while (servo.getPosition() != Double.parseDouble(array[i][2].toString()) / 180 && opModeIsActive()) {
-                        sleep(10);
+                    while (servo.getPosition() != Double.parseDouble(array[i][2].toString()) / 180 && context.opModeIsActive()) {
+                        context.sleep(10);
                     }
                     break;
                 case "SCAN":
@@ -234,8 +214,10 @@ public class AutoMaker extends LinearOpMode {
                     scanDepth = 1;
                     try {
                         //scans for the mineral and takes the photo
+                        int mineralDetectionSplits = 3;
                         mineralPosition = mineralDetection.getPosition(mineralDetection.getImage(), mineralDetectionSplits);
-                    } catch(Exception e){ }
+                    } catch (Exception e) {
+                    }
                     break;
                 case "CASE LEFT":
                     if (scanDepth != 1) {
@@ -290,9 +272,86 @@ public class AutoMaker extends LinearOpMode {
     }
 
     /**
+     * Records and saves an array
+     *
+     * @param array The array that you want to record to
+     * @param depo If you are recording crater or depo (for saving)
+     */
+
+    public void record(Object[][] array, boolean depo) {
+
+        //the current step to program in auto
+        int step = 0;
+
+        //the last angle of g1 left stick
+        double lastAngle = 90;
+
+        //while you have not pushed start
+        //psst. start actually stops it
+        while (context.opModeIsActive() && !context.gamepad1.start) {
+
+            //cycle through steps
+            if(context.gamepad1.right_bumper)
+                step++;
+
+            //horizontal axis sqr
+            double xSqr = Math.pow(context.gamepad1.left_stick_x, 2);
+            //vertical axis sqr
+            double ySqr = Math.pow(context.gamepad1.left_stick_y, 2);
+
+            //magnitude deprived from a^2 + b^2 = c^2
+            double magnitude = Math.sqrt(xSqr + ySqr);
+            //angle is just the arc tan of y and x
+            double angle = Math.atan2(context.gamepad1.left_stick_y, context.gamepad1.left_stick_x);
+
+            //avoid 0 angle bullshit
+            if(magnitude > 0.1)
+                lastAngle = angle;
+
+            //only for driving
+            array[step][0] = "D";
+            //angle
+            array[step][1] = lastAngle;
+            //rotation
+            array[step][2] = (context.gamepad1.left_stick_y / (scale * 100)) % 1;
+            //speed
+            array[step][3] = (context.gamepad2.left_stick_y / (scale * 100)) % 1;
+            //time
+            array[step][4] = roundTo(100, (context.gamepad2.right_stick_y / (scale / 10)));
+
+            //logging it so people know what is going on
+            context.telemetry.addData("Step", step);
+            context.telemetry.addData("Angle", array[step][1]);
+            context.telemetry.addData("Speed", array[step][3]);
+            context.telemetry.addData("Rotation", array[step][2]);
+            context.telemetry.addData("Time", array[step][4]);
+
+            //run step
+            if (context.gamepad1.a) {
+                mecanumChassis.driveS((long) array[step][1], (double) array[step][2], (double) array[step][3]);
+                context.sleep((long) array[step][4]);
+                mecanumChassis.stop();
+            }
+
+            //run step in reverse
+            else if (context.gamepad1.b) {
+                mecanumChassis.driveS((long) array[step][1] - 180, (double) array[step][2], -(double) array[step][3]);
+                context.sleep((long) array[step][4]);
+                mecanumChassis.stop();
+            }
+        }
+
+        //saves it with corresponding file names
+        if(depo)
+            saveArray(array, depoFileName);
+        else
+            saveArray(array, craterFileName);
+    }
+
+    /**
      * Saves an array as a string in a file
      *
-     * @param array The array to save
+     * @param array    The array to save
      * @param fileName The fileName to save to
      */
 
@@ -347,11 +406,24 @@ public class AutoMaker extends LinearOpMode {
 
     /**
      * Throws a fault message
-     * @param why
+     *
+     * @param why The reason for fault
      */
 
     public void fault(String why) {
-        console.Status("SYNTAX ERROR :" + why);
-        stop();
+        console.Status("ERROR :" + why);
+        context.stop();
     }
+
+    /**
+     * Rounds to a specific integer. For example if one wanted to round to the nearest hundredth 867 -> 900
+     * @param to What to round to
+     * @param x The value to round
+     * @return
+     */
+
+    public int roundTo(int to, double x) {
+        return (int) ((x + to - 1) / to) * to;
+    }
+
 }

@@ -134,6 +134,7 @@ public class Input {
         return answer;
     }
 
+
     public double getScale(LinearOpMode context){
         if(context.gamepad1.dpad_up)
             return 100;

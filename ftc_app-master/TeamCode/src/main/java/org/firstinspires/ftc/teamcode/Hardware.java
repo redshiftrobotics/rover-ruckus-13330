@@ -34,6 +34,8 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
 
 /**
  * The non-chassis specific hardware initializations.
@@ -56,6 +58,8 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
 
     public CameraName webcam;
+
+    public TouchSensor limitSwitch;
 
     public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
@@ -90,6 +94,8 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
         //region other
         webcam = context.hardwareMap.get(CameraName.class, "Webcam 1");
+
+        limitSwitch = context.hardwareMap.get(TouchSensor.class, "limitSwitch");
         //endregion
 
 

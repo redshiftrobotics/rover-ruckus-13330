@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,9 +65,12 @@ public class AutoMaker {
 
     private DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
-    public AutoMaker(LinearOpMode context) {
+    private Hardware hardware;
+
+    public AutoMaker(LinearOpMode context, Hardware hardware) {
         this.context = context;
         this.mecanumChassis = new MecanumChassis(context, zeroPowerBehavior);
+        this.hardware = hardware;
     }
 
     /**
@@ -177,10 +181,11 @@ public class AutoMaker {
 
                     //if token 4 is LIM run limit switch wait loop
                     if ((array[i][4].toString()).equals("LIM")) {
-                        //TODO add limit switch while loop
 
                         //integral for limit switch scanning
-                        context.sleep(10);
+                        while(!context.hardwareMap.get(TouchSensor.class, array[i][5].toString()).isPressed()){
+                            context.sleep(10);
+                        }
                     }
 
                     //if its not using limit switch, then just wait until the time is up
@@ -293,6 +298,8 @@ public class AutoMaker {
             //cycle through steps
             if(context.gamepad1.right_bumper)
                 step++;
+            if(context.gamepad1.left_bumper)
+                step--;
 
             //horizontal axis sqr
             double xSqr = Math.pow(context.gamepad1.left_stick_x, 2);

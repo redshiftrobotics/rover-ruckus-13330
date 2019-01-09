@@ -181,7 +181,7 @@ public class AutoMaker {
 
                     //if token 4 is LIM run limit switch wait loop
                     if ((array[i][4].toString()).equals("LIM")) {
-                        if(array)
+                        
 
                         //integral for limit switch scanning
                         while(!context.hardwareMap.get(TouchSensor.class, array[i][5].toString()).isPressed()){

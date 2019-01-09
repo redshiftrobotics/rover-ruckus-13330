@@ -51,7 +51,7 @@ public class ControllerMethods {
         this.console = new Console(hardware, this.robot, context);
     }
 
-    public void speedToggle(float speed){
+    public void speedToggle(float speed){ //A controller method that allows the user to toggle speed in the custom config.
         if(speed == 0){
             robot.fastMode = true;
         } else if (speed == 1){
@@ -59,6 +59,14 @@ public class ControllerMethods {
         }
     }
 
+    /*
+        Various controller methods that allow the driver to customize their controller and map buttons
+        to the following methods:
+        - Driving
+        - Arm Control
+        - Lifter Control
+        - Collector Position
+     */
     public void rightDrivePower(float power){
         robot.setPowerRight(-power);
     }

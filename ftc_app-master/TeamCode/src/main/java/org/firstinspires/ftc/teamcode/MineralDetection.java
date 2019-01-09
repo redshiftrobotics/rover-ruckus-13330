@@ -52,7 +52,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 /**
- * Used for taking photos from webcam, and pixel analysis
+ * This class allows the webcam on the robot to take a photo and then process it, determining the
+ * position of the mineral in milliseconds.
  */
 
 public class MineralDetection {
@@ -74,6 +75,7 @@ public class MineralDetection {
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
     }
 
+    // allows the phone to find an image and then allow it to be processed.
 
     public Bitmap getImage() throws InterruptedException {
 
@@ -99,6 +101,7 @@ public class MineralDetection {
         return bm_img;
     }
 
+    // this class processes the photo and scans the individual pixels.
     public MineralPosition getPosition(Bitmap bm_img, int numSplits) {
         int centerWidth = bm_img.getWidth();
         int centerHeight = (bm_img.getHeight()/2);
@@ -165,6 +168,7 @@ public class MineralDetection {
         context.telemetry.update();
         context.sleep(1000);
 
+        // compares the amount of yellow pixels and decides the position of the mineral from the photo.
         if (numYellow[0] > numYellow[1] && numYellow[0] > numYellow[2]) {
             return MineralPosition.LEFT;
         } else if (numYellow[1] > numYellow[0] && numYellow[1] > numYellow[2]) {
@@ -211,6 +215,7 @@ public class MineralDetection {
         return HSV;
     }
 
+    // saves the images to the phones files for processing.
     private void saveImage(Bitmap finalBitmap, String image_name) {
 
         String root = Environment.getExternalStorageDirectory().toString();
@@ -231,6 +236,7 @@ public class MineralDetection {
         while(!file.exists()){}
     }
 
+    // a boolean that detects weather or not a pixel is yellow.
     private boolean isYellow(int[] rgb, int method, float threashold) {
 
         float[] cmyk = rgb2cmyk(rgb[0], rgb[1], rgb[2]);

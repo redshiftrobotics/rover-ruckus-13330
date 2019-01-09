@@ -35,7 +35,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
- * Can help with the steps for auto. Allows you to set the distance and run commands in reverse
+ * A tool for writing Auto efficiently. Allows you to set the distance and power using the controller,
+ * and run commands in reverse which allows for quick testing.
+ *
  */
 
 @TeleOp(name = "DistancePowerTester", group = "13330 Pulsar")
@@ -67,6 +69,7 @@ public class DistancePowerTester extends LinearOpMode {
             int delta_time = (int) ((timer - last_time) / 1000000);
             last_time = timer;
 
+            // allows the user to set the scale of the joystick for setting motor distance.
             if (gamepad1.dpad_up)
                 scale = 100;
             else if (gamepad1.dpad_down)
@@ -82,6 +85,7 @@ public class DistancePowerTester extends LinearOpMode {
             timeThreashold += answers[0];
             powerDegrees += answers[1];
 
+            // allows the user to set the power to either 0.2 or -0.2 quickly.
             if (gamepad1.right_bumper)
                 powerDegrees = 0.2;
             if (gamepad1.left_bumper)

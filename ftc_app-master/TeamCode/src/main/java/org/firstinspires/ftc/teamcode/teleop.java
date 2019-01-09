@@ -31,10 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
 
 /**
- * Code for the driver controlled portion of the match
+ * Code that allows the Drivers to use controllers and drive the robot as well as its mechanisms.
  */
 
 @TeleOp(name = "TeleOp", group = "13330 Pulsar")

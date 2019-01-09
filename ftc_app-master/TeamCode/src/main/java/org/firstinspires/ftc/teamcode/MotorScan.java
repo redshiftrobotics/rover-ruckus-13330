@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
- * Scans the motor power from 1 to -1 for testikng
+ * Scans the motor power from 1 to -1 for testing.
  */
 
 @TeleOp(name = "Motor Scan", group = "13330 Pulsar")

@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.io.IOException;
 
 /**
- * Tests the detection and recognition of minerals
+ * Tests the detection and recognition of minerals.
  */
 
 @TeleOp(name = "testMineralDetect", group = "13330 Pulsar")

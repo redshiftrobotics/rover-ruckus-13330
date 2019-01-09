@@ -131,7 +131,7 @@ public class MecanumChassis {
 
         //mecanum drive train code
         //the tires diagonal to each other will move the same direction
-        //I named the diagonals red and blue based on an artical I read online
+        //I named the diagonals red and blue based on an article I read online
 
         //sets the power for red and blue
         frontLeftPower = getPowerBlue(angle) * magnitude + rotate;

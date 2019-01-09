@@ -357,7 +357,7 @@ public class AutoMaker {
 
     public void saveArray(Object[][] array, String fileName) {
 
-        //creates a new stringBuilder (because i want to use .append)
+        //creates a new stringBuilder (because I want to use .append).
         StringBuilder txtData = new StringBuilder();
 
         //for each line

@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
- * Scans the servos from -90 to 90
+ * Scans the servos from -90 to 90 degrees.
  */
 
 @TeleOp(name = "Servo Scan", group = "13330 Pulsar")

@@ -30,7 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 /**
- * The three different positions of the mineral
+ * The three different positions of the mineral in an enum which allows them to be referenced in
+ * the other classes.
  */
 
 public enum MineralPosition {

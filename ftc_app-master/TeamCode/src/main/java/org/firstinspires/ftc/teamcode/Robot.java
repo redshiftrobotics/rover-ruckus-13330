@@ -38,7 +38,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 /**
- * Various methods that we didn't want to organize
+ * Various methods that are intended to be referenced by the Auto and allow the robot to move, turn, and
+ * complete different actions in the game.
  **/
 
 public class Robot { //parent class

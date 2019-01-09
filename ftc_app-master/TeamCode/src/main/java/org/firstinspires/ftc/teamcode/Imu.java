@@ -38,7 +38,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
- * Covers initialization and other functions for the IMU
+ * Covers initialization and other functions for the IMU.
  */
 
 public class Imu {

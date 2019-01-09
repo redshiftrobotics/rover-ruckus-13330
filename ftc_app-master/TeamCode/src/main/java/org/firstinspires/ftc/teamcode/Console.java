@@ -32,7 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /**
- * A class for debugging
+ * A class for debugging that organizes Telemetry messages.
  */
 
 public class Console { // parent class
@@ -53,7 +53,7 @@ public class Console { // parent class
     }
 
 
-    public void Update() {
+    public void Update() { //updates telemetry so this class can be used anywhere.
         context.telemetry.update();
     }
 
@@ -61,13 +61,13 @@ public class Console { // parent class
         context.telemetry.addData(caption, value);
     }
 
-    public void Display(String caption, long time) {
+    public void Display(String caption, long time) { //A method used to display your desired message as in progress.
         context.telemetry.addData("Currently", caption);
         context.telemetry.update();
         context.sleep(time);
     }
 
-    public void Status(String status) {
+    public void Status(String status) { //A method used to display your desired message as a 'Status.'
         context.telemetry.addData("status", status);
         context.telemetry.update();
     }

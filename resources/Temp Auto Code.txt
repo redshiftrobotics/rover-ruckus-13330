@@ -1,0 +1,35 @@
+<-- Individual Motor
+<-- M : lifter name : encoder ticks
+
+<-- Individual Servo
+<-- L : servo name : degrees
+
+<-- Drive
+<-- D : angle : rotation : speed : time/LIM : limit name if applicable 
+
+<-- SCAN
+<-- scans for minerals
+<-- cases for 
+<-- 0 = left
+<-- 1 = center
+<-- 2 = right
+
+<-- drops lifter
+M : lifter : 40000 
+
+<-- detaches
+D : 0 : 0 : 0.2 : 300
+
+SCAN
+	CASE LEFT
+	D : 90: 0 : 0.3 : LIM : rightLimit
+	ENDCASE
+	
+	CASE CENTER
+	D : 90: 0 : 0.3	
+	ENDCASE
+	
+	CASE RIGHT
+	D : 90: 0 : 0.3
+	ENDCASE
+ENDSCAN

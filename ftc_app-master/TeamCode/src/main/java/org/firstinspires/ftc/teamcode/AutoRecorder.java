@@ -78,9 +78,9 @@ public class AutoRecorder extends LinearOpMode{
 
             if(gamepad1.start){
                 if(isDepo == true){
-                    autoMaker.saveArray(depoArray, "depoAuto");
+                    autoMaker.saveArray(depoArray, "depoAuto" + fileNumber);
                 } else {
-                    autoMaker.saveArray(craterArray, "depoAuto");
+                    autoMaker.saveArray(craterArray, "depoAuto" + fileNumber);
                 }
 
             }

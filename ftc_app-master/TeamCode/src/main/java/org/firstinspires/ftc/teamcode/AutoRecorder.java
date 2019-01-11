@@ -24,7 +24,7 @@ public class AutoRecorder extends LinearOpMode{
 
         console.Update();
 
-        while (isDepo == false){
+        while (!isDepo){
 
             if(gamepad1.left_bumper){
                 isDepo = true;
@@ -80,7 +80,7 @@ public class AutoRecorder extends LinearOpMode{
                 if(isDepo == true){
                     autoMaker.saveArray(depoArray, "depoAuto" + fileNumber);
                 } else {
-                    autoMaker.saveArray(craterArray, "depoAuto" + fileNumber);
+                    autoMaker.saveArray(craterArray, "craterAuto" + fileNumber);
                 }
 
             }

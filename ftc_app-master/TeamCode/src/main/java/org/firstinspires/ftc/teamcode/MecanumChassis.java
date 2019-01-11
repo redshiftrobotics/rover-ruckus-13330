@@ -97,7 +97,7 @@ public class MecanumChassis {
      * @param rotate The rotate amount of power
      */
 
-    public void drive(double y, double x, double rotate) {
+    public void drive(double x, double y, double rotate) {
         //I don't even know how to explain this
         frontLeftPower = y + x + rotate;
         backLeftPower = y - x + rotate;
@@ -110,6 +110,7 @@ public class MecanumChassis {
         backRightMotor.setPower(backRightPower);
     }
 
+
     /**
      * Drive function for teleop
      *
@@ -118,7 +119,7 @@ public class MecanumChassis {
      * @param rotate Motor power rotate
      */
 
-    public void driveS(double y, double x, double rotate) {
+    public void driveS(double x, double y, double rotate) {
         //gets the sqr of the horizontal
         double xSqr = Math.pow(x, 2);
         //gets the sqr of the vertical
@@ -126,9 +127,8 @@ public class MecanumChassis {
 
         //magnitude of both vectors
         double magnitude = Math.sqrt(xSqr + ySqr);
-        //angle of the joystick
-        double angle = Math.atan2(y, x);
 
+        double angle = getControllerAngle(x, y);
         //mecanum drive train code
         //the tires diagonal to each other will move the same direction
         //I named the diagonals red and blue based on an article I read online
@@ -147,6 +147,11 @@ public class MecanumChassis {
 
     }
 
+    public double getControllerAngle(double x, double y){
+        //angle of the joystick
+        return Math.toDegrees(Math.atan(y/x));
+    }
+
     /**
      * Drive function for autonomous
      *
@@ -155,7 +160,7 @@ public class MecanumChassis {
      * @param speed The speed to drive at
      */
 
-    public void driveS(long angle, double rotate, double speed) {
+    public void driveS(int angle, double rotate, double speed) {
 
         //sets the power for red and blue
         frontLeftPower = getPowerBlue((double) angle) * speed + rotate;

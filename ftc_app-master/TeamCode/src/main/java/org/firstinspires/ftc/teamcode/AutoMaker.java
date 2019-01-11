@@ -34,6 +34,7 @@ import android.os.Environment;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -48,7 +49,6 @@ import java.io.OutputStreamWriter;
  * A class that can help with coding an auto. Saves autos to files and can read them. Working on updating recording autos...
  */
 
-@TeleOp(name = "Automaker")
 public class AutoMaker {
 
     private Input input;
@@ -184,8 +184,8 @@ public class AutoMaker {
                         
 
                         //integral for limit switch scanning
-                        while(!context.hardwareMap.get(TouchSensor.class, array[i][5].toString()).isPressed()){
-                            context.sleep(10);
+                        while(!context.hardwareMap.get(DigitalChannel.class, array[i][5].toString()).getState()){
+                            context.idle();
                         }
                     }
 

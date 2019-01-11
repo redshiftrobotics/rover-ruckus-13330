@@ -61,41 +61,41 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
 
     public TouchSensor limitSwitch;
 
-    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
+    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
 
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
         //region servos
-        mineralKicker1 = context.hardwareMap.servo.get("mineralKicker1");
-        mineralKicker2 = context.hardwareMap.servo.get("mineralKicker2");
+        //mineralKicker1 = context.hardwareMap.servo.get("mineralKicker1");
+        //mineralKicker2 = context.hardwareMap.servo.get("mineralKicker2");
 
-        arm2 = context.hardwareMap.servo.get("arm2");
-        depositor = context.hardwareMap.servo.get("depositor");
+        //arm2 = context.hardwareMap.servo.get("arm2");
+        //depositor = context.hardwareMap.servo.get("depositor");
         //endregion
 
         //region motors
 
-        arm1 = context.hardwareMap.dcMotor.get("arm1");
-        arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //arm1 = context.hardwareMap.dcMotor.get("arm1");
+        //arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //arm1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        lifter = context.hardwareMap.dcMotor.get("lifter");
-        lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lifter.setDirection(DcMotor.Direction.FORWARD);
-
-        lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        lifter = context.hardwareMap.dcMotor.get("lifter");
+//        lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        lifter.setDirection(DcMotor.Direction.FORWARD);
+//
+//        lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         //endregion
 
         //region other
-        webcam = context.hardwareMap.get(CameraName.class, "Webcam 1");
+        //webcam = context.hardwareMap.get(CameraName.class, "Webcam 1");
 
-        limitSwitch = context.hardwareMap.get(TouchSensor.class, "limitSwitch");
+        //limitSwitch = context.hardwareMap.get(TouchSensor.class, "limitSwitch");
         //endregion
 
 

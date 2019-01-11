@@ -29,8 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.text.method.Touch;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 /**
  * Code that allows the Drivers to use controllers and drive the robot as well as its mechanisms.
@@ -44,6 +50,11 @@ public class teleop extends LinearOpMode {
     private MecanumChassis mecanumChassis;
     private Robot robot;
     private Console console;
+    private CollectorPosition collectorPosition;
+
+    private double speed  = 0.5;
+
+    private boolean g2LeftBumperState = false;
 
     @Override
     public void runOpMode() {
@@ -59,10 +70,89 @@ public class teleop extends LinearOpMode {
         while (opModeIsActive()) {
 
             //yup
-            mecanumChassis.driveS(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            mecanumChassis.drive(-gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
+
+            console.Status("Angle: " + mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y));
 
             //helps robot performance (rids of unnecessary loops)
             idle();
+
+            if (gamepad2.left_bumper) {
+                g2LeftBumperState = true;
+            } else {
+                g2LeftBumperState = false;
+            }
         }
     }
+
+    public void extendCollector(){
+        DcMotor extenderWheel = hardwareMap.get(DcMotor.class, "extenderWheel");
+        DcMotor collectorHinge = hardwareMap.get(DcMotor.class, "collectorHinge");
+        DcMotor collector = hardwareMap.get(DcMotor.class, "collector");
+
+        extenderWheel.setPower(-gamepad2.left_stick_y);
+
+        if(gamepad2.left_bumper && !g2LeftBumperState){
+            g2LeftBumperState = true;
+            collectorPosition = CollectorPosition.values()[(collectorPosition.ordinal() + 1) % CollectorPosition.values().length];
+        }
+
+        switch (collectorPosition){
+            case UP:
+                collectorHinge.setTargetPosition(0);
+                break;
+            case DOWN:
+                collectorHinge.setTargetPosition(1000);
+                break;
+            case CENTER:
+                collectorHinge.setTargetPosition(500);
+                break;
+            case NULL:
+                collectorHinge.setTargetPosition(0);
+                break;
+        }
+
+        collectorHinge.setPower(1);
+
+        if(collectorPosition != CollectorPosition.UP){
+            collector.setPower(gamepad2.right_stick_y);
+        }
+
+    }
+
+    public void liftFlip(){
+        double upDegree = 90;
+        DigitalChannel flipLimit = hardwareMap.get(DigitalChannel.class, "flipLimit");
+        Servo flipServo1 = hardwareMap.get(Servo.class, "flipServo1");
+        Servo flipServo2 = hardwareMap.get(Servo.class, "flipServo2");
+
+        if(gamepad2.a) {
+            setServos(flipServo1, flipServo2, upDegree);
+
+            while (opModeIsActive() && !flipLimit.getState()) {
+                idle();
+            }
+
+            jitter(new Servo[] {flipServo1, flipServo2}, 1, 3, 100);
+
+        } else {
+            setServos(flipServo1, flipServo2, 0);
+        }
+    }
+
+    public void jitter(Servo[] servos, double power, double numIntervals, int intevalAmount){
+        for(int i = 0; i < numIntervals; i++) {
+            setServos(servos[0], servos[1], servos[0].getPosition() - intevalAmount);
+
+            sleep(100 * intevalAmount/5);
+
+            setServos(servos[0], servos[1], servos[0].getPosition() + intevalAmount);
+        }
+    }
+
+    public void setServos(Servo correct, Servo incorrect, double degree){
+        correct.setPosition(degree/180);
+        incorrect.setPosition(degree/180 - 1);
+    }
+
 }

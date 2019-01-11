@@ -38,6 +38,9 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 /**
  * Code that allows the Drivers to use controllers and drive the robot as well as its mechanisms.
  */
@@ -61,8 +64,7 @@ public class teleop extends LinearOpMode {
 
         //initializes other classes
         this.hardware = new Hardware(this);
-        this.robot = new Robot(this.hardware, this);
-        this.console = new Console(this.hardware, this.robot, this);
+        this.console = new Console(this);
         this.mecanumChassis = new MecanumChassis(this, hardware.zeroPowerBehavior);
 
         waitForStart();
@@ -70,7 +72,8 @@ public class teleop extends LinearOpMode {
         while (opModeIsActive()) {
 
             //yup
-            mecanumChassis.drive(-gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
+            runMultiple(new Method[] {extendCollector();});
+            mecanumChassis.driveS(-gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
 
             console.Status("Angle: " + mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y));
 
@@ -85,10 +88,36 @@ public class teleop extends LinearOpMode {
         }
     }
 
-    public void extendCollector(){
-        DcMotor extenderWheel = hardwareMap.get(DcMotor.class, "extenderWheel");
-        DcMotor collectorHinge = hardwareMap.get(DcMotor.class, "collectorHinge");
-        DcMotor collector = hardwareMap.get(DcMotor.class, "collector");
+    public void runMultiple(Method[] methods, final LinearOpMode context){
+        //array list of threads
+        ArrayList<Thread> threads = new ArrayList<>();
+
+        //creates a thread for each method
+        for (final Method method : methods) {
+
+            //adds the thread
+            threads.add(new Thread() {
+                public void run() {
+                    try {
+                        //invokes the method on context
+                        method.invoke(context);
+                    } catch (Exception ignored){}
+                }
+            });
+        }
+
+        //for each thread
+        for (Thread thread : threads){
+
+            //start it
+            thread.start();
+        }
+    }
+
+    public void extendCollector(DcMotor extenderWheel, DcMotor collectorHinge, DcMotor collector){
+        extenderWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        collectorHinge.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        collector.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         extenderWheel.setPower(-gamepad2.left_stick_y);
 
@@ -106,9 +135,6 @@ public class teleop extends LinearOpMode {
                 break;
             case CENTER:
                 collectorHinge.setTargetPosition(500);
-                break;
-            case NULL:
-                collectorHinge.setTargetPosition(0);
                 break;
         }
 
@@ -129,7 +155,7 @@ public class teleop extends LinearOpMode {
         if(gamepad2.a) {
             setServos(flipServo1, flipServo2, upDegree);
 
-            while (opModeIsActive() && !flipLimit.getState()) {
+            while (opModeIsActive() && !flipLimit.getState() && gamepad2.a) {
                 idle();
             }
 

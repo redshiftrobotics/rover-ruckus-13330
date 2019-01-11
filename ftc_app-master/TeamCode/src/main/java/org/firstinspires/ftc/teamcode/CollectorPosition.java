@@ -35,6 +35,6 @@ package org.firstinspires.ftc.teamcode;
  */
 
 public enum CollectorPosition {
-    UP, DOWN, CENTER, NULL
+    UP, DOWN, CENTER
 }
 

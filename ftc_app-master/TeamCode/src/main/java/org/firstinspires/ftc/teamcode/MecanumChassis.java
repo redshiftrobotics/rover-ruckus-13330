@@ -120,9 +120,9 @@ public class MecanumChassis {
      */
 
     public void driveS(double x, double y, double rotate) {
-        //gets the sqr of the horizontal
+        //gets the square of the horizontal
         double xSqr = Math.pow(x, 2);
-        //gets the sqr of the vertical
+        //gets the square of the vertical
         double ySqr = Math.pow(y, 2);
 
         //magnitude of both vectors

@@ -51,7 +51,6 @@ import java.io.OutputStreamWriter;
 
 public class AutoMaker {
 
-    private Input input;
     private Console console;
     private LinearOpMode context;
 
@@ -59,17 +58,17 @@ public class AutoMaker {
     private MineralPosition mineralPosition;
     private MineralDetection mineralDetection;
 
-    private String craterFileName = "FOO";
-    private String depoFileName = "FOO";
     private double scale = 10000;
 
     private DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
     private Hardware hardware;
 
-    public AutoMaker(LinearOpMode context, Hardware hardware) {
+    public AutoMaker(LinearOpMode context, Hardware hardware, Console console) {
         this.context = context;
+        this.console = console;
         this.mecanumChassis = new MecanumChassis(context, zeroPowerBehavior);
+        this.mineralDetection = new MineralDetection(context);
         this.hardware = hardware;
     }
 
@@ -312,7 +311,7 @@ public class AutoMaker {
             //angle is just the arc tan of y and x
             double angle = Math.atan2(context.gamepad1.left_stick_y, context.gamepad1.left_stick_x);
 
-            //avoid 0 angle bullshit
+            //avoid 0 angle confusion
             if(magnitude > 0.1)
                 lastAngle = angle;
 
@@ -348,12 +347,14 @@ public class AutoMaker {
                 mecanumChassis.stop();
             }
         }
-
+/*
+        This code is redundant given you have the method "saveArray" below.
         //saves it with corresponding file names
         if(depo)
             saveArray(array, depoFileName);
         else
             saveArray(array, craterFileName);
+*/
     }
 
     /**

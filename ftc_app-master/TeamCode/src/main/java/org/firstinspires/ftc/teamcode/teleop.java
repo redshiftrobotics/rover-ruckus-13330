@@ -72,7 +72,6 @@ public class teleop extends LinearOpMode {
         while (opModeIsActive()) {
 
             //yup
-            runMultiple(new Method[] {extendCollector();});
             mecanumChassis.driveS(-gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
 
             console.Status("Angle: " + mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y));

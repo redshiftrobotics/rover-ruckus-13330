@@ -9,9 +9,6 @@ public class AutoRecorder extends LinearOpMode{
     private AutoMaker autoMaker;
     private Console console;
     private Hardware hardware;
-
-    private int fileNumber = 0;
-
     @Override
     public void runOpMode(){
 
@@ -22,67 +19,38 @@ public class AutoRecorder extends LinearOpMode{
 
         Object[][] depoArray = new Object[100][];
         Object[][] craterArray = new Object[100][];
-        boolean isDepo;
-
-
-        console.Log("Recorder initialized. Press left/right bumper to set Depo side.", "");
-        console.Update();
-
-        while (true){
-
-            if(gamepad1.left_bumper){
-                isDepo = true;
-                console.Log("Depo Side is true.", "");
-                console.Update();
-                break;
-            }
-            if(gamepad1.right_bumper){
-                isDepo = false;
-                console.Log("Depo side is false.", "");
-                console.Update();
-                break;
-            }
-
-            idle();
-        }
-
-        console.Log("Side selected. Input number for file using D-pad. Press Start to save.", "");
-        console.Update();
+        boolean isDepo = false;
 
         while(!gamepad1.start){
 
-            if (gamepad1.dpad_up){
-                fileNumber++;
-                console.Log("File Number: ", fileNumber);
-                console.Update();
-            }
+            if(gamepad1.left_bumper)
+                isDepo = true;
 
-            if (gamepad1.dpad_down){
-                fileNumber--;
-                console.Log("File Number: ", fileNumber);
-                console.Update();
-            }
+            else if(gamepad1.right_bumper)
+                isDepo = false;
 
+            if(isDepo)
+                console.Log("Side", "[DEPO]");
+            else
+                console.Log("Side", "[CRATER]");
+
+            console.Update();
             idle();
         }
-
-        console.Log("File number selected: " + fileNumber, "");
-        console.Log("Once you have finished, press start to save auto to a file.", "");
-        console.Update();
 
         waitForStart();
 
         if(isDepo){
-            autoMaker.record(depoArray, isDepo);
+            autoMaker.record(depoArray, true);
         } else {
-            autoMaker.record(craterArray, isDepo);
+            autoMaker.record(craterArray, false);
         }
 
         if(gamepad1.start){
             if(isDepo){
-                autoMaker.saveArray(depoArray, "depoAuto" + fileNumber);
+                autoMaker.saveArray(depoArray, "depoAuto");
             } else {
-                autoMaker.saveArray(craterArray, "craterAuto" + fileNumber);
+                autoMaker.saveArray(craterArray, "craterAuto");
             }
         }
 

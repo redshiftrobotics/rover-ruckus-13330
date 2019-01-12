@@ -33,6 +33,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -48,11 +49,13 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor backRightMotor;
     public DcMotor backLeftMotor;
     public DcMotor collector;
-    public DcMotor lifter;
-    public DcMotor arm1;
+    public DcMotor collectorHinge;
+    public DcMotor extenderWheel;
 
     public Servo mineralKicker1;
     public Servo mineralKicker2;
+    public Servo flipServo1;
+    public Servo flipServo2;
     public Servo arm2;
     public Servo depositor;
 
@@ -60,6 +63,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public CameraName webcam;
 
     public TouchSensor limitSwitch;
+    public DigitalChannel flipLimit;
 
     public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
 

@@ -347,14 +347,6 @@ public class AutoMaker {
                 mecanumChassis.stop();
             }
         }
-/*
-        This code is redundant given you have the method "saveArray" below.
-        //saves it with corresponding file names
-        if(depo)
-            saveArray(array, depoFileName);
-        else
-            saveArray(array, craterFileName);
-*/
     }
 
     /**

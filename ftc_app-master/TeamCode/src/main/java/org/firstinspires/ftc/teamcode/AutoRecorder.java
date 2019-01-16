@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+/**
+ * A class for recording Auto paths as text files which can be run later.
+ */
+
 @TeleOp(name = "AutoRecorder", group = "13330 Pulsar")
 public class AutoRecorder extends LinearOpMode{
 

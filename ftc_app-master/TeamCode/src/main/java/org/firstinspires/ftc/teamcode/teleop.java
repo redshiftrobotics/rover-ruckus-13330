@@ -188,7 +188,7 @@ public class teleop extends LinearOpMode {
         }
     }
 
-    public void jitter(Servo[] servos,, double numIntervals, int intevalAmount){
+    public void jitter(Servo[] servos, double numIntervals, int intevalAmount){
         for(int i = 0; i < numIntervals; i++) {
             setServos(servos[0], servos[1], servos[0].getPosition() - intevalAmount);
 

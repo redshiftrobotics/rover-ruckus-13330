@@ -110,6 +110,18 @@ public class MecanumChassis {
         backRightMotor.setPower(backRightPower);
     }
 
+    public void setMotorPower(double power){
+        frontLeftPower = power;
+        backLeftPower = power;
+        frontRightPower = power;
+        backRightPower = power;
+
+        frontLeftMotor.setPower(frontLeftPower);
+        backLeftMotor.setPower(backLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
+    }
+
 
     /**
      * Drive function for teleop
@@ -120,24 +132,21 @@ public class MecanumChassis {
      */
 
     public void driveS(double x, double y, double rotate) {
-        //gets the square of the horizontal
-        double xSqr = Math.pow(x, 2);
-        //gets the square of the vertical
-        double ySqr = Math.pow(y, 2);
-
         //magnitude of both vectors
-        double magnitude = Math.sqrt(xSqr + ySqr);
+        double magnitude = Math.hypot(x, y);
 
+        //angle of controller
         double angle = getControllerAngle(x, y);
+
         //mecanum drive train code
         //the tires diagonal to each other will move the same direction
         //I named the diagonals red and blue based on an article I read online
 
         //sets the power for red and blue
         frontLeftPower = getPowerBlue(angle) * magnitude + rotate;
-        backLeftPower = getPowerRed(angle) * magnitude + rotate;
+        backLeftPower = getPowerRed(angle) * magnitude - rotate;
         frontRightPower = getPowerRed(angle) * magnitude + rotate;
-        backRightPower = getPowerBlue(angle) * magnitude + rotate;
+        backRightPower = getPowerBlue(angle) * magnitude -   rotate;
 
         //sets the hardware motor power
         frontLeftMotor.setPower(frontLeftPower);
@@ -147,10 +156,31 @@ public class MecanumChassis {
 
     }
 
-    public double getControllerAngle(double x, double y){
-        //angle of the joystick
-        return Math.toDegrees(Math.atan(y/x));
+    public void driveGlobal(double x, double y, double rotate) {
+        //magnitude of both vectors
+        double magnitude = Math.hypot(x, y);
+
+        //angle of controller
+        double angle = getControllerAngle(x, y);
+
+        //mecanum drive train code
+        //the tires diagonal to each other will move the same direction
+        //I named the diagonals red and blue based on an article I read online
+
+        //sets the power for red and blue
+        frontLeftPower = getPowerBlue(imu.getAngle() + angle) * magnitude + rotate;
+        backLeftPower = getPowerRed(imu.getAngle() + angle) * magnitude - rotate;
+        frontRightPower = getPowerRed(imu.getAngle() + angle) * magnitude + rotate;
+        backRightPower = getPowerBlue(imu.getAngle() + angle) * magnitude - rotate;
+
+        //sets the hardware motor power
+        frontLeftMotor.setPower(frontLeftPower);
+        backLeftMotor.setPower(backLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
+
     }
+
 
     /**
      * Drive function for autonomous
@@ -187,25 +217,34 @@ public class MecanumChassis {
         backRightMotor.setPower(0);
     }
 
+    public double getControllerAngle(double x, double y){
+        //angle of the joystick
+        return Math.atan2(y, x);
+    }
+
     /**
      * Returns the red motor power for mecanum wheels
      *
-     * @param degrees The desired angle of movement
+     * @param radians The desired angle of movement
      * @return The outputted motor power
      */
 
-    public double getPowerRed(double degrees) {
-        return Math.sin((degrees * Math.PI / 180) - Math.PI / 4);
+    public double getPowerRed(double radians) {
+        return Math.sin((radians) - (Math.PI / 4));
     }
 
     /**
      * Returns the blue motor power for mecanum wheels
      *
-     * @param degrees The desired angle of movement
+     * @param radians The desired angle of movement
      * @return The outputted motor power
      */
 
-    public double getPowerBlue(double degrees) {
-        return Math.sin((degrees * Math.PI / 180) + Math.PI / 4);
+    public double getPowerBlue(double radians) {
+        return Math.sin((radians) + (Math.PI / 4));
+    }
+
+    public double getStickSensitivity(double x, double sensitivity){
+        return Math.pow(x, sensitivity);
     }
 }

@@ -101,8 +101,8 @@ public class Robot { //parent class
     }
 
     public void setLifterPositions(int position, double power) {
-        hardware.lifter.setTargetPosition(position);
-        hardware.lifter.setPower(power);
+        //hardware.lifter.setTargetPosition(position);
+        //hardware.lifter.setPower(power);
     }
 
     public void waitForMotor(DcMotor motor) {
@@ -117,9 +117,9 @@ public class Robot { //parent class
         hardware.depositor.setPosition(0);
     }
 
-    public void setLifterMode(DcMotor.RunMode runMode) {
-        hardware.lifter.setMode(runMode);
-    }
+//    public void setLifterMode(DcMotor.RunMode runMode) {
+//        hardware.lifter.setMode(runMode);
+//    }
 
     public void updateSpeed() {
         if (fastMode) {
@@ -244,28 +244,28 @@ public class Robot { //parent class
         return Math.pow(Math.cos((Math.PI / 2) * (x / toTurnDegrees)), 0.6);
     }
 
-    public void openArm() {
-        hardware.arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.arm1.setTargetPosition(53);
-        hardware.arm1.setPower(1);
-        hardware.arm2.setPosition(0.2);
-        hardware.arm1.setTargetPosition(100);
-    }
-
-    public void initArm() {
-        hardware.arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.arm1.setTargetPosition(100);
-        hardware.arm1.setPower(1);
-    }
-
-    public void setArmPosition(double position) {
-        hardware.arm2.setPosition(Range.clip(position, 0, 1));
-    }
-
-    public void setArmPower(int position) {
-        hardware.arm1.setTargetPosition(armPositions[position]);
-        hardware.arm1.setPower(0.3);
-    }
+//    public void openArm() {
+//        hardware.arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        hardware.arm1.setTargetPosition(53);
+//        hardware.arm1.setPower(1);
+//        hardware.arm2.setPosition(0.2);
+//        hardware.arm1.setTargetPosition(100);
+//    }
+//
+//    public void initArm() {
+//        hardware.arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        hardware.arm1.setTargetPosition(100);
+//        hardware.arm1.setPower(1);
+//    }
+//
+//    public void setArmPosition(double position) {
+//        hardware.arm2.setPosition(Range.clip(position, 0, 1));
+//    }
+//
+//    public void setArmPower(int position) {
+//        hardware.arm1.setTargetPosition(armPositions[position]);
+//        hardware.arm1.setPower(0.3);
+//    }
 
     //endregion
 

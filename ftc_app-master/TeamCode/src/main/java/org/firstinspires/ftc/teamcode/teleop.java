@@ -54,7 +54,10 @@ public class teleop extends LinearOpMode {
     private Robot robot;
     private Console console;
 
-    private double speed  = 0.5;
+    private double speed  = 0.3;
+    private double horizontalSensitivity = 3.7;
+    private double verticalSensitivity = 3.7;
+    private double rotationSensitivity = 3.7;
 
     private boolean g2LeftBumperState = false;
 
@@ -69,24 +72,40 @@ public class teleop extends LinearOpMode {
 
         waitForStart();
 
-        runBackground();
+        Thread driveThread = new Thread() {
+            public void run() {
+
+                while (!isInterrupted()) {
+                    mecanumChassis.driveS(
+                            mecanumChassis.getStickSensitivity(gamepad1.left_stick_x * speed, horizontalSensitivity),
+                            mecanumChassis.getStickSensitivity(gamepad1.left_stick_y * speed, verticalSensitivity),
+                            mecanumChassis.getStickSensitivity(gamepad1.right_stick_x * speed, rotationSensitivity)
+                    );
+                }
+            }
+        };
+
+        driveThread.start();
 
         while (opModeIsActive()) {
-
-            //yup
-            mecanumChassis.driveS(-gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
-
-            console.Status("Angle: " + mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y));
 
             //helps robot performance (rids of unnecessary loops)
             idle();
 
-            if (gamepad2.left_bumper) {
-                g2LeftBumperState = true;
-            } else {
-                g2LeftBumperState = false;
-            }
+            telemetry.addData("Mode", "running");
+            telemetry.addData("Run Time", this.getRuntime());
+            telemetry.addData("Buttons", "x1=" + gamepad1.x);
+            telemetry.addData("sticks", "  left=" + gamepad1.left_stick_y + "  right=" + gamepad1.right_stick_y);
+            telemetry.update();
+
+//            if (gamepad2.left_bumper) {
+//                g2LeftBumperState = true;
+//            } else {
+//                g2LeftBumperState = false;
+//            }
         }
+
+        driveThread.interrupt();
     }
 
 //    public void runMultiple(Method[] methods, final LinearOpMode context){
@@ -116,13 +135,29 @@ public class teleop extends LinearOpMode {
 //    }
 
     public void runBackground(){
+
+        Thread driveThread = new Thread(){
+            public void run(){
+
+                while(!isInterrupted()){
+                    mecanumChassis.driveS(
+                            mecanumChassis.getStickSensitivity(gamepad1.left_stick_x * speed, horizontalSensitivity),
+                            mecanumChassis.getStickSensitivity(gamepad1.left_stick_y * speed, verticalSensitivity),
+                            mecanumChassis.getStickSensitivity(gamepad1.right_stick_x * speed, rotationSensitivity)
+                    );
+                }
+            }
+        };
+
+        driveThread.start();
+
         Thread thread1 = new Thread(){
             public void run() {
                 extendCollector(hardware.extenderWheel, hardware.collectorHinge, hardware.collector);
             }
         };
 
-        thread1.start();
+        //thread1.start();
 
         Thread thread2 = new Thread(){
             public void run() {
@@ -130,7 +165,7 @@ public class teleop extends LinearOpMode {
             }
         };
 
-        thread2.start();
+        //thread2.start();
     }
 
     public void extendCollector(DcMotor extenderWheel, DcMotor collectorHinge, DcMotor collector){
@@ -202,5 +237,7 @@ public class teleop extends LinearOpMode {
         correct.setPosition(degree/180);
         incorrect.setPosition(degree/180 - 1);
     }
+
+
 
 }

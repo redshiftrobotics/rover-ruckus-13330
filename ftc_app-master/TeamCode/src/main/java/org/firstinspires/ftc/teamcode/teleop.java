@@ -55,10 +55,10 @@ public class teleop extends LinearOpMode {
     private Console console;
     private Imu imu;
 
-    private double speed  = 0.3;
-    private double horizontalSensitivity = 2.6;
-    private double verticalSensitivity = 2.6;
-    private double rotationSensitivity = 2.6;
+    private double speed = 0.3;
+    private double horizontalSensitivity = 5;
+    private double verticalSensitivity = 5;
+    private double rotationSensitivity = 5;
 
     private boolean g2LeftBumperState = false;
 
@@ -72,7 +72,7 @@ public class teleop extends LinearOpMode {
         this.imu = new Imu(this);
         this.console = new Console(this);
 
-        while(!imu.imu.isGyroCalibrated()){
+        while (!imu.imu.isGyroCalibrated()) {
             console.Status("Calibrating Gyro");
             idle();
         }
@@ -87,37 +87,30 @@ public class teleop extends LinearOpMode {
 
         console.Status("Reset Angle");
 
-        //driveThread.start();
+        driveThread.start();
 
-            while (opModeIsActive()) {
+        while (opModeIsActive()) {
 
-                //helps robot performance (rids of unnecessary loops)
+            //helps robot performance (rids of unnecessary loops)
 
-                if(gamepad1.right_bumper) {
-                    mecanumChassis.driveGlobal(-gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
-                } else {
-                    mecanumChassis.driveS(gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
-                }
 
-                if(gamepad1.a)
-                    imu.resetAngle();
+            telemetry.addData("Mode", mecanumChassis.getStickSensitivity(gamepad1.left_stick_x, horizontalSensitivity));
+            telemetry.addData("Hypot", Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y));
+            telemetry.addData("Angle", (Math.toRadians(imu.getAngle()) + mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y)) * 180 / Math.PI);
+            telemetry.addData("sticks", "  left=" + gamepad1.left_stick_y + "  right=" + gamepad1.right_stick_y);
+            telemetry.update();
 
-                telemetry.addData("Mode", mecanumChassis.getPowerBlue(mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y)));
-                telemetry.addData("Hypot", Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y));
-                telemetry.addData("Angle", (Math.toRadians(imu.getAngle()) + mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y)) * 180/Math.PI);
-                telemetry.addData("sticks", "  left=" + gamepad1.left_stick_y + "  right=" + gamepad1.right_stick_y);
-                telemetry.update();
+            if (gamepad2.left_bumper) {
+                g2LeftBumperState = true;
+            } else {
+                g2LeftBumperState = false;
+            }
 
-                idle();
-//            if (gamepad2.left_bumper) {
-//                g2LeftBumperState = true;
-//            } else {
-//                g2LeftBumperState = false;
-//            }     idle();
+            idle();
 
         }
 
-        //driveThread.interrupt();
+        driveThread.interrupt();
     }
 
     private class DriveThread extends Thread {
@@ -133,146 +126,114 @@ public class teleop extends LinearOpMode {
                 while (!isInterrupted()) {
 
                     //mecanumChassis.driveS(mecanumChassis.getStickSensitivity(gamepad1.left_stick_x * speed, horizontalSensitivity), mecanumChassis.getStickSensitivity(gamepad1.left_stick_y * speed, verticalSensitivity), mecanumChassis.getStickSensitivity(gamepad1.right_stick_x * speed, rotationSensitivity));
-                    mecanumChassis.driveGlobal(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+                    if (gamepad1.right_bumper) {
+                        mecanumChassis.driveGlobal(-gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
+                    } else {
+                        mecanumChassis.driveS(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x);
+                    }
 
+                    if (gamepad1.a)
+                        imu.resetAngle();
                     idle();
                 }
             }
             // an error occurred in the run loop.
-            catch(Exception e){
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CollectorThread extends Thread {
+        public CollectorThread(){
+            this.setName("CollectorThread");
+
+        }
+
+        @Override
+        public void run(){
+            try{
+                while(!isInterrupted()){
+                    CollectorPosition collectorPosition = CollectorPosition.UP;
+
+                    hardware.extenderWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    hardware.collectorHinge.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    hardware.collector.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                    hardware.extenderWheel.setPower(-gamepad2.left_stick_y);
+
+                    if (gamepad2.left_bumper) {
+                        collectorPosition = CollectorPosition.values()[(collectorPosition.ordinal() + 1) % CollectorPosition.values().length];
+                        sleep(100);
+                    }
+
+                    switch (collectorPosition) {
+                        case UP:
+                            hardware.collectorHinge.setTargetPosition(0);
+                            break;
+                        case DOWN:
+                            hardware.collectorHinge.setTargetPosition(1000);
+                            break;
+                        case CENTER:
+                            hardware.collectorHinge.setTargetPosition(500);
+                            break;
+                    }
+
+                    hardware.collectorHinge.setPower(1);
+
+                    if (collectorPosition != CollectorPosition.UP) {
+                        hardware.collector.setPower(gamepad2.right_stick_y);
+                    }
+                }
+            } catch(Exception e){
                     e.printStackTrace();
             }
         }
     }
 
+    private class FlipThread extends Thread {
+        public FlipThread() {
+            this.setName("FlipThread");
 
-//    public void runMultiple(Method[] methods, final LinearOpMode context){
-//        //array list of threads
-//        ArrayList<Thread> threads = new ArrayList<>();
-//
-//        //creates a thread for each method
-//        for (final Method method : methods) {
-//
-//            //adds the thread
-//            threads.add(new Thread() {
-//                public void run() {
-//                    try {
-//                        //invokes the method on context
-//                        method.invoke(context);
-//                    } catch (Exception ignored){}
-//                }
-//            });
-//        }
-//
-//        //for each thread
-//        for (Thread thread : threads){
-//
-//            //start it
-//            thread.start();
-//        }
-//    }
+        }
 
-    public void runBackground(){
+        @Override
+        public void run() {
+            try {
+                while (!isInterrupted()) {
+                    double upDegree = 90;
 
-        Thread driveThread = new Thread(){
-            public void run(){
+                    if (gamepad2.a) {
+                        setServos(hardware.flipServo1, hardware.flipServo2, upDegree);
 
-                while(!isInterrupted()){
-                    mecanumChassis.driveS(
-                            mecanumChassis.getStickSensitivity(gamepad1.left_stick_x * speed, horizontalSensitivity),
-                            mecanumChassis.getStickSensitivity(gamepad1.left_stick_y * speed, verticalSensitivity),
-                            mecanumChassis.getStickSensitivity(gamepad1.right_stick_x * speed, rotationSensitivity)
-                    );
+                        while (opModeIsActive() && !hardware.flipLimit.getState() && gamepad2.a) {
+                            idle();
+                        }
+
+                        jitter(new Servo[]{hardware.flipServo1, hardware.flipServo2}, 3, 100);
+
+                    } else {
+                        setServos(hardware.flipServo1, hardware.flipServo2, 0);
+                    }
                 }
-            }
-        };
-
-        driveThread.start();
-
-        Thread thread1 = new Thread(){
-            public void run() {
-                extendCollector(hardware.extenderWheel, hardware.collectorHinge, hardware.collector);
-            }
-        };
-
-        //thread1.start();
-
-        Thread thread2 = new Thread(){
-            public void run() {
-                liftFlip(hardware.flipServo1, hardware.flipServo2, hardware.flipLimit);
-            }
-        };
-
-        //thread2.start();
-    }
-
-    public void extendCollector(DcMotor extenderWheel, DcMotor collectorHinge, DcMotor collector){
-        while(opModeIsActive()) {
-            CollectorPosition collectorPosition = CollectorPosition.UP;
-
-            extenderWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            collectorHinge.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            collector.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            extenderWheel.setPower(-gamepad2.left_stick_y);
-
-            if (gamepad2.left_bumper) {
-                collectorPosition = CollectorPosition.values()[(collectorPosition.ordinal() + 1) % CollectorPosition.values().length];
-                sleep(100);
-            }
-
-            switch (collectorPosition) {
-                case UP:
-                    collectorHinge.setTargetPosition(0);
-                    break;
-                case DOWN:
-                    collectorHinge.setTargetPosition(1000);
-                    break;
-                case CENTER:
-                    collectorHinge.setTargetPosition(500);
-                    break;
-            }
-
-            collectorHinge.setPower(1);
-
-            if (collectorPosition != CollectorPosition.UP) {
-                collector.setPower(gamepad2.right_stick_y);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
-    public void liftFlip(Servo flipServo1, Servo flipServo2, DigitalChannel flipLimit){
-        while(opModeIsActive()) {
-
-            double upDegree = 90;
-
-            if (gamepad2.a) {
-                setServos(flipServo1, flipServo2, upDegree);
-
-                while (opModeIsActive() && !flipLimit.getState() && gamepad2.a) {
-                    idle();
-                }
-
-                jitter(new Servo[] {flipServo1, flipServo2}, 3, 100);
-
-            } else {
-                setServos(flipServo1, flipServo2, 0);
-            }
-        }
-    }
-
-    public void jitter(Servo[] servos, double numIntervals, int intevalAmount){
-        for(int i = 0; i < numIntervals; i++) {
+    public void jitter(Servo[] servos, double numIntervals, int intevalAmount) {
+        for (int i = 0; i < numIntervals; i++) {
             setServos(servos[0], servos[1], servos[0].getPosition() - intevalAmount);
 
-            sleep(100 * intevalAmount/5);
+            sleep(100 * intevalAmount / 5);
 
             setServos(servos[0], servos[1], servos[0].getPosition() + intevalAmount);
         }
     }
 
-    public void setServos(Servo correct, Servo incorrect, double degree){
-        correct.setPosition(degree/180);
-        incorrect.setPosition(degree/180 - 1);
+    public void setServos(Servo correct, Servo incorrect, double degree) {
+        correct.setPosition(degree / 180);
+        incorrect.setPosition(degree / 180 - 1);
     }
 }

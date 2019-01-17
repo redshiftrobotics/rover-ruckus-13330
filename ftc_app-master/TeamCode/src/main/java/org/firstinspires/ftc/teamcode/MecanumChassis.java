@@ -57,8 +57,9 @@ public class MecanumChassis {
      * @param zeroPowerBehavior What to do if the controller or power is 0: FLOAT OR BRAKE
      */
 
-    public MecanumChassis(LinearOpMode context, DcMotor.ZeroPowerBehavior zeroPowerBehavior) { // creates the context in this class
-        imu = new Imu(context);
+    public MecanumChassis(LinearOpMode context, DcMotor.ZeroPowerBehavior zeroPowerBehavior, Imu imu) { // creates the context in this class
+
+        this.imu = imu;
 
         //region frontLeftMotor
         frontLeftMotor = context.hardwareMap.dcMotor.get("frontLeftMotor");
@@ -144,9 +145,9 @@ public class MecanumChassis {
 
         //sets the power for red and blue
         frontLeftPower = getPowerBlue(angle) * magnitude + rotate;
-        backLeftPower = getPowerRed(angle) * magnitude - rotate;
-        frontRightPower = getPowerRed(angle) * magnitude + rotate;
-        backRightPower = getPowerBlue(angle) * magnitude -   rotate;
+        backLeftPower = getPowerRed(angle) * magnitude + rotate;
+        frontRightPower = getPowerRed(angle) * magnitude - rotate;
+        backRightPower = getPowerBlue(angle) * magnitude - rotate;
 
         //sets the hardware motor power
         frontLeftMotor.setPower(frontLeftPower);
@@ -168,10 +169,10 @@ public class MecanumChassis {
         //I named the diagonals red and blue based on an article I read online
 
         //sets the power for red and blue
-        frontLeftPower = getPowerBlue(imu.getAngle() + angle) * magnitude + rotate;
-        backLeftPower = getPowerRed(imu.getAngle() + angle) * magnitude - rotate;
-        frontRightPower = getPowerRed(imu.getAngle() + angle) * magnitude + rotate;
-        backRightPower = getPowerBlue(imu.getAngle() + angle) * magnitude - rotate;
+        frontLeftPower = getPowerRed(Math.toRadians(imu.getAngle()) + angle) * magnitude + rotate;
+        backLeftPower = getPowerBlue(Math.toRadians(imu.getAngle()) + angle) * magnitude + rotate;
+        frontRightPower = getPowerBlue(Math.toRadians(imu.getAngle()) + angle) * magnitude - rotate;
+        backRightPower = getPowerRed(Math.toRadians(imu.getAngle()) + angle) * magnitude - rotate;
 
         //sets the hardware motor power
         frontLeftMotor.setPower(frontLeftPower);

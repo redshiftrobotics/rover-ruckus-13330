@@ -53,11 +53,12 @@ public class teleop extends LinearOpMode {
     private MecanumChassis mecanumChassis;
     private Robot robot;
     private Console console;
+    private Imu imu;
 
     private double speed  = 0.3;
-    private double horizontalSensitivity = 3.7;
-    private double verticalSensitivity = 3.7;
-    private double rotationSensitivity = 3.7;
+    private double horizontalSensitivity = 2.6;
+    private double verticalSensitivity = 2.6;
+    private double rotationSensitivity = 2.6;
 
     private boolean g2LeftBumperState = false;
 
@@ -65,48 +66,85 @@ public class teleop extends LinearOpMode {
     public void runOpMode() {
 
         //initializes other classes
-        this.hardware = new Hardware(this);
-        this.console = new Console(this);
-        this.mecanumChassis = new MecanumChassis(this, hardware.zeroPowerBehavior);
+        Thread driveThread = new DriveThread();
 
+        this.hardware = new Hardware(this);
+        this.imu = new Imu(this);
+        this.console = new Console(this);
+
+        while(!imu.imu.isGyroCalibrated()){
+            console.Status("Calibrating Gyro");
+            idle();
+        }
+
+        this.mecanumChassis = new MecanumChassis(this, hardware.zeroPowerBehavior, this.imu);
+
+        console.Status("Ready to start");
 
         waitForStart();
 
-        Thread driveThread = new Thread() {
-            public void run() {
+        imu.resetAngle();
 
-                while (!isInterrupted()) {
-                    mecanumChassis.driveS(
-                            mecanumChassis.getStickSensitivity(gamepad1.left_stick_x * speed, horizontalSensitivity),
-                            mecanumChassis.getStickSensitivity(gamepad1.left_stick_y * speed, verticalSensitivity),
-                            mecanumChassis.getStickSensitivity(gamepad1.right_stick_x * speed, rotationSensitivity)
-                    );
+        console.Status("Reset Angle");
+
+        //driveThread.start();
+
+            while (opModeIsActive()) {
+
+                //helps robot performance (rids of unnecessary loops)
+
+                if(gamepad1.right_bumper) {
+                    mecanumChassis.driveGlobal(-gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
+                } else {
+                    mecanumChassis.driveS(gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
                 }
-            }
-        };
 
-        driveThread.start();
+                if(gamepad1.a)
+                    imu.resetAngle();
 
-        while (opModeIsActive()) {
+                telemetry.addData("Mode", mecanumChassis.getPowerBlue(mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y)));
+                telemetry.addData("Hypot", Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y));
+                telemetry.addData("Angle", (Math.toRadians(imu.getAngle()) + mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y)) * 180/Math.PI);
+                telemetry.addData("sticks", "  left=" + gamepad1.left_stick_y + "  right=" + gamepad1.right_stick_y);
+                telemetry.update();
 
-            //helps robot performance (rids of unnecessary loops)
-            idle();
-
-            telemetry.addData("Mode", "running");
-            telemetry.addData("Run Time", this.getRuntime());
-            telemetry.addData("Buttons", "x1=" + gamepad1.x);
-            telemetry.addData("sticks", "  left=" + gamepad1.left_stick_y + "  right=" + gamepad1.right_stick_y);
-            telemetry.update();
-
+                idle();
 //            if (gamepad2.left_bumper) {
 //                g2LeftBumperState = true;
 //            } else {
 //                g2LeftBumperState = false;
-//            }
+//            }     idle();
+
         }
 
-        driveThread.interrupt();
+        //driveThread.interrupt();
     }
+
+    private class DriveThread extends Thread {
+
+        public DriveThread() {
+            this.setName("DriveThread");
+
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!isInterrupted()) {
+
+                    //mecanumChassis.driveS(mecanumChassis.getStickSensitivity(gamepad1.left_stick_x * speed, horizontalSensitivity), mecanumChassis.getStickSensitivity(gamepad1.left_stick_y * speed, verticalSensitivity), mecanumChassis.getStickSensitivity(gamepad1.right_stick_x * speed, rotationSensitivity));
+                    mecanumChassis.driveGlobal(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+
+                    idle();
+                }
+            }
+            // an error occurred in the run loop.
+            catch(Exception e){
+                    e.printStackTrace();
+            }
+        }
+    }
+
 
 //    public void runMultiple(Method[] methods, final LinearOpMode context){
 //        //array list of threads
@@ -237,7 +275,5 @@ public class teleop extends LinearOpMode {
         correct.setPosition(degree/180);
         incorrect.setPosition(degree/180 - 1);
     }
-
-
-
 }
+

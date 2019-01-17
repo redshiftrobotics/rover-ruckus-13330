@@ -57,6 +57,7 @@ public class AutoMaker {
     private MecanumChassis mecanumChassis;
     private MineralPosition mineralPosition;
     private MineralDetection mineralDetection;
+    private Imu imu;
 
     private double scale = 10000;
 
@@ -66,8 +67,9 @@ public class AutoMaker {
 
     public AutoMaker(LinearOpMode context, Hardware hardware, Console console) {
         this.context = context;
+        this.imu = new Imu(context);
         this.console = console;
-        this.mecanumChassis = new MecanumChassis(context, zeroPowerBehavior);
+        this.mecanumChassis = new MecanumChassis(context, zeroPowerBehavior, imu);
         this.mineralDetection = new MineralDetection(context);
         this.hardware = hardware;
     }

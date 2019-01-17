@@ -246,6 +246,7 @@ public class MecanumChassis {
     }
 
     public double getStickSensitivity(double x, double sensitivity){
-        return Math.pow(x, sensitivity);
+        double y = Math.pow(x, sensitivity);
+        return y;
     }
 }

@@ -65,6 +65,7 @@ public class AutoMaker {
 
     private Hardware hardware;
 
+
     public AutoMaker(LinearOpMode context, Hardware hardware, Console console) {
         this.context = context;
         this.imu = new Imu(context);

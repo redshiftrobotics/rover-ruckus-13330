@@ -276,4 +276,3 @@ public class teleop extends LinearOpMode {
         incorrect.setPosition(degree/180 - 1);
     }
 }
-

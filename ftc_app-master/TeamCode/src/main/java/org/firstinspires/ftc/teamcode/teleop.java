@@ -113,8 +113,10 @@ public class teleop extends LinearOpMode {
         driveThread.interrupt();
     }
 
+    //Thread that allows the driver to drive the mecanum chassis.
     private class DriveThread extends Thread {
 
+        //sets the name of the thread to be referenced later.
         public DriveThread() {
             this.setName("DriveThread");
 
@@ -125,6 +127,9 @@ public class teleop extends LinearOpMode {
             try {
                 while (!isInterrupted()) {
 
+                    //Allows the thread to detect if the right bumper is pressed, which will change
+                    //the driving style from a locked forward to free drive.
+
                     //mecanumChassis.driveS(mecanumChassis.getStickSensitivity(gamepad1.left_stick_x * speed, horizontalSensitivity), mecanumChassis.getStickSensitivity(gamepad1.left_stick_y * speed, verticalSensitivity), mecanumChassis.getStickSensitivity(gamepad1.right_stick_x * speed, rotationSensitivity));
                     if (gamepad1.right_bumper) {
                         mecanumChassis.driveGlobal(-gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
@@ -132,6 +137,7 @@ public class teleop extends LinearOpMode {
                         mecanumChassis.driveS(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x);
                     }
 
+                    //Allows the thread to detect if 'a' is pressed, which will reset the global angle.
                     if (gamepad1.a)
                         imu.resetAngle();
                     idle();
@@ -144,7 +150,10 @@ public class teleop extends LinearOpMode {
         }
     }
 
+    //Thread that allows the driver to run the collector mechanisms.
     private class CollectorThread extends Thread {
+
+        //sets the name of the thread to be referenced later.
         public CollectorThread(){
             this.setName("CollectorThread");
 
@@ -162,11 +171,16 @@ public class teleop extends LinearOpMode {
 
                     hardware.extenderWheel.setPower(-gamepad2.left_stick_y);
 
+                    //Allows the thread to detect if the left bumper has been pressed, which will then set
+                    //the position of the servo motor to a certain position.
                     if (gamepad2.left_bumper) {
                         collectorPosition = CollectorPosition.values()[(collectorPosition.ordinal() + 1) % CollectorPosition.values().length];
                         sleep(100);
                     }
 
+
+                    //Based on the collector position, allows the Thread to set a specific position for
+                    //the collector hinge.
                     switch (collectorPosition) {
                         case UP:
                             hardware.collectorHinge.setTargetPosition(0);
@@ -181,6 +195,8 @@ public class teleop extends LinearOpMode {
 
                     hardware.collectorHinge.setPower(1);
 
+                    //If that position is equal to anything but UP, the collector's power will be set
+                    //to the power of the right joystick.
                     if (collectorPosition != CollectorPosition.UP) {
                         hardware.collector.setPower(gamepad2.right_stick_y);
                     }
@@ -191,7 +207,10 @@ public class teleop extends LinearOpMode {
         }
     }
 
+    //A thread that allows the driver to use the flipping mechanisms.
     private class FlipThread extends Thread {
+
+        //Sets the name of the Thread to be referenced later.
         public FlipThread() {
             this.setName("FlipThread");
 
@@ -203,16 +222,22 @@ public class teleop extends LinearOpMode {
                 while (!isInterrupted()) {
                     double upDegree = 90;
 
+                    //Alows the thread to detect if the 'a' button is pressed, and then sets the
+                    //desired servo to a certain position.
                     if (gamepad2.a) {
                         setServos(hardware.flipServo1, hardware.flipServo2, upDegree);
 
+                        //While hardware.flipLimit is not defined and the a button is pressed, then idle.
                         while (opModeIsActive() && !hardware.flipLimit.getState() && gamepad2.a) {
                             idle();
                         }
 
+                        //Jitter the desired Servos to aid in Mineral Depositing.
                         jitter(new Servo[]{hardware.flipServo1, hardware.flipServo2}, 3, 100);
 
                     } else {
+
+                        //If the 'a' button is not pressed, then return the servos to their default position.
                         setServos(hardware.flipServo1, hardware.flipServo2, 0);
                     }
                 }
@@ -222,7 +247,11 @@ public class teleop extends LinearOpMode {
         }
     }
 
+    //A method that jiters Servos in order to Aid with mineral depositing.
     public void jitter(Servo[] servos, double numIntervals, int intevalAmount) {
+
+        //For the desired length of the shaking (numIntervals), then offset each servo by the desired
+        //magnitude (intervalAmount) rapidly.
         for (int i = 0; i < numIntervals; i++) {
             setServos(servos[0], servos[1], servos[0].getPosition() - intevalAmount);
 
@@ -232,6 +261,7 @@ public class teleop extends LinearOpMode {
         }
     }
 
+    //A method that sets the desired Servos to a specific position.
     public void setServos(Servo correct, Servo incorrect, double degree) {
         correct.setPosition(degree / 180);
         incorrect.setPosition(degree / 180 - 1);

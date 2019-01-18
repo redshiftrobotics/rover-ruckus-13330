@@ -234,6 +234,7 @@ public class MecanumChassis {
      */
 
     public void stop(){
+        //sets the power of all the motors zero, stopping the robot.
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
@@ -266,6 +267,11 @@ public class MecanumChassis {
     public double getPowerBlue(double radians) {
         return Math.sin((radians) + (Math.PI / 4));
     }
+
+    /**
+     * Returns the sensitivity of the joystick.
+     *
+     */
 
     public double getStickSensitivity(double x, double sensitivity){
         double y = Math.pow(x, sensitivity);

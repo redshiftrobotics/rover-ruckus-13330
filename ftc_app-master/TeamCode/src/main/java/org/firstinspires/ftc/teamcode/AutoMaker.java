@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -43,6 +44,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 /**
@@ -81,18 +84,21 @@ public class AutoMaker {
      * @return The built array
      */
 
-    private Object[][] readToArray(String fileName) {
+    public Object[][] readToArray(String fileName) {
         //argh... i didn't want to use a list
-        Object[][] array = new Object[100][];
+        Object[][] array = new Object[100][5];
 
         try {
+
+            AssetManager assetManager = context.hardwareMap.appContext.getAssets();
             //gets the external directory
-            File sdcard = Environment.getExternalStorageDirectory();
+            //File sdcard = Environment.getExternalStorageDirectory();
             //creates a empty file
-            File file = new File(sdcard, fileName);
+            //File file = new File(sdcard, fileName);
 
             //creates a buffered reader
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            //BufferedReader br = new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new InputStreamReader(assetManager.open(fileName)));
 
             //for each line
             String x;
@@ -103,6 +109,8 @@ public class AutoMaker {
             //for each line, if it is not null
             for (x = br.readLine(); x != null; x = br.readLine()) {
 
+                console.Status(x);
+                context.sleep(1000);
                 //this is the syntax for commenting.
                 //it will skip the line if the first three characters are: <--
                 if ((x.charAt(0) == '<' && x.charAt(1) == '-' && x.charAt(2) == '-') || x.isEmpty())
@@ -128,6 +136,7 @@ public class AutoMaker {
 
 
         } catch (IOException e) {
+            fault("IO Exception " + e);
             e.printStackTrace();
         }
 
@@ -141,12 +150,12 @@ public class AutoMaker {
      * @param i     The starting line of the array
      */
 
-    private void runArray(Object[][] array, int i) {
+    public void runArray(Object[][] array, int i) {
         //the current depth of scanning (for case statements)
         int scanDepth = 0;
 
         //for each line
-        for (i = i; i < array.length; i++) {
+        for (int j = i; j < array.length; j++) {
             //case commands
             switch (array[i][0].toString()) {
                 //motor control
@@ -174,7 +183,7 @@ public class AutoMaker {
                 //drive
                 case "D":
                     //because builders are stupid
-                    if (array[i].length > 4)
+                    if (array[i].length < 4)
                         fault("drive needs to have four tokens");
 
                     //drives with angle, rotation, speed from array
@@ -194,7 +203,32 @@ public class AutoMaker {
                     else {
                         context.sleep(Long.parseLong(array[i][4].toString()));
                     }
+
+                    mecanumChassis.stop();
                     break;
+                case "G":
+                    if (array[i].length > 4)
+                        fault("drive needs to have four tokens");
+
+                    //drives with angle, rotation, speed from array
+                    mecanumChassis.driveGlobal(Double.parseDouble(array[i][1].toString()), Double.parseDouble(array[i][2].toString()), Double.parseDouble(array[i][3].toString()));
+
+                    //if token 4 is LIM run limit switch wait loop
+                    if ((array[i][4].toString()).equals("LIM")) {
+
+
+                        //integral for limit switch scanning
+                        while (!context.hardwareMap.get(DigitalChannel.class, array[i][5].toString()).getState()) {
+                            context.idle();
+                        }
+                    }
+
+                    //if its not using limit switch, then just wait until the time is up
+                    else {
+                        context.sleep(Long.parseLong(array[i][4].toString()));
+                    }
+
+                    mecanumChassis.stop();
                 //servo control
                 case "L":
                     //because builders are stupid

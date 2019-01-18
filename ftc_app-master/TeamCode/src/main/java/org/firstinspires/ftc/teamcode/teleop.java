@@ -129,7 +129,7 @@ public class teleop extends LinearOpMode {
                     if (gamepad1.right_bumper) {
                         mecanumChassis.driveGlobal(-gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
                     } else {
-                        mecanumChassis.driveS(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x);
+                        mecanumChassis.driveS(gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
                     }
 
                     if (gamepad1.a)

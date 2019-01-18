@@ -157,6 +157,8 @@ public class MecanumChassis {
 
     }
 
+
+
     public void driveGlobal(double x, double y, double rotate) {
         //magnitude of both vectors
         double magnitude = Math.hypot(x, y);
@@ -173,6 +175,26 @@ public class MecanumChassis {
         backLeftPower = getPowerBlue(Math.toRadians(imu.getAngle()) + angle) * magnitude + rotate;
         frontRightPower = getPowerBlue(Math.toRadians(imu.getAngle()) + angle) * magnitude - rotate;
         backRightPower = getPowerRed(Math.toRadians(imu.getAngle()) + angle) * magnitude - rotate;
+
+        //sets the hardware motor power
+        frontLeftMotor.setPower(frontLeftPower);
+        backLeftMotor.setPower(backLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
+
+    }
+
+    public void driveGlobal(int angle, double rotate, double speed) {;
+
+        //mecanum drive train code
+        //the tires diagonal to each other will move the same direction
+        //I named the diagonals red and blue based on an article I read online
+
+        //sets the power for red and blue
+        frontLeftPower = getPowerRed(Math.toRadians(imu.getAngle()) + angle) * speed + rotate;
+        backLeftPower = getPowerBlue(Math.toRadians(imu.getAngle()) + angle) * speed + rotate;
+        frontRightPower = getPowerBlue(Math.toRadians(imu.getAngle()) + angle) * speed - rotate;
+        backRightPower = getPowerRed(Math.toRadians(imu.getAngle()) + angle) * speed - rotate;
 
         //sets the hardware motor power
         frontLeftMotor.setPower(frontLeftPower);

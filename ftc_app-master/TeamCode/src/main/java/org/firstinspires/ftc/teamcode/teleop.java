@@ -162,12 +162,13 @@ public class teleop extends LinearOpMode {
         @Override
         public void run(){
             try{
-                while(!isInterrupted()){
-                    CollectorPosition collectorPosition = CollectorPosition.UP;
+                CollectorPosition collectorPosition = CollectorPosition.UP;
 
-                    hardware.extenderWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    hardware.collectorHinge.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    hardware.collector.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                hardware.extenderWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                hardware.collectorHinge.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                hardware.collector.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                while(!isInterrupted()){
 
                     hardware.extenderWheel.setPower(-gamepad2.left_stick_y);
 
@@ -221,6 +222,7 @@ public class teleop extends LinearOpMode {
             try {
                 while (!isInterrupted()) {
                     double upDegree = 90;
+                    double sorterUpDegree = 10;
 
                     //Alows the thread to detect if the 'a' button is pressed, and then sets the
                     //desired servo to a certain position.
@@ -228,17 +230,17 @@ public class teleop extends LinearOpMode {
                         setServos(hardware.flipServo1, hardware.flipServo2, upDegree);
 
                         //While hardware.flipLimit is not defined and the a button is pressed, then idle.
-                        while (opModeIsActive() && !hardware.flipLimit.getState() && gamepad2.a) {
+                        while (opModeIsActive() && !hardware.flipLimit.getState()) {
                             idle();
                         }
 
-                        //Jitter the desired Servos to aid in Mineral Depositing.
-                        jitter(new Servo[]{hardware.flipServo1, hardware.flipServo2}, 3, 100);
+                        setServos(hardware.sorterServo1, hardware.sorterServo2, sorterUpDegree);
 
                     } else {
 
                         //If the 'a' button is not pressed, then return the servos to their default position.
                         setServos(hardware.flipServo1, hardware.flipServo2, 0);
+                        setServos(hardware.sorterServo1, hardware.sorterServo2, 0);
                     }
                 }
             } catch (Exception e) {

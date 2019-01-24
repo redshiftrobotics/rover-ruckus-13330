@@ -56,6 +56,8 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public Servo mineralKicker2;
     public Servo flipServo1;
     public Servo flipServo2;
+    public Servo sorterServo1;
+    public Servo sorterServo2;
     public Servo arm2;
     public Servo depositor;
 

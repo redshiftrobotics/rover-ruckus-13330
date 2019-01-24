@@ -62,7 +62,8 @@ public class AutoMaker {
     private MineralDetection mineralDetection;
     private Imu imu;
 
-    private double scale = 10000;
+    private int scale = 10000;
+    private int arrayMaximum = 100;
 
     private DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
@@ -87,7 +88,7 @@ public class AutoMaker {
 
     public Object[][] readToArray(String fileName) {
         //argh... i didn't want to use a list
-        Object[][] array = new Object[100][5];
+        Object[][] array = new Object[arrayMaximum][5];
 
         try {
 
@@ -110,8 +111,6 @@ public class AutoMaker {
             //for each line, if it is not null
             for (x = br.readLine(); x != null; x = br.readLine()) {
 
-                console.Status(x);
-                context.sleep(1000);
                 //this is the syntax for commenting.
                 //it will skip the line if the first three characters are: <--
                 if ((x.charAt(0) == '<' && x.charAt(1) == '-' && x.charAt(2) == '-') || x.isEmpty())
@@ -150,13 +149,14 @@ public class AutoMaker {
      * @param array The Array to read
      * @param i     The starting line of the array
      */
+    int scanDepth = 0;
 
     public void runArray(Object[][] array, int i) {
         //the current depth of scanning (for case statements)
-        int scanDepth = 0;
+
 
         //for each line
-        for (int j = i; j < array.length; j++) {
+        for (int j = i; j < arrayMaximum; j++) {
             //case commands
             switch (array[i][0].toString()) {
                 //motor control
@@ -188,7 +188,7 @@ public class AutoMaker {
                         fault("drive needs to have four tokens");
 
                     //drives with angle, rotation, speed from array
-                    mecanumChassis.driveS(Double.parseDouble(array[i][1].toString()), Double.parseDouble(array[i][2].toString()), Double.parseDouble(array[i][3].toString()));
+                    mecanumChassis.driveS((int) Double.parseDouble(array[i][1].toString()), Double.parseDouble(array[i][2].toString()), Double.parseDouble(array[i][3].toString()));
 
                     //if token 4 is LIM run limit switch wait loop
                     if ((array[i][4].toString()).equals("LIM")) {
@@ -270,7 +270,7 @@ public class AutoMaker {
                     //if the mineral is left
                     if (mineralPosition == MineralPosition.LEFT) {
                         //process: this is not right, but general idea...call recursive
-                        runArray(array, i);
+                        runArray(array, i+1);
                     }
                     //zoom ahead ignoring all entries until after endcase
                     while (array[i][0] != "ENDCASE") i = i + 1;
@@ -284,7 +284,7 @@ public class AutoMaker {
                     //if the mineral is center
                     if (mineralPosition == MineralPosition.CENTER) {
                         //process: this is not right, but general idea...call recursive
-                        runArray(array, i);
+                        runArray(array, i+1);
                     }
                     //zoom ahead ignoring all entries until after endcase
                     while (array[i][0] != "ENDCASE") i = i + 1;
@@ -298,14 +298,14 @@ public class AutoMaker {
                     //if the mineral is right
                     if (mineralPosition == MineralPosition.RIGHT) {
                         //process: this is not right, but general idea...call recursive
-                        runArray(array, i);
+                        runArray(array, i+1);
                     }
                     //zoom ahead ignoring all entries until after endcase
                     while (array[i][0] != "ENDCASE") i = i + 1;
                     break;
                 case "ENDSCAN":
                     scanDepth = 0;
-                    break;
+                    return;
 
                 case "END":
                     return;
@@ -345,6 +345,7 @@ public class AutoMaker {
 
             //magnitude deprived from a^2 + b^2 = c^2
             double magnitude = Math.sqrt(xSqr + ySqr);
+
             //angle is just the arc tan of y and x
             double angle = Math.atan2(context.gamepad1.left_stick_y, context.gamepad1.left_stick_x);
 

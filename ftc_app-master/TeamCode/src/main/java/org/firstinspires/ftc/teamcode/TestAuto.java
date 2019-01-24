@@ -10,16 +10,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name = "TestAuto", group = "13330 Pulsar")
 public class TestAuto extends LinearOpMode{
 
-    private AutoMaker autoMaker;
-    private Console console;
-    private Hardware hardware;
     @Override
     public void runOpMode(){
 
         // initialize other classes needed
-        this.hardware = new Hardware(this);
-        this.console = new Console(this);
-        this.autoMaker = new AutoMaker(this, hardware, console);
+        Hardware hardware = new Hardware(this);
+        Console console = new Console(this);
+        AutoMaker autoMaker = new AutoMaker(this, hardware, console);
 
        Object[][] array = autoMaker.readToArray("TestAutoMaker.txt");
 

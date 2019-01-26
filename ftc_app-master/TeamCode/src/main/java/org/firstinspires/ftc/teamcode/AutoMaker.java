@@ -70,9 +70,9 @@ public class AutoMaker {
     private Hardware hardware;
 
 
-    public AutoMaker(LinearOpMode context, Hardware hardware, Console console) {
+    public AutoMaker(LinearOpMode context, Hardware hardware, Console console, Imu imu) {
         this.context = context;
-        this.imu = new Imu(context);
+        this.imu = imu;
         this.console = console;
         this.mecanumChassis = new MecanumChassis(context, zeroPowerBehavior, imu);
         this.mineralDetection = new MineralDetection(context);
@@ -119,6 +119,8 @@ public class AutoMaker {
                 // process each line and get tokens stripping all random characters away
                 String[] tokens = x.split(":"); //split it up via : separators
 
+                StringBuilder toLog = new StringBuilder();
+
                 //for each token
                 for (int i = 0; i < tokens.length; i++) {
                     //remove all tabs
@@ -128,17 +130,28 @@ public class AutoMaker {
 
                     //add to the array the current token
                     array[y][i] = tokens[i];
+
+                    toLog.append(array[y][i]).append(" ");
                 }
 
+                context.telemetry.addData("Command", toLog.toString());
+
                 //add to the array line count
+
                 y++;
             }
+
+            context.telemetry.update();
+
+
 
 
         } catch (IOException e) {
             fault("IO Exception " + e);
             e.printStackTrace();
         }
+
+
 
         return array;
     }
@@ -157,160 +170,165 @@ public class AutoMaker {
 
         //for each line
         for (int j = i; j < arrayMaximum; j++) {
-            //case commands
-            switch (array[i][0].toString()) {
-                //motor control
-                case "M":
-                    //because builders are stupid
-                    if (array[i].length > 2)
-                        fault("motor control needs to have two tokens");
+            if(array[j][0] != null) {
+                //case commands
+                switch (array[j][0].toString()) {
+                    //motor control
+                    case "M":
+                        //because builders are stupid
+                        if (array[j].length > 2)
+                            fault("motor control needs to have two tokens");
 
-                    //finds the desired dc motor
-                    DcMotor motor = context.hardwareMap.dcMotor.get(array[i][1].toString());
+                        //finds the desired dc motor
+                        DcMotor motor = context.hardwareMap.dcMotor.get(array[j][1].toString());
 
-                    motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //sets the mode to run to position
-                    motor.setTargetPosition(Integer.parseInt(array[i][2].toString())); //sets the target position
-                    motor.setPower(1); //sets the power
+                        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //sets the mode to run to position
+                        motor.setTargetPosition(Integer.parseInt(array[j][2].toString())); //sets the target position
+                        motor.setPower(1); //sets the power
 
-                    //waits for end
-                    while (motor.isBusy() && context.opModeIsActive()) {
-                        context.sleep(10);
-                    }
-
-                    //switches the mode back to using power
-                    motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-                    break;
-                //drive
-                case "D":
-                    //because builders are stupid
-                    if (array[i].length < 4)
-                        fault("drive needs to have four tokens");
-
-                    //drives with angle, rotation, speed from array
-                    mecanumChassis.driveS((int) Double.parseDouble(array[i][1].toString()), Double.parseDouble(array[i][2].toString()), Double.parseDouble(array[i][3].toString()));
-
-                    //if token 4 is LIM run limit switch wait loop
-                    if ((array[i][4].toString()).equals("LIM")) {
-                        
-
-                        //integral for limit switch scanning
-                        while(!context.hardwareMap.get(DigitalChannel.class, array[i][5].toString()).getState()){
-                            context.idle();
+                        //waits for end
+                        while (motor.isBusy() && context.opModeIsActive()) {
+                            context.sleep(10);
                         }
-                    }
 
-                    //if its not using limit switch, then just wait until the time is up
-                    else {
-                        context.sleep(Long.parseLong(array[i][4].toString()));
-                    }
+                        //switches the mode back to using power
+                        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-                    mecanumChassis.stop();
-                    break;
-                case "G":
-                    if (array[i].length > 4)
-                        fault("drive needs to have four tokens");
+                        break;
+                    //drive
+                    case "D":
+                        //because builders are stupid
+                        if (array[j].length < 4)
+                            fault("drive needs to have four tokens");
 
-                    //drives with angle, rotation, speed from array
-                    mecanumChassis.driveGlobal(Double.parseDouble(array[i][1].toString()), Double.parseDouble(array[i][2].toString()), Double.parseDouble(array[i][3].toString()));
-
-                    //if token 4 is LIM run limit switch wait loop
-                    if ((array[i][4].toString()).equals("LIM")) {
+                        //drives with angle, rotation, speed from array
+                        mecanumChassis.driveS((int) Double.parseDouble(array[j][1].toString()), Double.parseDouble(array[j][2].toString()), Double.parseDouble(array[j][3].toString()));
 
 
-                        //integral for limit switch scanning
-                        while (!context.hardwareMap.get(DigitalChannel.class, array[i][5].toString()).getState()) {
-                            context.idle();
+                        //if token 4 is LIM run limit switch wait loop
+                        if ((array[j][4].toString()).equals("LIM")) {
+
+                            //integral for limit switch scanning
+                            while (!context.hardwareMap.get(DigitalChannel.class, array[j][5].toString()).getState()) {
+                                context.idle();
+                            }
                         }
-                    }
 
-                    //if its not using limit switch, then just wait until the time is up
-                    else {
-                        context.sleep(Long.parseLong(array[i][4].toString()));
-                    }
+                        //if its not using limit switch, then just wait until the time is up
+                        else {
+                            context.sleep(Long.parseLong(array[j][4].toString()));
+                            context.telemetry.addData("Sleeping for", Long.parseLong(array[j][4].toString()));
+                            context.telemetry.update();
+                        }
 
-                    mecanumChassis.stop();
-                //servo control
-                case "L":
-                    //because builders are stupid
-                    if (array[i].length > 2)
-                        fault("servo control needs to have 2 tokens");
+                        mecanumChassis.stop();
+                        break;
+                    case "G":
+                        if (array[j].length > 4)
+                            fault("drive needs to have four tokens");
 
-                    //finds servo from array name
-                    Servo servo = context.hardwareMap.servo.get(array[i][1].toString());
+                        //drives with angle, rotation, speed from array
+                        mecanumChassis.driveGlobal(Double.parseDouble(array[j][1].toString()), Double.parseDouble(array[j][2].toString()), Double.parseDouble(array[j][3].toString()));
 
-                    //sets the position to the array position
-                    servo.setPosition(Double.parseDouble(array[i][2].toString()) / 180);
+                        //if token 4 is LIM run limit switch wait loop
+                        if ((array[j][4].toString()).equals("LIM")) {
 
-                    //waits for it to go
-                    while (servo.getPosition() != Double.parseDouble(array[i][2].toString()) / 180 && context.opModeIsActive()) {
-                        context.sleep(10);
-                    }
-                    break;
-                case "SCAN":
-                    //if no endScan was found
-                    if (scanDepth == 1) {
-                        fault("did not find endScan");
+
+                            //integral for limit switch scanning
+                            while (!context.hardwareMap.get(DigitalChannel.class, array[j][5].toString()).getState()) {
+                                context.idle();
+                            }
+                        }
+
+                        //if its not using limit switch, then just wait until the time is up
+                        else {
+                            context.sleep(Long.parseLong(array[j][4].toString()));
+                        }
+
+                        mecanumChassis.stop();
+                        //servo control
+                    case "L":
+                        //because builders are stupid
+                        if (array[j].length > 2)
+                            fault("servo control needs to have 2 tokens");
+
+                        //finds servo from array name
+                        Servo servo = context.hardwareMap.servo.get(array[j][1].toString());
+
+                        //sets the position to the array position
+                        servo.setPosition(Double.parseDouble(array[j][2].toString()) / 180);
+
+                        //waits for it to go
+                        while (servo.getPosition() != Double.parseDouble(array[j][2].toString()) / 180 && context.opModeIsActive()) {
+                            context.sleep(10);
+                        }
+                        break;
+                    case "SCAN":
+                        //if no endScan was found
+                        if (scanDepth == 1) {
+                            fault("did not find endScan");
+                            return;
+                        }
+                        scanDepth = 1;
+                        try {
+                            //scans for the mineral and takes the photo
+                            int mineralDetectionSplits = 3;
+                            mineralPosition = mineralDetection.getPosition(mineralDetection.getImage(), mineralDetectionSplits);
+                        } catch (Exception e) {
+                        }
+                        break;
+                    case "CASE LEFT":
+                        if (scanDepth != 1) {
+                            fault("did not find endScan");
+                            return;
+                        }
+
+                        //if the mineral is left
+                        if (mineralPosition == MineralPosition.LEFT) {
+                            //process: this is not right, but general idea...call recursive
+                            runArray(array, i + 1);
+                        }
+                        //zoom ahead ignoring all entries until after endcase
+                        while (array[j][0] != "ENDCASE") i = i + 1;
+                        break;
+                    case "CASE CENTER":
+                        if (scanDepth != 1) {
+                            fault("did not find endScan");
+                            return;
+                        }
+
+                        //if the mineral is center
+                        if (mineralPosition == MineralPosition.CENTER) {
+                            //process: this is not right, but general idea...call recursive
+                            runArray(array, i + 1);
+                        }
+                        //zoom ahead ignoring all entries until after endcase
+                        while (array[j][0] != "ENDCASE") i = i + 1;
+                        break;
+                    case "CASE RIGHT":
+                        if (scanDepth != 1) {
+                            fault("did not find endScan");
+                            return;
+                        }
+
+                        //if the mineral is right
+                        if (mineralPosition == MineralPosition.RIGHT) {
+                            //process: this is not right, but general idea...call recursive
+                            runArray(array, i + 1);
+                        }
+                        //zoom ahead ignoring all entries until after endcase
+                        while (array[j][0] != "ENDCASE") i = i + 1;
+                        break;
+                    case "ENDSCAN":
+                        scanDepth = 0;
                         return;
-                    }
-                    scanDepth = 1;
-                    try {
-                        //scans for the mineral and takes the photo
-                        int mineralDetectionSplits = 3;
-                        mineralPosition = mineralDetection.getPosition(mineralDetection.getImage(), mineralDetectionSplits);
-                    } catch (Exception e) {
-                    }
-                    break;
-                case "CASE LEFT":
-                    if (scanDepth != 1) {
-                        fault("did not find endScan");
+
+                    case "END":
                         return;
-                    }
-
-                    //if the mineral is left
-                    if (mineralPosition == MineralPosition.LEFT) {
-                        //process: this is not right, but general idea...call recursive
-                        runArray(array, i+1);
-                    }
-                    //zoom ahead ignoring all entries until after endcase
-                    while (array[i][0] != "ENDCASE") i = i + 1;
-                    break;
-                case "CASE CENTER":
-                    if (scanDepth != 1) {
-                        fault("did not find endScan");
-                        return;
-                    }
-
-                    //if the mineral is center
-                    if (mineralPosition == MineralPosition.CENTER) {
-                        //process: this is not right, but general idea...call recursive
-                        runArray(array, i+1);
-                    }
-                    //zoom ahead ignoring all entries until after endcase
-                    while (array[i][0] != "ENDCASE") i = i + 1;
-                    break;
-                case "CASE RIGHT":
-                    if (scanDepth != 1) {
-                        fault("did not find endScan");
-                        return;
-                    }
-
-                    //if the mineral is right
-                    if (mineralPosition == MineralPosition.RIGHT) {
-                        //process: this is not right, but general idea...call recursive
-                        runArray(array, i+1);
-                    }
-                    //zoom ahead ignoring all entries until after endcase
-                    while (array[i][0] != "ENDCASE") i = i + 1;
-                    break;
-                case "ENDSCAN":
-                    scanDepth = 0;
-                    return;
-
-                case "END":
-                    return;
+                }
             }
         }
+
     }
 
     /**
@@ -328,15 +346,27 @@ public class AutoMaker {
         //the last angle of g1 left stick
         double lastAngle = 90;
 
+        for(int i = 0; i < array.length; i++){
+            for(int j = 0; j < array[i].length; j++){
+                array[i][j] = 0;
+            }
+        }
+
         //while you have not pushed start
         //psst. start actually stops it
-        while (context.opModeIsActive() && !context.gamepad1.start) {
+        while (context.opModeIsActive() && !context.gamepad1.y) {
 
             //cycle through steps
-            if(context.gamepad1.right_bumper)
+            if(context.gamepad1.right_bumper) {
                 step++;
-            if(context.gamepad1.left_bumper)
+                context.sleep(500);
+            }
+            if(context.gamepad1.left_bumper) {
                 step--;
+                context.sleep(500);
+            }
+
+            step = Math.max(0, Math.min(99, step));
 
             //horizontal axis sqr
             double xSqr = Math.pow(context.gamepad1.left_stick_x, 2);
@@ -353,35 +383,39 @@ public class AutoMaker {
             if(magnitude > 0.1)
                 lastAngle = angle;
 
+
+
             //only for driving
             array[step][0] = "D";
             //angle
-            array[step][1] = lastAngle;
+            array[step][1] = Math.toDegrees(lastAngle);
             //rotation
-            array[step][2] = (context.gamepad1.left_stick_y / (scale * 100)) % 1;
+            array[step][2] = (Double.parseDouble(array[step][2].toString()) - context.gamepad1.right_stick_y / (scale/100));
             //speed
-            array[step][3] = (context.gamepad2.left_stick_y / (scale * 100)) % 1;
+            array[step][3] = (Double.parseDouble(array[step][3].toString()) - context.gamepad2.left_stick_y / (scale/100));
             //time
-            array[step][4] = roundTo(100, (context.gamepad2.right_stick_y / (scale / 10)));
+            array[step][4] = Double.parseDouble(array[step][4].toString()) - (context.gamepad2.right_stick_y);
 
             //logging it so people know what is going on
             context.telemetry.addData("Step", step);
-            context.telemetry.addData("Angle", array[step][1]);
-            context.telemetry.addData("Speed", array[step][3]);
-            context.telemetry.addData("Rotation", array[step][2]);
-            context.telemetry.addData("Time", array[step][4]);
+            context.telemetry.addData("Angle", Math.round(Double.parseDouble(array[step][1].toString())));
+            context.telemetry.addData("Speed", roundTo(5, Double.parseDouble(array[step][3].toString()))/10 % 1);
+            context.telemetry.addData("Rotation", roundTo(5,Double.parseDouble(array[step][2].toString()))/10 % 1);
+            context.telemetry.addData("Time", roundTo(100, Double.parseDouble(array[step][4].toString())));
+
+            context.telemetry.update();
 
             //run step
-            if (context.gamepad1.a) {
-                mecanumChassis.driveS((long) array[step][1], (double) array[step][2], (double) array[step][3]);
-                context.sleep((long) array[step][4]);
+            if (context.gamepad1.dpad_up) {
+                mecanumChassis.driveS((int) Double.parseDouble(array[step][1].toString()),Double.parseDouble(array[step][2].toString()), Double.parseDouble(array[step][3].toString()));
+                context.sleep((long) roundTo(100, Double.parseDouble(array[step][4].toString())));
                 mecanumChassis.stop();
             }
 
             //run step in reverse
-            else if (context.gamepad1.b) {
-                mecanumChassis.driveS((long) array[step][1] - 180, (double) array[step][2], -(double) array[step][3]);
-                context.sleep((long) array[step][4]);
+            else if (context.gamepad1.dpad_down) {
+                mecanumChassis.driveS(180 - (int) Double.parseDouble(array[step][1].toString()), -Double.parseDouble(array[step][2].toString()), Double.parseDouble(array[step][3].toString()));
+                context.sleep((long) roundTo(100, Double.parseDouble(array[step][4].toString())));
                 mecanumChassis.stop();
             }
         }
@@ -462,7 +496,7 @@ public class AutoMaker {
      */
 
     public int roundTo(int to, double x) {
-        return (int) ((x + to - 1) / to) * to;
+        return (int) (x+(to/2-1))/(to/2) * to/2;
     }
 
 }

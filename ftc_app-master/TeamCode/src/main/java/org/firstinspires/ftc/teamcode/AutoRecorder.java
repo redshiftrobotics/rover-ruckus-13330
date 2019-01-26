@@ -19,18 +19,20 @@ public class AutoRecorder extends LinearOpMode{
     private double speed = 0.3;
 
 
+    Object[][] depoArray = new Object[100][5];
+    Object[][] craterArray = new Object[100][5];
+
+
     @Override
     public void runOpMode(){
 
         // initialize other classes needed
         this.hardware = new Hardware(this);
         this.console = new Console(this);
-        this.autoMaker = new AutoMaker(this, hardware, console);
+        this.autoMaker = new AutoMaker(this, hardware, console, imu);
         this.mecanumChassis = new MecanumChassis(this, hardware.zeroPowerBehavior, this.imu);
 
         //Arrays with which to write auto sequences to.
-        Object[][] depoArray = new Object[100][];
-        Object[][] craterArray = new Object[100][];
         boolean isDepo = false;
 
         while(!gamepad1.start){
@@ -51,6 +53,7 @@ public class AutoRecorder extends LinearOpMode{
             console.Update();
             idle();
         }
+        sleep(100);
 
         waitForStart();
 

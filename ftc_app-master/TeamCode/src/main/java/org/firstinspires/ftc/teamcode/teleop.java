@@ -55,7 +55,7 @@ public class teleop extends LinearOpMode {
     private Console console;
     private Imu imu;
 
-    private double speed = 0.3;
+    private double speed = 0.45;
     private double horizontalSensitivity = 5;
     private double verticalSensitivity = 5;
     private double rotationSensitivity = 5;
@@ -96,7 +96,8 @@ public class teleop extends LinearOpMode {
 
             telemetry.addData("Mode", mecanumChassis.getStickSensitivity(gamepad1.left_stick_x, horizontalSensitivity));
             telemetry.addData("Hypot", Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y));
-            telemetry.addData("Angle", (Math.toRadians(imu.getAngle()) + mecanumChassis.getControllerAngle(gamepad1.left_stick_x, gamepad1.left_stick_y)) * 180 / Math.PI);
+            telemetry.addData("x", gamepad1.left_stick_x * speed);
+            telemetry.addData("y", gamepad1.left_stick_y * speed);
             telemetry.addData("sticks", "  left=" + gamepad1.left_stick_y + "  right=" + gamepad1.right_stick_y);
             telemetry.update();
 

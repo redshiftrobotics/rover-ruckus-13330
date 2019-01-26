@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class MecanumChassis {
 
     private Imu imu;
+    private LinearOpMode context;
 
     private DcMotor frontRightMotor;
     private DcMotor frontLeftMotor;
@@ -60,6 +61,7 @@ public class MecanumChassis {
     public MecanumChassis(LinearOpMode context, DcMotor.ZeroPowerBehavior zeroPowerBehavior, Imu imu) { // creates the context in this class
 
         this.imu = imu;
+        this.context = context;
 
         //region frontLeftMotor
         frontLeftMotor = context.hardwareMap.dcMotor.get("frontLeftMotor");
@@ -216,10 +218,10 @@ public class MecanumChassis {
     public void driveS(int angle, double rotate, double speed) {
 
         //sets the power for red and blue
-        frontLeftPower = getPowerBlue((double) angle) * speed + rotate;
-        backLeftPower = getPowerRed((double) angle) * speed + rotate;
-        frontRightPower = getPowerRed((double) angle) * speed + rotate;
-        backRightPower = getPowerBlue((double) angle) * speed + rotate;
+        frontLeftPower = getPowerBlue(angle) * speed + rotate;
+        backLeftPower = getPowerRed(angle) * speed + rotate;
+        frontRightPower = getPowerRed(angle) * speed - rotate;
+        backRightPower = getPowerBlue(angle) * speed - rotate;
 
         //sets the hardware motor power
         frontLeftMotor.setPower(frontLeftPower);
@@ -227,6 +229,56 @@ public class MecanumChassis {
         frontRightMotor.setPower(frontRightPower);
         backRightMotor.setPower(backRightPower);
 
+    }
+
+
+    public void rotate(int degrees, double power, double stopThreashold) {
+        double turnPower = power;
+        double turnPercentage = 0;
+
+        //makes the degrees between -359 and 359, zero is 360
+        degrees = degrees % 360;
+
+        // finds most efficient way to turn
+        if (degrees < -180)
+            degrees += 360;
+        else if (degrees > 180)
+            degrees -= 360;
+
+        imu.resetAngle(); // restart imu movement tracking
+
+
+        while (context.opModeIsActive() && turnPercentage < stopThreashold) { // while the percentage of turn is less than threshold
+
+            double formula = (1 - turnPercentage / 3);
+
+            if (degrees < 0) { // turn right
+                frontLeftMotor.setPower(-turnPower * formula);
+                backLeftMotor.setPower(-turnPower * formula);
+                frontRightMotor.setPower(turnPower * formula);
+                backRightMotor.setPower(turnPower* formula);
+            } else { // turn left
+                frontLeftMotor.setPower(turnPower * formula);
+                backLeftMotor.setPower(turnPower * formula);
+                frontRightMotor.setPower(-turnPower * formula);
+                backRightMotor.setPower(-turnPower * formula);
+            }
+
+
+
+            turnPercentage = imu.getAngle() / degrees; // sets turnPercentage
+
+
+            context.telemetry.addData("angle", imu.getAngle());
+            context.telemetry.addData("turnPercentage", turnPercentage);
+            context.telemetry.update();
+
+        }
+
+        stop();
+
+        //reset angle
+        imu.resetAngle();
     }
 
     /**

@@ -231,9 +231,14 @@ public class MecanumChassis {
 
     }
 
+    double rotationSteepness = 0.27;
 
-    public void rotate(int degrees, double power, double stopThreashold) {
-        double turnPower = power;
+    public void setRotate(double steepness){
+        rotationSteepness = steepness;
+    }
+
+
+    public void rotate(int degrees, double startPower, double stopThreashold) {
         double turnPercentage = 0;
 
         //makes the degrees between -359 and 359, zero is 360
@@ -250,18 +255,19 @@ public class MecanumChassis {
 
         while (context.opModeIsActive() && turnPercentage < stopThreashold) { // while the percentage of turn is less than threshold
 
-            double formula = (1 - turnPercentage / 3);
+            //p loop formula
+            double formula = (1 - Math.pow(turnPercentage, 1/rotationSteepness));
 
             if (degrees < 0) { // turn right
-                frontLeftMotor.setPower(-turnPower * formula);
-                backLeftMotor.setPower(-turnPower * formula);
-                frontRightMotor.setPower(turnPower * formula);
-                backRightMotor.setPower(turnPower* formula);
+                frontLeftMotor.setPower(-startPower * formula);
+                backLeftMotor.setPower(-startPower * formula);
+                frontRightMotor.setPower(startPower * formula);
+                backRightMotor.setPower(startPower* formula);
             } else { // turn left
-                frontLeftMotor.setPower(turnPower * formula);
-                backLeftMotor.setPower(turnPower * formula);
-                frontRightMotor.setPower(-turnPower * formula);
-                backRightMotor.setPower(-turnPower * formula);
+                frontLeftMotor.setPower(startPower * formula);
+                backLeftMotor.setPower(startPower * formula);
+                frontRightMotor.setPower(-startPower * formula);
+                backRightMotor.setPower(-startPower * formula);
             }
 
 

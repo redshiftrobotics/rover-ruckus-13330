@@ -44,6 +44,7 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.State;
 import com.vuforia.Vuforia;
 
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
@@ -90,6 +91,7 @@ public class MineralDetection {
             if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565)
             {
                 image = frame.getImage(i);
+
             }
         }
 
@@ -108,7 +110,7 @@ public class MineralDetection {
         int heightOffset = 100;
         int scaleFactor = 18;
 
-        Bitmap[] splits = new Bitmap[2];
+        Bitmap[] splits = new Bitmap[numSplits];
         int[] numYellow = new int[3];
         Matrix matrix = new Matrix();
         matrix.postScale(-1,-1);
@@ -122,7 +124,6 @@ public class MineralDetection {
             splits[i] = Bitmap.createBitmap(scaledCroppedBitmap, i * (scaledCroppedBitmap.getWidth() / numSplits), 0,
                     scaledCroppedBitmap.getWidth() / numSplits, scaledCroppedBitmap.getHeight());
 
-            saveImage(splits[i], "split" + i);
         }
 
         for (int y = 0; y < visualYellow.getHeight(); y++) {

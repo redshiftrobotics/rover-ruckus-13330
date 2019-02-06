@@ -60,6 +60,7 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public Servo sorterServo2;
     public Servo arm2;
     public Servo depositor;
+    public DcMotor lifter;
 
 
     public CameraName webcam;
@@ -88,18 +89,25 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
         //arm1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-//        lifter = context.hardwareMap.dcMotor.get("lifter");
-//        lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        lifter.setDirection(DcMotor.Direction.FORWARD);
-//
-//        lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        collectorHinge = context.hardwareMap.dcMotor.get("collectorHinge");
+        collectorHinge.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        collector = context.hardwareMap.dcMotor.get("collector");
+        collector.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        lifter = context.hardwareMap.dcMotor.get("lifter");
+        lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        flipServo1 = context.hardwareMap.servo.get("flipServo1");
+        flipServo2 = context.hardwareMap.servo.get("flipServo2");
+
+        extenderWheel = context.hardwareMap.dcMotor.get("extenderWheel");
 
 
         //endregion
 
         //region other
-        //webcam = context.hardwareMap.get(CameraName.class, "Webcam 1");
+        webcam = context.hardwareMap.get(CameraName.class, "Webcam 1");
 
         //limitSwitch = context.hardwareMap.get(TouchSensor.class, "limitSwitch");
         //endregion

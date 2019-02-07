@@ -236,10 +236,14 @@ public class teleop extends LinearOpMode {
 
         @Override
         public void run() {
+
+
             try {
                 while (!isInterrupted()) {
                     double upDegree = 10;
                     double sorterUpDegree = 10;
+                    double timer = 0;
+                    double timerWait = 100;
 
                     //Alows the thread to detect if the 'a' button is pressed, and then sets the
                     //desired servo to a certain position.
@@ -254,7 +258,11 @@ public class teleop extends LinearOpMode {
 ////                        if(hardware.flipLimit.getState()) {
 ////                            setServos(hardware.sorterServo1, hardware.sorterServo2, sorterUpDegree, false);
 ////                        }
+                        timer += 0.01;
 
+                        if (timer >= timerWait){
+                            setServos(hardware.sorterServo1, hardware.sorterServo2, 110, true);
+                        }
                     } else {
 
                         //If the 'a' button is not pressed, then return the servos to their default position.

@@ -159,6 +159,10 @@ public class MecanumChassis {
 
     }
 
+    public void resetAngle(){
+        imu.resetAngle();
+    }
+
 
 
     public void driveGlobal(double x, double y, double rotate) {
@@ -253,7 +257,7 @@ public class MecanumChassis {
         imu.resetAngle(); // restart imu movement tracking
 
 
-        while (context.opModeIsActive() && turnPercentage < stopThreashold) { // while the percentage of turn is less than threshold
+        while (context.opModeIsActive() && turnPercentage <= stopThreashold) { // while the percentage of turn is less than threshold
 
             //p loop formula
             double formula = (1 - Math.pow(turnPercentage, 1/rotationSteepness));

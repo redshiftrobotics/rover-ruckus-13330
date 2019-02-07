@@ -42,18 +42,18 @@ public class TestAuto extends LinearOpMode {
         MineralPosition mineralPosition = MineralPosition.CENTER;
 
 
+
+
+        waitForStart();
+
+        imu.resetAngle();
+
         try {
             mineralPosition = mineralDetection.getPosition(mineralDetection.getImage(), 2);
         } catch (InterruptedException e) {
             console.Status("Interrupted while taking photo");
             sleep(100);
         }
-
-
-
-        waitForStart();
-
-        imu.resetAngle();
 
         //drop down
         hardware.lifter.setPower(1);
@@ -66,64 +66,101 @@ public class TestAuto extends LinearOpMode {
         //initial rotation
         mecanumChassis.rotate(88, 0.2, 1);
 
-        switch(mineralPosition) {
+        switch (mineralPosition) {
 
             case CENTER:
                 //hits center mineral
-                drive(0 * power, 0.45 * power, 0, 1700);
+                drive(0 , 0.45 , 0, 1700);
 
                 //backs up
-                drive(0 * power, -0.45 * power, 0, 600);
+                drive(0 , -0.45 , 0, 600);
 
-                //strafes left
-                drive(-0.45 * power, 0 * power, 0, 3400);
+                //strafes left while rotating
+                driveGlobal(0.3, 0, 1, 1000);
 
             case RIGHT:
                 //hits right mineral
-                drive(0.45 * power, 0.45 * power, 0, 1700);
+                drive(0.45 , 0.45 , 0, 1700);
 
                 //backs up
-                drive(-0.45 * power, -0.45 * power, 0, 600);
+                drive(-0.45 , -0.45 , 0, 600);
 
                 //moves to position
-                drive(-0.45 * power, 0 * power, 0, 3400);
+                drive(-0.45 , 0 , 0, 3400);
 
             case LEFT:
                 //hits right mineral
-                drive(-0.45 * power, 0.45 * power, 0, 1700);
+                drive(-0.45 , 0.45 , 0, 1700);
 
                 //backs up
-                drive(0.45 * power, -0.45 * power, 0, 600);
+                drive(0.45 , -0.45 , 0, 600);
 
                 //moves to position
-                drive(-0.45 * power, 0 * power, 0, 3400);
-
-
+                drive(-0.45 , 0 , 0, 3400);
         }
 
-
-        //aligns with wall
-        mecanumChassis.rotate(-42, 0.2, 1);
-
-
-        //double check alignment
-        drive(-0.45 * power, 0 * power, 0, 1000);
-        drive(0.45 * power, 0 * power, 0, 300);
-
-        sleep(1000);
-
-        //move to depo
-        drive(0 * power, -1 * power, 0, 1000);
-        drive(0 * power, 0.5 * power, 0, 3000);
-        drive(-0.45 * power, 0 * power, 0, 1000);
-        drive(0 * power, 1 * power, 0, 1000);
-
-
+//        //region Crater
+//        switch(mineralPosition) {
+//
+//            case CENTER:
+//                //hits center mineral
+//                drive(0 , 0.45 , 0, 1700);
+//
+//                //backs up
+//                drive(0 , -0.45 , 0, 600);
+//
+//                //strafes left
+//                drive(-0.45 , 0 , 0, 3400);
+//
+//            case RIGHT:
+//                //hits right mineral
+//                drive(0.45 , 0.45 , 0, 1700);
+//
+//                //backs up
+//                drive(-0.45 , -0.45 , 0, 600);
+//
+//                //moves to position
+//                drive(-0.45 , 0 , 0, 3400);
+//
+//            case LEFT:
+//                //hits right mineral
+//                drive(-0.45 , 0.45 , 0, 1700);
+//
+//                //backs up
+//                drive(0.45 , -0.45 , 0, 600);
+//
+//                //moves to position
+//                drive(-0.45 , 0 , 0, 3400);
+//        }
+//
+//
+//        //aligns with wall
+//        mecanumChassis.rotate(-42, 0.2, 1);
+//
+//
+//        //double check alignment
+//        drive(-0.45 , 0 , 0, 1000);
+//        drive(0.45 , 0 , 0, 300);
+//
+//        //move to depo
+//        drive(0 , -1 , 0, 1000);
+//        drive(0 , 0.5 , 0, 3000);
+//        drive(-0.45 , 0 , 0, 1000);
+//        drive(0 , 0.5 , 0, 2000);
+//
+//        //endregion
     }
 
 
     void drive(double x, double y, double rotate, long time) {
-        mecanumChassis.driveS(x, y, rotate);
+        mecanumChassis.driveS(x , y , rotate);
+        sleep(time);
+        mecanumChassis.stop();
+    }
+
+    void driveGlobal(double x, double y, double rotate, long time) {
+        mecanumChassis.resetAngle();
+        mecanumChassis.driveGlobal(x , y , rotate);
         sleep(time);
         mecanumChassis.stop();
     }

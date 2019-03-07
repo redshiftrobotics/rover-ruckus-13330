@@ -17,23 +17,26 @@ public class webcamTester extends LinearOpMode {
     @Override
     public void runOpMode() {
         mineralDetection = new MineralDetection(this);
+        mineralDetection.vuforiaInit(hardwareMap);
+        MineralPosition mp = null;
+
         waitForStart();
 
-        mineralDetection.vuforiaInit(hardwareMap);
+        ((FtcRobotControllerActivity) hardwareMap.appContext).opModeName = "webcamTester";
+
 
         while (opModeIsActive()) {
             try {
-                sample = mineralDetection.getImage();
+                mp = mineralDetection.getPosition(mineralDetection.getImage());
             } catch (InterruptedException e) {
             }
 
-            ((FtcRobotControllerActivity) hardwareMap.appContext).setWebcamPreview(sample);
+            telemetry.addData("Mineral Position", mp);
 
-//            if(mineralDetection.getPosition(sample, 3) != oldPosition) {
-//                telemetry.addData("Position", mineralDetection.getPosition(sample, 3));
-//                oldPosition = mineralDetection.getPosition(sample, 3);
-//                telemetry.update();
-//            }
+            telemetry.update();
+
+            sleep(100);
+            idle();
         }
     }
 }

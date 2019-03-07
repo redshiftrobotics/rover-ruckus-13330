@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Bitmap;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Autonomous(name = "Crater Auto", group = "13330 Pulsar")
 public class CraterAuto extends LinearOpMode {
     private MineralDetection mineralDetection;
     private MineralPosition mineralPosition;
@@ -40,7 +42,29 @@ public class CraterAuto extends LinearOpMode {
 
         analyzePhoto.interrupt();
 
-        doDepo(mineralPosition);
+        Thread lifterDown = new Thread() {
+            public void run() {
+                try {
+
+                    sleep(1000);
+                    hardware.lifter.setTargetPosition(0);
+
+                    hardware.lifter.setPower(1);
+
+                    while (hardware.lifter.isBusy()) {
+                        idle();
+                    }
+
+                    hardware.lifter.setPower(0);
+                } catch(InterruptedException e){
+
+                }
+            }
+        };
+
+        lifterDown.start();
+
+        doCrater(mineralPosition);
     }
 
     public void Init() {
@@ -57,26 +81,24 @@ public class CraterAuto extends LinearOpMode {
             idle();
         }
 
-        console.Status("okay im fine");
-
-
         mecanumChassis = new MecanumChassis(this, DcMotor.ZeroPowerBehavior.BRAKE, imu);
 
+        console.Status("okay im fine");
     }
 
     public void doLifter() {
+        hardware.lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        hardware.lifter.setTargetPosition(11000);
+
         hardware.lifter.setPower(1);
 
-        while (!hardware.lifterLimitSwitchUp.isPressed()) {
+        while (hardware.lifter.isBusy()) {
             idle();
         }
+
         hardware.lifter.setPower(0);
-
-        //sets the rotation curve
-        mecanumChassis.setRotate(0.147);
-
-        //initial rotation
-        mecanumChassis.rotate(90, 0.2, 1);
     }
 
     public Bitmap takePhoto() {
@@ -90,106 +112,69 @@ public class CraterAuto extends LinearOpMode {
     }
 
     public MineralPosition analyzePhoto(Bitmap sample) {
-        return mineralDetection.getPosition(sample, 2);
+        return mineralDetection.getPosition(sample);
     }
 
-    public void doDepo(MineralPosition mineralPosition) {
+    public void doCrater(MineralPosition mineralPosition) {
+
+        //sets the rotation curve
+        mecanumChassis.setRotate(0.1);
+
+        //initial rotation
+        mecanumChassis.rotate(90, 0.2, 0.05);
+
         switch (mineralPosition) {
 
             case CENTER:
-                //drives into mineral
-                mecanumChassis.drive(0, 0.2, 0, 5000);
 
-                //alignes with wall
-                mecanumChassis.rotate(135, 0.7, 0.05);
+                mecanumChassis.drive(0,0.2,0,1000);
 
-                //strafes into wall
-                mecanumChassis.drive(0.2, 0, 0, 1500);
+                mecanumChassis.drive(0,-0.2,0,800);
 
-                //TODO DEPOSIT
-                sleep(1000);
+                mecanumChassis.rotate(-90, 0.2, 0.05);
 
-                //drives forward
-                mecanumChassis.drive(0, 0.5, 0, 1450);
+                mecanumChassis.drive(0,-0.2,0,3000);
 
-                //re-aligns with will
-                mecanumChassis.drive(0.2, 0, 0,500);
 
-                //re-aligns with will
-                mecanumChassis.drive(-0.1, 0, 0,500);
-
-                //goes into crater
-                mecanumChassis.drive(0, 0.5, 0, 1450);
+                break;
 
             case RIGHT:
-                //rotates toward mineral
-                mecanumChassis.rotate(-15, 0.7, 0.05);
+                mecanumChassis.rotate(-25, 0.2, 0.05);
 
-                //hits and goes past
-                mecanumChassis.drive(0, 0.2, 0, 4000);
+                mecanumChassis.drive(0,0.2,0,1000);
 
-                //rotates towards depo
-                mecanumChassis.rotate(80, 0.7, 0.05);
 
-                //drives into depo
-                mecanumChassis.drive(0, 0.2, 0, 1900);
-
-                //rotates to team marker position
-                mecanumChassis.rotate(103, 0.7, 0.05);
-
-                //TODO DEPOSIT
-                sleep(1000);
-
-                //rotates back
-                mecanumChassis.rotate(-90, 0.7, 0.05);
-
-                //drives to wall
-                mecanumChassis.drive(0, 0.2, 0, 1450);
-
-                //aligns with wall
-                mecanumChassis.rotate(30, 0.7, 0.05);
-
-                //drives forward
-                mecanumChassis.drive(0, 0.5, 0, 1450);
-
-                //re-aligns with will
-                mecanumChassis.drive(0.2, 0, 0,500);
-
-                //re-aligns with will
-                mecanumChassis.drive(-0.1, 0, 0,500);
-
-                //goes into crater
-                mecanumChassis.drive(0, 0.5, 0, 1450);
+                break;
 
             case LEFT:
-                //rotates toward mineral
-                mecanumChassis.rotate(18, 0.7, 0.05);
 
-                //drives int/past it
-                mecanumChassis.drive(0, 0.2, 0, 4400);
+                mecanumChassis.rotate(15, 0.2, 0.05);
 
-                //turns around
-                mecanumChassis.rotate(120, 0.7, 0.05);
+                mecanumChassis.drive(0,0.2,0,1500);
+                mecanumChassis.drive(0,0.2,0.1,3000);
 
-                //backs into depo
-                mecanumChassis.drive(0, -0.2, 0, 1500);
-
-                //TODO DEPOSIT
-                sleep(1000);
-
-                //drives forward
-                mecanumChassis.drive(0, 0.2, 0, 1450);
-
-                //re-aligns with will
-                mecanumChassis.drive(0.2, 0, 0,500);
-
-                //re-aligns with will
-                mecanumChassis.drive(-0.1, 0, 0,500);
-
-                //goes into crater
-                mecanumChassis.drive(0, 0.5, 0, 1450);
+                break;
         }
+
+        //aligns with wall
+        mecanumChassis.rotate(-42, 0.7, 0.05);
+
+        //double check alignment
+        mecanumChassis.drive(-0.45, 0, 0, 1000);
+        mecanumChassis.drive(0.45, 0, 0, 300);
+
+        //move to depo
+        mecanumChassis.drive(0, -1, 0, 1000);
+        mecanumChassis.drive(0, 0.5, 0, 3000);
+        mecanumChassis.drive(-0.45, 0, 0, 1000);
+        mecanumChassis.drive(0, 0.5, 0, 2000);
     }
+
+
+    public void deposit(){
+        hardware.depositServo.setPosition(1);
+    }
+
 
     public void noDepo() {
 

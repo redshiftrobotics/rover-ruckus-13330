@@ -55,7 +55,7 @@ public class Imu {
 
         this.context = context;
 
-        imu = context.hardwareMap.get(BNO055IMU.class, "imu");
+        imu = context.hardwareMap.get(BNO055IMU.class, "imu 1");
 
         BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
 

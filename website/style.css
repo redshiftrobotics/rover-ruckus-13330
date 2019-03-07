@@ -1,0 +1,44 @@
+
+body, html {
+	height: 100%;
+	margin: 0;
+}
+
+
+
+.parallax {
+
+  	background-repeat: no-repeat;
+  	background-size: cover;
+  	position: relative;
+
+  	/* Create the parallax scrolling effect */
+  	background-attachment: fixed;
+  	background-position: center;
+  	background-repeat: no-repeat;
+}
+
+#cover-image {
+
+	background-image: linear-gradient(rgba(255, 0, 0, 0.1), rgba(0, 255, 0, 0.1)), url("images/background.jpg");
+	height: 100%;
+	width: 100%;
+
+	background-position: 75%;
+
+	font-family: 'Ubuntu', sans-serif;
+}
+
+#title {
+	text-align: center;
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	transform: translate(-50%, -50%);
+  	text-align: center;
+  	color: white;
+}
+
+#the-team {
+height:1000px;background-color:red;font-size:36px
+}

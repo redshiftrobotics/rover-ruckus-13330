@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -48,60 +49,58 @@ public class Hardware { // Here we get the DcMotors from the REV hub and assign 
     public DcMotor frontLeftMotor;
     public DcMotor backRightMotor;
     public DcMotor backLeftMotor;
-    public DcMotor collector;
+
     public DcMotor collectorHinge;
     public DcMotor extenderWheel;
 
     public Servo mineralKicker1;
     public Servo mineralKicker2;
-    public Servo flipServo1;
-    public Servo flipServo2;
-    public Servo sorterServo1;
-    public Servo sorterServo2;
-    public Servo arm2;
-    public Servo depositor;
     public DcMotor lifter;
+    public DcMotor flipper;
+
+    public Servo topFlipL;
+    public Servo topFlipR;
+
+    public Servo depositServo;
+
+    public CRServo vexL;
+    public CRServo vexR;
+
+
 
 
     public CameraName webcam;
-
-    public TouchSensor limitSwitch;
-    public DigitalChannel flipLimit;
 
     public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
 
 
     public Hardware(OpMode context) { // this class gets all the motors, sensors, and imu and hooks it up to the hardware map.
 
-        //region servos
-        //mineralKicker1 = context.hardwareMap.servo.get("mineralKicker1");
-        //mineralKicker2 = context.hardwareMap.servo.get("mineralKicker2");
-
-        //arm2 = context.hardwareMap.servo.get("arm2");
-        //depositor = context.hardwareMap.servo.get("depositor");
-        //endregion
-
-        //region motors
-
-        //arm1 = context.hardwareMap.dcMotor.get("arm1");
-        //arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //arm1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
         collectorHinge = context.hardwareMap.dcMotor.get("collectorHinge");
         collectorHinge.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        collectorHinge.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        collector = context.hardwareMap.dcMotor.get("collector");
-        collector.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        collectorHinge.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         lifter = context.hardwareMap.dcMotor.get("lifter");
         lifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        flipServo1 = context.hardwareMap.servo.get("flipServo1");
-        flipServo2 = context.hardwareMap.servo.get("flipServo2");
+        flipper = context.hardwareMap.dcMotor.get("flipper");
+        flipper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flipper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        vexL = context.hardwareMap.get(CRServo.class, "vexL");
+        vexR = context.hardwareMap.get(CRServo.class, "vexR");
+
+        topFlipL = context.hardwareMap.get(Servo.class, "topFlipL");
+        topFlipR = context.hardwareMap.get(Servo.class, "topFlipR");
 
         extenderWheel = context.hardwareMap.dcMotor.get("extenderWheel");
+        extenderWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        depositServo = context.hardwareMap.servo.get("depositServo");
 
 
         //endregion

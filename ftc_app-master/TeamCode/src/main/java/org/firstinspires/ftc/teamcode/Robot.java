@@ -96,10 +96,6 @@ public class Robot { //parent class
         hardware.mineralKicker2.setPosition(1 - position);
     }
 
-    public void collect(double power) {
-        hardware.collector.setPower(power);
-    }
-
     public void setLifterPositions(int position, double power) {
         //hardware.lifter.setTargetPosition(position);
         //hardware.lifter.setPower(power);
@@ -111,11 +107,6 @@ public class Robot { //parent class
         }
     }
 
-    public void depositMineral() {
-        hardware.depositor.setPosition(1);
-        context.sleep(500);
-        hardware.depositor.setPosition(0);
-    }
 
 //    public void setLifterMode(DcMotor.RunMode runMode) {
 //        hardware.lifter.setMode(runMode);

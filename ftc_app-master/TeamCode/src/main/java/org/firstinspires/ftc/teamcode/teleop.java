@@ -38,95 +38,116 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 /**
  * Code that allows the Drivers to use controllers and drive the robot as well as its mechanisms.
  */
 
-@TeleOp(name = "TeleOp", group = "13330 Pulsar")
+@TeleOp(name = "TeleOp", group = "FINAL")
 public class teleop extends LinearOpMode {
 
     // instances of hardware, robot, and text
     private Hardware hardware;
     private MecanumChassis mecanumChassis;
-    private Robot robot;
     private Console console;
-    private Imu imu;
-    private MineralDetection mineralDetection;
+    private PID pid;
 
     private double speed = 0.45;
-    private double horizontalSensitivity = 5;
-    private double verticalSensitivity = 5;
-    private double rotationSensitivity = 5;
 
-    private boolean g2LeftBumperState = false;
+    double timer = 0;
+
+
+    double flipUpDegree = 10;
+    double flipReadyDegree = 90;
+    double flipDownDegree = 110;
+    double sorterUpDegree = 110;
+    double sorterReadyDegree = 80;
+    double timerWait = 100;
+
+
     CollectorPosition collectorPosition = CollectorPosition.UP;
 
 
     @Override
     public void runOpMode() {
 
+        this.hardware = new Hardware(this);
+        this.console = new Console(this);
+        this.mecanumChassis = new MecanumChassis(this, hardware.zeroPowerBehavior);
+        this.pid = new PID();
+
         //initializes other classes
         Thread driveThread = new DriveThread();
         Thread collectorThread = new CollectorThread();
         Thread flipThread = new FlipThread();
 
-
-        this.hardware = new Hardware(this);
-        this.imu = new Imu(this);
-        this.console = new Console(this);
-
-        while (!imu.imu.isGyroCalibrated()) {
-            console.Status("Calibrating Gyro");
-            idle();
-        }
-
-        this.mecanumChassis = new MecanumChassis(this, hardware.zeroPowerBehavior, this.imu);
-        this.mineralDetection = new MineralDetection(this);
-
-        mineralDetection.vuforiaInit(hardwareMap);
-
         console.Status("Ready to start");
 
         waitForStart();
 
-        imu.resetAngle();
-
-        console.Status("Reset Angle");
 
         driveThread.start();
-        flipThread.start();
         collectorThread.start();
+        flipThread.start();
 
 
         while (opModeIsActive()) {
-
-            //helps robot performance (rids of unnecessary loops)
-
-
-            telemetry.addData("Collector Hinge Pos", collectorPosition + " : " + hardware.collectorHinge.getCurrentPosition());
-            telemetry.addData("x", gamepad1.left_stick_x * speed);
-            telemetry.addData("y", gamepad1.left_stick_y * speed);
-            telemetry.addData("sticks", "  left=" + gamepad1.left_stick_y + "  right=" + gamepad1.right_stick_y);
-            telemetry.update();
-
-            if (gamepad2.left_bumper) {
-                g2LeftBumperState = true;
-            } else {
-                g2LeftBumperState = false;
-            }
+            console.Log("Status", "Running");
+            console.Log("Timer", timer);
+            console.Log("Collector Hinge Position", collectorPosition + " : " + hardware.collectorHinge.getCurrentPosition());
+            console.Log("Lifter Position", hardware.lifter.getCurrentPosition());
+            console.Log("Flipper Position", hardware.flipper.getCurrentPosition());
+            console.Update();
 
             idle();
-
         }
 
         driveThread.interrupt();
-        flipThread.interrupt();
         collectorThread.interrupt();
+        flipThread.interrupt();
+    }
+
+
+    //Thread that allows the driver to drive the mecanum chassis.
+    private class FlipThread extends Thread {
+
+        //sets the name of the thread to be referenced later.
+        public FlipThread() {
+            this.setName("FlipThread");
+
+        }
+
+        @Override
+        public void run() {
+
+            try {
+                while (!isInterrupted()) {
+
+
+                    //helps robot performance (rids of unnecessary loops)
+                    //Alows the thread to detect if the 'a' button is pressed, and then sets the
+                    //desired servo to a certain position.
+                    if (gamepad2.a) {
+
+                        setServos(hardware.topFlipL, hardware.topFlipR, sorterUpDegree, true);
+
+                    } else {
+                        //If the 'a' button is not pressed, then return the servos to their default position.
+
+                        setServos(hardware.topFlipL, hardware.topFlipR, sorterReadyDegree, true);
+
+
+                        timer = 0;
+                    }
+
+
+                }
+            }
+            // an error occurred in the run loop.
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //Thread that allows the driver to drive the mecanum chassis.
@@ -146,18 +167,9 @@ public class teleop extends LinearOpMode {
                     //Allows the thread to detect if the right bumper is pressed, which will change
                     //the driving style from a locked forward to free drive.
 
-                    //mecanumChassis.driveS(mecanumChassis.getStickSensitivity(gamepad1.left_stick_x * speed, horizontalSensitivity), mecanumChassis.getStickSensitivity(gamepad1.left_stick_y * speed, verticalSensitivity), mecanumChassis.getStickSensitivity(gamepad1.right_stick_x * speed, rotationSensitivity));
-                    if (gamepad1.right_bumper) {
-                        mecanumChassis.driveGlobal(-gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
-                    } else {
-                        mecanumChassis.driveS(gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
-                    }
+                    mecanumChassis.driveS(gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
 
-                    hardware.lifter.setPower(-gamepad2.left_stick_y);
 
-                    //Allows the thread to detect if 'a' is pressed, which will reset the global angle.
-                    if (gamepad1.a)
-                        imu.resetAngle();
                     idle();
                 }
             }
@@ -172,101 +184,56 @@ public class teleop extends LinearOpMode {
     private class CollectorThread extends Thread {
 
         //sets the name of the thread to be referenced later.
-        public CollectorThread(){
+        public CollectorThread() {
             this.setName("CollectorThread");
 
         }
 
         @Override
-        public void run(){
-            try{
-
-                hardware.collectorHinge.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                hardware.collector.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-                while(!isInterrupted()){
+        public void run() {
+            //hardware.collectorHinge.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            try {
+                while (!isInterrupted()) {
 
                     //Allows the thread to detect if the left bumper has been pressed, which will then set
                     //the position of the servo motor to a certain position.
                     if (gamepad2.left_bumper) {
                         collectorPosition = CollectorPosition.values()[(collectorPosition.ordinal() + 1) % CollectorPosition.values().length];
-                        sleep(100);
+                        sleep(200);
                     }
 
 
                     //Based on the collector position, allows the Thread to set a specific position for
                     //the collector hinge.
-//                    switch (collectorPosition) {
-//                        case UP:
-//                            hardware.collectorHinge.setTargetPosition(0);
-//                            break;
-//                        case DOWN:
-//                            hardware.collectorHinge.setTargetPosition(1000);
-//                            break;
-//                        case CENTER:
-//                            hardware.collectorHinge.setTargetPosition(500);
-//                            break;
-//                    }
+                    switch (collectorPosition) {
+                        case UP:
+                            hardware.collectorHinge.setPower(pid.getError(hardware.collectorHinge.getCurrentPosition(), -34, 0.147));
+                            break;
+                        case DOWN:
+                            hardware.collectorHinge.setPower(pid.getError(hardware.collectorHinge.getCurrentPosition(), -115, 0.147));
+                            break;
+                        case CENTER:
+                            hardware.collectorHinge.setPower(pid.getError(hardware.collectorHinge.getCurrentPosition(), -83, 0.147));
+                            break;
+                    }
 
 
-                    hardware.extenderWheel.setPower(gamepad2.right_stick_y);
+                    if(gamepad2.right_bumper)
+                        hardware.collectorHinge.setPower(pid.getError(hardware.collectorHinge.getCurrentPosition(), -140, 0.147));
+
+
                     hardware.collectorHinge.setPower(gamepad2.left_stick_y);
+                    hardware.extenderWheel.setPower(gamepad2.right_stick_y);
+
 
                     //If that position is equal to anything but UP, the collector's power will be set
                     //to the power of the right joystick.
                     if (collectorPosition != CollectorPosition.UP) {
-                        hardware.collector.setPower(gamepad2.right_trigger);
-                    }
-                }
-            } catch(Exception e){
-                    e.printStackTrace();
-            }
-        }
-    }
+                        int power = 0;
+                        power += gamepad2.right_bumper ? 1 : 0;
+                        power -= gamepad2.left_bumper ? 1 : 0;
 
-    //A thread that allows the driver to use the flipping mechanisms.
-    private class FlipThread extends Thread {
-
-        //Sets the name of the Thread to be referenced later.
-        public FlipThread() {
-            this.setName("FlipThread");
-
-        }
-
-        @Override
-        public void run() {
-
-
-            try {
-                while (!isInterrupted()) {
-                    double upDegree = 10;
-                    double sorterUpDegree = 10;
-                    double timer = 0;
-                    double timerWait = 100;
-
-                    //Alows the thread to detect if the 'a' button is pressed, and then sets the
-                    //desired servo to a certain position.
-                    if (gamepad2.a) {
-                        setServos(hardware.flipServo1, hardware.flipServo2, upDegree,true);
-
-                        //while hardware.flipLimit is not defined and the a button is pressed, then idle.
-//                        while (opModeIsActive() && !hardware.flipLimit.getState() && gamepad2.a) {
-////                            idle();
-////                        }
-////
-////                        if(hardware.flipLimit.getState()) {
-////                            setServos(hardware.sorterServo1, hardware.sorterServo2, sorterUpDegree, false);
-////                        }
-                        timer += 0.01;
-
-                        if (timer >= timerWait){
-                            setServos(hardware.sorterServo1, hardware.sorterServo2, 110, true);
-                        }
-                    } else {
-
-                        //If the 'a' button is not pressed, then return the servos to their default position.
-                        setServos(hardware.flipServo1, hardware.flipServo2, 130, true);
+                        hardware.vexL.setPower(power * 0.4);
                     }
                 }
             } catch (Exception e) {
@@ -277,12 +244,13 @@ public class teleop extends LinearOpMode {
 
     //A method that sets the desired Servos to a specific position.
     public void setServos(Servo servo1, Servo servo2, double degree, boolean inverse) {
-        if(inverse) {
+        if (inverse) {
             servo1.setPosition((degree) / 180);
-            servo2.setPosition(1-((degree) / 180));
+            servo2.setPosition(1 - ((degree) / 180));
         } else {
             servo1.setPosition(degree / 180);
             servo2.setPosition(degree / 180);
         }
     }
+
 }

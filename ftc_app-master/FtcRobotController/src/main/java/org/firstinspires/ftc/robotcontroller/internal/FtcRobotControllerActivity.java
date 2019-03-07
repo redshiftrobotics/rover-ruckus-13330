@@ -156,11 +156,12 @@ public class FtcRobotControllerActivity extends Activity {
     protected TextView textRobotStatus;
     protected TextView[] textGamepad = new TextView[NUM_GAMEPADS];
     protected TextView textOpMode;
-    public ImageView webcamPreview;
+    protected ImageView webcamPreview;
     protected TextView textErrorMessage;
     protected ImmersiveMode immersion;
 
     public Bitmap webcamPreviewBmp;
+    public String opModeName;
 
     protected UpdateUI updateUI;
     protected Dimmer dimmer;
@@ -181,10 +182,6 @@ public class FtcRobotControllerActivity extends Activity {
             requestRobotRestart();
         }
 
-    }
-
-    public void setWebcamPreview(Bitmap bitmap) {
-        webcamPreviewBmp = bitmap;
     }
 
 
@@ -330,13 +327,18 @@ public class FtcRobotControllerActivity extends Activity {
 
         updateUI = createUpdateUI();
         callback = createUICallback(updateUI);
+
         webcamPreview = (ImageView) findViewById(R.id.webCamPreview);
-        webcamPreview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                webcamPreview.setImageBitmap(webcamPreviewBmp);
-            }
-        });
+
+        if (true) {
+            webcamPreview.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v){
+                    webcamPreview.setImageBitmap(webcamPreviewBmp);
+                }
+            });
+        }
 
         PreferenceManager.setDefaultValues(this, R.xml.app_settings, false);
 
@@ -388,6 +390,7 @@ public class FtcRobotControllerActivity extends Activity {
 
         cfgFileMgr.getActiveConfigAndUpdateUI();
 
+
         entireScreenLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -417,6 +420,7 @@ public class FtcRobotControllerActivity extends Activity {
         // Note: this gets called even when the configuration editor is launched. That is, it gets
         // called surprisingly often. So, we don't actually do much here.
         super.onStop();
+
         RobotLog.vv(TAG, "onStop()");
     }
 

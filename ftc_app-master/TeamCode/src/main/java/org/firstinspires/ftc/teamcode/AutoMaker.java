@@ -273,7 +273,7 @@ public class AutoMaker {
                         try {
                             //scans for the mineral and takes the photo
                             int mineralDetectionSplits = 3;
-                            mineralPosition = mineralDetection.getPosition(mineralDetection.getImage(), mineralDetectionSplits);
+                            mineralPosition = mineralDetection.getPosition(mineralDetection.getImage());
                         } catch (Exception e) {
                         }
                         break;

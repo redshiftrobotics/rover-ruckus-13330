@@ -104,27 +104,28 @@ public class MineralDetection {
     }
 
     // this class processes the photo and scans the individual pixels.
-    public MineralPosition getPosition(Bitmap bm_img, int numSplits) {
-        int centerWidth = bm_img.getWidth();
+    public MineralPosition getPosition(Bitmap bm_img) {
         int centerHeight = (bm_img.getHeight()/2);
-        int heightOffset = 100;
+        int heightOffset = 300;
         int scaleFactor = 18;
 
-        Bitmap[] splits = new Bitmap[numSplits];
-        int[] numYellow = new int[3];
+        Bitmap[] splits = new Bitmap[2];
+        int[] numYellow = new int[2];
         Matrix matrix = new Matrix();
         matrix.postScale(-1,-1);
 
-        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, centerHeight - heightOffset, centerWidth, heightOffset * 2);
+        Bitmap croppedBitmap = Bitmap.createBitmap(bm_img, 0, heightOffset, bm_img.getWidth(),  bm_img.getHeight() - (heightOffset));
         Bitmap scaledCroppedBitmap = Bitmap.createScaledBitmap(croppedBitmap, croppedBitmap.getWidth() / scaleFactor, croppedBitmap.getHeight() / scaleFactor, false);
 
-        Bitmap visualYellow = Bitmap.createScaledBitmap(bm_img, bm_img.getWidth() / scaleFactor, bm_img.getHeight() / scaleFactor, false);
+        Bitmap visualYellow = Bitmap.createScaledBitmap(croppedBitmap, croppedBitmap.getWidth() / scaleFactor, croppedBitmap.getHeight() / scaleFactor, false);
 
-        for(int i = 0; i < numSplits; i++) {
-            splits[i] = Bitmap.createBitmap(scaledCroppedBitmap, i * (scaledCroppedBitmap.getWidth() / numSplits), 0,
-                    scaledCroppedBitmap.getWidth() / numSplits, scaledCroppedBitmap.getHeight());
 
-        }
+        splits[0] = Bitmap.createBitmap(scaledCroppedBitmap, 0, 0,
+                    scaledCroppedBitmap.getWidth() / 2, scaledCroppedBitmap.getHeight());
+        splits[1] = Bitmap.createBitmap(scaledCroppedBitmap, (scaledCroppedBitmap.getWidth())/2, 0,
+                    scaledCroppedBitmap.getWidth() / 2, scaledCroppedBitmap.getHeight());
+
+
 
         for (int y = 0; y < visualYellow.getHeight(); y++) {
             //for each x pixel
@@ -140,9 +141,7 @@ public class MineralDetection {
             }
         }
 
-        saveImage(scaledCroppedBitmap, "Cropped");
-        saveImage(visualYellow, "Colored");
-
+        ((FtcRobotControllerActivity) context.hardwareMap.appContext).webcamPreviewBmp = scaledCroppedBitmap;
 
         //for each third
         for (int i = 0; i < splits.length; i++) {
@@ -165,20 +164,22 @@ public class MineralDetection {
             }
         }
 
-        context.telemetry.addData("", numYellow[0] + " , " + numYellow[1]  + " , " + numYellow[2]);
-        context.telemetry.update();
-        context.sleep(1000);
+        context.telemetry.addData("Values", numYellow[0] + " , " + numYellow[1]);
+
+       // context.sleep(1000);
 
         // compares the amount of yellow pixels and decides the position of the mineral from the photo.
-        if (numYellow[0] > numYellow[1] && numYellow[0] > numYellow[2]) {
-            return MineralPosition.LEFT;
-        } else if (numYellow[1] > numYellow[0] && numYellow[1] > numYellow[2]) {
+        if (numYellow[0] > numYellow[1]) {
             return MineralPosition.CENTER;
-        } else if (numYellow[0] == 0 && numYellow[1] == 0) {
+        } else if (numYellow[1] > numYellow[0]) {
             return MineralPosition.RIGHT;
+        } else if (numYellow[0] == 0 && numYellow[1] == 0) {
+            return MineralPosition.LEFT;
         } else {
             return MineralPosition.NULL;
         }
+
+
     }
 
     public float[] rgb2cmyk(int r, int g, int b) {

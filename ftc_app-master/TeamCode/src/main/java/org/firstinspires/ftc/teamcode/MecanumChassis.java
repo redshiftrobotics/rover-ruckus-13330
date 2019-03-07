@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class MecanumChassis {
 
     private Imu imu;
+    private PID pid;
     private LinearOpMode context;
 
     private DcMotor frontRightMotor;
@@ -61,6 +62,41 @@ public class MecanumChassis {
     public MecanumChassis(LinearOpMode context, DcMotor.ZeroPowerBehavior zeroPowerBehavior, Imu imu) { // creates the context in this class
 
         this.imu = imu;
+        this.pid = new PID();
+        this.context = context;
+
+        //region frontLeftMotor
+        frontLeftMotor = context.hardwareMap.dcMotor.get("frontLeftMotor");
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftMotor.setZeroPowerBehavior(zeroPowerBehavior);
+        //endregion
+
+        //region backLeftMotor
+        backLeftMotor = context.hardwareMap.dcMotor.get("backLeftMotor");
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftMotor.setZeroPowerBehavior(zeroPowerBehavior);
+        //endregion
+
+        //region frontRightMotor
+        frontRightMotor = context.hardwareMap.dcMotor.get("frontRightMotor");
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightMotor.setZeroPowerBehavior(zeroPowerBehavior);
+        //endregion
+
+        //region backRightMotor
+        backRightMotor = context.hardwareMap.dcMotor.get("backRightMotor");
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightMotor.setZeroPowerBehavior(zeroPowerBehavior);
+        //endregion
+    }
+
+    public MecanumChassis(LinearOpMode context, DcMotor.ZeroPowerBehavior zeroPowerBehavior) { // creates the context in this class
+
+        this.pid = new PID();
         this.context = context;
 
         //region frontLeftMotor
@@ -100,17 +136,11 @@ public class MecanumChassis {
      * @param rotate The rotate amount of power
      */
 
-    public void drive(double x, double y, double rotate) {
-        //I don't even know how to explain this
-        frontLeftPower = y + x + rotate;
-        backLeftPower = y - x + rotate;
-        frontRightPower = y - x - rotate;
-        backRightPower = y + x - rotate;
-
-        frontLeftMotor.setPower(frontLeftPower);
-        backLeftMotor.setPower(backLeftPower);
-        frontRightMotor.setPower(frontRightPower);
-        backRightMotor.setPower(backRightPower);
+    void drive(double x, double y, double rotate, long time) {
+        driveS(x, y, rotate);
+        context.sleep(time);
+        stop();
+        context.sleep(200);
     }
 
     public void setMotorPower(double power){
@@ -242,7 +272,8 @@ public class MecanumChassis {
     }
 
 
-    public void rotate(int degrees, double startPower, double stopThreashold) {
+    public void rotate(int degrees, double startPower, double errorThreashold) {
+        double error = 0;
         double turnPercentage = 0;
 
         //makes the degrees between -359 and 359, zero is 360
@@ -257,30 +288,29 @@ public class MecanumChassis {
         imu.resetAngle(); // restart imu movement tracking
 
 
-        while (context.opModeIsActive() && turnPercentage <= stopThreashold) { // while the percentage of turn is less than threshold
+        while (context.opModeIsActive() && turnPercentage <= 1-errorThreashold) { // while the percentage of turn is less than threshold
 
             //p loop formula
-            double formula = (1 - Math.pow(turnPercentage, 1/rotationSteepness));
+            error = pid.getError(imu.getAngle(), degrees, rotationSteepness);
 
             if (degrees < 0) { // turn right
-                frontLeftMotor.setPower(-startPower * formula);
-                backLeftMotor.setPower(-startPower * formula);
-                frontRightMotor.setPower(startPower * formula);
-                backRightMotor.setPower(startPower* formula);
+                frontLeftMotor.setPower(-startPower * error);
+                backLeftMotor.setPower(-startPower * error);
+                frontRightMotor.setPower(startPower * error);
+                backRightMotor.setPower(startPower* error);
             } else { // turn left
-                frontLeftMotor.setPower(startPower * formula);
-                backLeftMotor.setPower(startPower * formula);
-                frontRightMotor.setPower(-startPower * formula);
-                backRightMotor.setPower(-startPower * formula);
+                frontLeftMotor.setPower(startPower * error);
+                backLeftMotor.setPower(startPower * error);
+                frontRightMotor.setPower(-startPower * error);
+                backRightMotor.setPower(-startPower * error);
             }
 
 
-
-            turnPercentage = imu.getAngle() / degrees; // sets turnPercentage
+            turnPercentage = imu.getAngle() / degrees;
 
 
             context.telemetry.addData("angle", imu.getAngle());
-            context.telemetry.addData("turnPercentage", turnPercentage);
+            context.telemetry.addData("error", error);
             context.telemetry.update();
 
         }

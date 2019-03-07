@@ -57,7 +57,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             android:src="@drawable/icon_robotcontroller" />
 
 
-
         <TextView
             android:id="@+id/textDeviceName"
             android:layout_width="wrap_content"
@@ -132,10 +131,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
             <ImageView
                 android:id="@+id/webCamPreview"
-                android:layout_gravity="center"
-                android:layout_height="300dp"
-                android:layout_width="200dp"
-                android:background="@color/background_black"/>
+                android:layout_width="match_parent"
+                android:layout_height="109dp"
+                android:layout_gravity="bottom"
+                android:background="@android:color/transparent" />
 
             <LinearLayout
                 android:id="@+id/monitorContainer"

@@ -63,6 +63,7 @@ public class teleop extends LinearOpMode {
     double sorterUpDegree = 110;
     double sorterReadyDegree = 80;
     double timerWait = 100;
+    int masterPower = 1;
 
 
     CollectorPosition collectorPosition = CollectorPosition.UP;
@@ -96,6 +97,7 @@ public class teleop extends LinearOpMode {
             console.Log("Timer", timer);
             console.Log("Collector Hinge Position", collectorPosition + " : " + hardware.collectorHinge.getCurrentPosition());
             console.Log("Lifter Position", hardware.lifter.getCurrentPosition());
+            console.Log("Collector Hinge Position", hardware.collectorHinge.getCurrentPosition());
             console.Log("Flipper Position", hardware.flipper.getCurrentPosition());
             console.Update();
 
@@ -167,7 +169,14 @@ public class teleop extends LinearOpMode {
                     //Allows the thread to detect if the right bumper is pressed, which will change
                     //the driving style from a locked forward to free drive.
 
-                    mecanumChassis.driveS(gamepad1.left_stick_x * speed, -gamepad1.left_stick_y * speed, -gamepad1.right_stick_x * speed);
+
+                    if(gamepad1.dpad_up)
+                        masterPower = -1;
+                    else if (gamepad1.dpad_down)
+                        masterPower = 1;
+
+
+                    mecanumChassis.driveS(gamepad1.left_stick_x * speed * masterPower, -gamepad1.left_stick_y * speed * masterPower, -gamepad1.right_stick_x * speed);
 
 
                     idle();
@@ -191,7 +200,7 @@ public class teleop extends LinearOpMode {
 
         @Override
         public void run() {
-            //hardware.collectorHinge.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            hardware.collectorHinge.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             try {
                 while (!isInterrupted()) {
 
@@ -207,34 +216,31 @@ public class teleop extends LinearOpMode {
                     //the collector hinge.
                     switch (collectorPosition) {
                         case UP:
-                            hardware.collectorHinge.setPower(pid.getError(hardware.collectorHinge.getCurrentPosition(), -34, 0.147));
+                            hardware.collectorHinge.setTargetPosition(-34);
                             break;
                         case DOWN:
-                            hardware.collectorHinge.setPower(pid.getError(hardware.collectorHinge.getCurrentPosition(), -115, 0.147));
+                            hardware.collectorHinge.setTargetPosition(-115);
                             break;
                         case CENTER:
-                            hardware.collectorHinge.setPower(pid.getError(hardware.collectorHinge.getCurrentPosition(), -83, 0.147));
+                            hardware.collectorHinge.setTargetPosition(-83);
                             break;
                     }
 
-
-                    if(gamepad2.right_bumper)
-                        hardware.collectorHinge.setPower(pid.getError(hardware.collectorHinge.getCurrentPosition(), -140, 0.147));
-
-
-                    hardware.collectorHinge.setPower(gamepad2.left_stick_y);
-                    hardware.extenderWheel.setPower(gamepad2.right_stick_y);
+                    hardware.collectorHinge.setPower(-gamepad2.left_stick_y);
+                    hardware.extenderWheel.setPower(-gamepad2.right_stick_y);
 
 
                     //If that position is equal to anything but UP, the collector's power will be set
                     //to the power of the right joystick.
-                    if (collectorPosition != CollectorPosition.UP) {
-                        int power = 0;
-                        power += gamepad2.right_bumper ? 1 : 0;
-                        power -= gamepad2.left_bumper ? 1 : 0;
+                    //if (collectorPosition != CollectorPosition.UP) {
 
-                        hardware.vexL.setPower(power * 0.4);
-                    }
+                    //}
+
+                    int power = 0;
+                    power += gamepad2.dpad_up ? 1 : 0;
+                    power -= gamepad2.dpad_down ? 1 : 0;
+
+                    hardware.lifter.setPower(power * 1);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,3 +1,6 @@
+# THIS REPOSITORY HAS BEEN ARCHIVED
+## As 13330 Pulsar's 2018-2019 (Rover Ruckus) season has ended, this repository has been archived.
+
 # 13330
 
 This github repository is on the cloud to allow the 13330 pulsar software engineers to share our code between each other, and make sure we each have the proper version of the code.
